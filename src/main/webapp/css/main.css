@@ -1,0 +1,31 @@
+body {margin:0px;}
+h3 {margin:0px;}
+.block {display:block;}
+.hide {display:none;}
+.header {width:100%; background-color:#eee; border-bottom:2px solid #ccc; margin-bottom:5px; line-height:30px;}
+.content {width:780px; margin:0 auto;}
+.scoreInput {width:40px; margin:10px;}
+#headerContent {width:780px; margin:0px auto;}
+#headerTitle {float:left;}
+.headerAccount {float:right; font-size:12px;}
+.errorMessage {font-size:13px; color:red;}
+/* need to set up some rules for this, don't want all inputs to deal with this.  just for signup at this point i think */
+#signupform input.ng-invalid.ng-dirty {border:solid 2px red;}
+#signupform input.ng-valid.ng-dirty {border:solid 2px green;}
+.error {color:red; font-size:13px;}
+.button {display:inline-block; height:25px; line-height:25px; text-decoration:none; color:white; margin:5px 0px;
+             text-align:center;-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; border:solid 2px black; padding:0px 5px;
+             cursor:pointer;}
+.smallButton {display:inline-block; height:18px; line-height:18px; font-size:13px; text-decoration:none; color:white; margin:5px 0px;
+                              text-align:center;-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; border:solid 2px black; padding:0px 6px;
+                              cursor:pointer;}
+.red {background-color:red;}
+.blue {background-color:blue;}
+.green {background-color:green;}
+.rounds {float:left; margin-bottom:20px;}
+
+
+
+
+
+

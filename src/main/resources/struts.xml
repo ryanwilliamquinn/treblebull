@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+	<constant name="struts.devMode" value="true" />
+
+    <package name="default" extends="struts-default">
+
+        <action name="login" class="com.rquinn.darts.UserAction" method="processLogin">
+            <result name="redirect" type="redirect">${url}</result>
+            <result name="error">login.jsp</result>
+        </action>
+
+        <action name="signup">
+            <result>signup.jsp</result>
+        </action>
+
+        <action name="processSignup" class="com.rquinn.darts.UserAction" method="processSignup">
+            <result name="success">${url}</result>
+            <result name="error">signup.jsp</result>
+        </action>
+
+        <action name="practice">
+            <result>/practiceHome.jsp</result>
+        </action>
+    </package>
+
+    <package name="practice" namespace="/practice" extends="struts-default">
+        <action name="/**" class="com.rquinn.darts.action.PracticeAction" method="practiceTemplate">
+            <result name="success">/${practiceTemplate}</result>
+            <result name="error" type="redirect">/practice</result>
+        </action>
+
+    </package>
+
+	<package name="basicstruts2" extends="struts-default">
+
+		<action name="home" >
+			<result>/index2.jsp</result>
+		</action>
+		
+	</package>
+	<package name="users" namespace="/user" extends="struts-default">
+		<action name="/*">
+			<result name="success">/user.jsp</result>
+		</action>
+
+	</package>
+    <package name="data" namespace="/data" extends="struts-default">
+        <action name="loadAll*" class="com.rquinn.darts.action.TargetPracticeAction" method="loadAll"/>
+        <action name="load*" class="com.rquinn.darts.action.TargetPracticeAction" method="load"/>
+        <action name="gameDetails*" class="com.rquinn.darts.action.TargetPracticeAction" method="getGameDetails"/>
+        <action name="cricket" class="com.rquinn.darts.action.CricketAction" method="insert"/>
+        <action name="*" class="com.rquinn.darts.action.TargetPracticeAction" method="insert"/>
+
+    </package>
+
+
+</struts>

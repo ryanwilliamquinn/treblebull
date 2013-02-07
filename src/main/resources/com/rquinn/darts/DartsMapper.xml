@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+        'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+
+<mapper namespace='com.rquinn.darts.DartsMapper'>
+
+    <resultMap type='com.rquinn.darts.DartsResult' id='dartsResultValue'>
+        <id property='id' column='id'/>
+        <result property='type' column='type'/>
+        <result property='score' column='score'/>
+        <result property='dateTime' column='date'/>
+        <result property='numRounds' column='numRounds'/>
+    </resultMap>
+
+    <resultMap type='com.rquinn.darts.RoundResult' id='gameDetails'>
+        <result property='id' column='id'/>
+        <result property='round' column='round'/>
+        <result property='score' column='score'/>
+    </resultMap>
+
+    <select id='getResultById' parameterType='int' resultMap="dartsResultValue">
+        SELECT
+        id as id,
+        type as type,
+        score as score
+        FROM darts_result
+        WHERE id = #{id}
+    </select>
+
+    <select id='getAllResults' parameterType="map"  resultMap='dartsResultValue'>
+        SELECT id, UPPER(type), score, date, numRounds FROM darts_result
+        WHERE type = #{type}
+        AND user = #{username}
+        ORDER BY date DESC;
+        -- to filter by date:  AND date >= STR_TO_DATE('2012-12-16 10:00:00', '%Y-%m-%d %H:%i:%s');
+    </select>
+
+    <select id='getTenResults' parameterType="map"  resultMap='dartsResultValue'>
+        SELECT  id, UPPER(type), score, date, numRounds  FROM darts_result
+        WHERE type = #{type}
+        AND user = #{username}
+        ORDER BY date DESC
+        LIMIT 10;
+    </select>
+
+    <select id='getNumResults' parameterType="map"  resultType='int'>
+        SELECT  COUNT(1)  FROM darts_result
+        WHERE type = #{type}
+        AND user = #{username};
+    </select>
+
+    <insert id='insertGame' parameterType='DartsResult' useGeneratedKeys='true' keyProperty='id'>
+        INSERT INTO darts_result(type, score, date, user, numRounds)
+        VALUES(#{type.value}, #{score}, #{mySqlDateTime}, #{username}, #{numRounds})
+    </insert>
+
+    <insert id='insertCricketGame' parameterType='DartsResult' useGeneratedKeys='true' keyProperty='id'>
+        INSERT INTO darts_result(type, score, date, user, numRounds)
+        VALUES(#{type.value}, #{score}, #{mySqlDateTime}, #{username}, #{numRounds})
+    </insert>
+
+    <insert id='insertRound' parameterType='map' useGeneratedKeys='true' keyProperty='roundResult.id'>
+        INSERT INTO turn(round, score, game_id)
+        VALUES(#{roundResult.round}, #{roundResult.score}, #{foreignKey})
+    </insert>
+
+    <insert id="insertCricketRound" parameterType='map' useGeneratedKeys="true" keyProperty="roundResult.id">
+        INSERT INTO cricket_turn(firstDart, secondDart, thirdDart, round, game_id)
+        VALUES(#{roundResult.firstDart}, #{roundResult.secondDart}, #{roundResult.thirdDart}, #{roundResult.round}, #{foreignKey})
+    </insert>
+
+    <select id="getPrimaryKey" resultType="int">
+        select last_insert_id()
+    </select>
+
+    <select id="getGameDetails" parameterType="int" resultMap="gameDetails">
+        select * from turn where game_id = #{gameId};
+    </select>
+
+    <update id='updateResult' parameterType='DartsResult'>
+        UPDATE darts_result
+        SET
+        type = #{type},
+        score = #{score},
+        WHERE id = #{id}
+    </update>
+
+    <delete id='deleteResult' parameterType='int'>
+        DELETE FROM darts_result WHERE id = #{id}
+    </delete>
+
+    <insert id="insertUser" parameterType="map">
+        INSERT INTO users (username, password) VALUES (#{name}, #{encryptedPassword});
+    </insert>
+
+</mapper>
