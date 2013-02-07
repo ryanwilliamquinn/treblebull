@@ -96,17 +96,24 @@ public class DartsResultService
             String typeValue = type.getValue();
             slf4jLogger.debug("sql info for get ten results - username: " + userName + ", type: " + typeValue);
             DartsResultResponse dartsResultResponse = new DartsResultResponse();
+            slf4jLogger.debug("is this thing on?");
             List<DartsResult> dartsResults = dartsMapper.getTenResults(userName, typeValue);
+            slf4jLogger.debug("do we get stuck?");
             for (DartsResult dr : dartsResults) {
                 dr.initializeDates();
             }
+            slf4jLogger.debug("do we get here?");
             dartsResultResponse.setDartsResults(dartsResults);
             int totalNumResults = dartsMapper.getNumResults(userName,typeValue);
             dartsResultResponse.setTotalNumResults(totalNumResults);
+            slf4jLogger.debug("darts result: " + dartsResultResponse.getDartsResults().toString());
             return dartsResultResponse;
-        }finally{
+        }catch (Exception e) {
+            slf4jLogger.debug("exception eeeee: " + e);
+        } finally {
             sqlSession.close();
         }
+        return null;
     }
 
     public void updateResult(DartsResult dartsResult) {
