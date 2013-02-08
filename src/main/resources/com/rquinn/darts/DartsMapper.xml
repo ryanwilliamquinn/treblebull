@@ -51,12 +51,12 @@
 
     <insert id='insertGame' parameterType='DartsResult' useGeneratedKeys='true' keyProperty='id'>
         INSERT INTO darts_result(type, score, date, darts_user, numRounds)
-        VALUES(#{type.value}, #{score}, #{timestamp}, #{username}, #{numRounds}) returning id
+        VALUES(#{type.value}, #{score}, #{timestamp}, #{username}, #{numRounds})
     </insert>
 
     <insert id='insertCricketGame' parameterType='DartsResult' useGeneratedKeys='true' keyProperty='id'>
         INSERT INTO darts_result(type, score, date, darts_user, numRounds)
-        VALUES(#{type.value}, #{score}, #{timestamp}, #{username}, #{numRounds}) returning id
+        VALUES(#{type.value}, #{score}, #{timestamp}, #{username}, #{numRounds})
     </insert>
 
     <insert id='insertRound' parameterType='map' useGeneratedKeys='true' keyProperty='roundResult.id'>
@@ -70,7 +70,7 @@
     </insert>
 
     <select id="getPrimaryKey" resultType="int">
-        select last_insert_id()
+        select lastval()
     </select>
 
     <select id="getGameDetails" parameterType="int" resultMap="gameDetails">

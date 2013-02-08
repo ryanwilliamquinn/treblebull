@@ -1,5 +1,5 @@
 
-<jsp:include page="header.jsp"/>
+<jsp:include page="angHeader.jsp"/>
 
 <script src="/js/uiControllers.js"></script>
 <script type="text/javascript" src="/js/angularUI/module.js"></script>
