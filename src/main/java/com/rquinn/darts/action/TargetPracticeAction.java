@@ -63,8 +63,8 @@ public class TargetPracticeAction extends PracticeAction {
             simplePracticeResult.setUsername(currentUser.getPrincipal().toString());
             slf4jLogger.debug("simple practice result: " + simplePracticeResult);
             DartsResultService dartsResultService = new DartsResultService();
-            dartsResultService.insertGame(simplePracticeResult);
             simplePracticeResult.initializeDates();
+            dartsResultService.insertGame(simplePracticeResult);
         } catch (IOException e) {
             slf4jLogger.error("Error inserting data: " + e);
         }  finally {

@@ -6,6 +6,8 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.sql.Timestamp;
+
 /**
  * Created with IntelliJ IDEA.
  * User: rquinn
@@ -19,7 +21,7 @@ public class DartsResult {
     private BasePracticeType type;
     @Expose private int score;
     @Expose private int numRounds;
-    private String mySqlDateTime;
+    private Timestamp timestamp;
     @Expose private String displayDateTime;
     private DateTime dateTime;
     private String username;
@@ -82,7 +84,7 @@ public class DartsResult {
         DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss");
         this.dateTime = DateTime.parse(dateTime, fmt);
         DateTimeFormatter fmt2 = DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss");
-        this.mySqlDateTime = fmt2.print(this.dateTime);
+        this.timestamp = new Timestamp(this.dateTime.getMillis());
         DateTimeFormatter fmt3 = DateTimeFormat.forPattern("MMM dd, yyyy");
         displayDateTime = fmt3.print(this.dateTime);
     }
@@ -99,20 +101,19 @@ public class DartsResult {
         this.displayDateTime = dipslayDateTime;
     }
 
-    public String getMySqlDateTime() {
-        if (mySqlDateTime == null) {
-            DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss");
-            mySqlDateTime = fmt.print(dateTime);
+    public Timestamp getTimestamp() {
+        if (timestamp == null) {
+            timestamp = new Timestamp(dateTime.getMillis());
         }
-        return mySqlDateTime;
+        return timestamp;
     }
 
     /**
      * need to make this set all of the times
-     * @param mySqlDateTime
+     * @param timestamp
      */
-    public void setMySqlDateTime(String mySqlDateTime) {
-        DateTime dateTime = DateTime.parse(mySqlDateTime);
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
     }
 
     public long getDateMilliseconds() {
@@ -128,10 +129,11 @@ public class DartsResult {
             dateTime = DateTime.now();
         }
         DateTimeFormatter fmt2 = DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss");
-        this.mySqlDateTime = fmt2.print(dateTime);
+        dateMilliseconds = dateTime.getMillis();
         DateTimeFormatter fmt3 = DateTimeFormat.forPattern("MMM dd, yyyy");
         displayDateTime = fmt3.print(dateTime);
-        dateMilliseconds = dateTime.getMillis();
+        this.timestamp = new Timestamp(dateTime.getMillis());
+
     }
 
 

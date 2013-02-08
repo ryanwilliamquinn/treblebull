@@ -26,9 +26,11 @@ public class DartsResultService
      * @return
      */
     public void insertGame(SimplePracticeResult spr) {
-        slf4jLogger.debug(spr.getType() + " " + spr.getScore() + " " + spr.getMySqlDateTime() + " " + spr.getUsername());
-        SqlSession sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
+
+        SqlSession sqlSession = null;
         try {
+            slf4jLogger.debug(spr.getType().getValue() + " " + spr.getScore() + " " + spr.getTimestamp() + " " + spr.getUsername());
+            sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
             DartsMapper dartsMapper = sqlSession.getMapper(DartsMapper.class);
             dartsMapper.insertGame(spr);
             int primaryKey = dartsMapper.getPrimaryKey();
@@ -36,7 +38,9 @@ public class DartsResultService
                 dartsMapper.insertRound(primaryKey, result);
             }
             sqlSession.commit();
-        }finally{
+        } catch (Exception e) {
+            slf4jLogger.debug("error inserting game: " + e);
+        } finally {
             sqlSession.close();
         }
     }
@@ -48,7 +52,7 @@ public class DartsResultService
      * @return
      */
     public void insertCricketGame(CricketResult cricketResult) {
-        slf4jLogger.debug(cricketResult.getType() + " " + cricketResult.getScore() + " " + cricketResult.getMySqlDateTime() + " " + cricketResult.getUsername());
+        slf4jLogger.debug(cricketResult.getType() + " " + cricketResult.getScore() + " " + cricketResult.getTimestamp() + " " + cricketResult.getUsername());
         SqlSession sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
         try {
             DartsMapper dartsMapper = sqlSession.getMapper(DartsMapper.class);
@@ -96,13 +100,10 @@ public class DartsResultService
             String typeValue = type.getValue();
             slf4jLogger.debug("sql info for get ten results - username: " + userName + ", type: " + typeValue);
             DartsResultResponse dartsResultResponse = new DartsResultResponse();
-            slf4jLogger.debug("is this thing on?");
             List<DartsResult> dartsResults = dartsMapper.getTenResults(userName, typeValue);
-            slf4jLogger.debug("do we get stuck?");
             for (DartsResult dr : dartsResults) {
                 dr.initializeDates();
             }
-            slf4jLogger.debug("do we get here?");
             dartsResultResponse.setDartsResults(dartsResults);
             int totalNumResults = dartsMapper.getNumResults(userName,typeValue);
             dartsResultResponse.setTotalNumResults(totalNumResults);
