@@ -14,9 +14,9 @@ public interface DartsMapper {
 
     public void insertResult(DartsResult dartsResult);
 
-    public void insertGame(SimplePracticeResult simplePracticeResult);
+    public int insertGame(SimplePracticeResult simplePracticeResult);
 
-    public void insertCricketGame(CricketResult cricketResult);
+    public int insertCricketGame(CricketResult cricketResult);
 
     public void insertUser(@Param("name") String name, @Param("encryptedPassword") String encryptedPassword);
 

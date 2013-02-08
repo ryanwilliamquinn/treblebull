@@ -32,8 +32,7 @@ public class DartsResultService
             slf4jLogger.debug(spr.getType().getValue() + " " + spr.getScore() + " " + spr.getTimestamp() + " " + spr.getUsername());
             sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
             DartsMapper dartsMapper = sqlSession.getMapper(DartsMapper.class);
-            dartsMapper.insertGame(spr);
-            int primaryKey = dartsMapper.getPrimaryKey();
+            int primaryKey = dartsMapper.insertGame(spr);
             for (RoundResult result : spr.getRoundResult()) {
                 dartsMapper.insertRound(primaryKey, result);
             }
@@ -56,8 +55,7 @@ public class DartsResultService
         SqlSession sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
         try {
             DartsMapper dartsMapper = sqlSession.getMapper(DartsMapper.class);
-            dartsMapper.insertCricketGame(cricketResult);
-            int primaryKey = dartsMapper.getPrimaryKey();
+            int primaryKey = dartsMapper.insertCricketGame(cricketResult);
             for (CricketRoundResult result : cricketResult.getRoundResult()) {
                 dartsMapper.insertCricketRound(primaryKey, result);
             }
