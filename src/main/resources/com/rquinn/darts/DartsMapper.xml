@@ -8,7 +8,7 @@
         <id property='id' column='id'/>
         <result property='type' column='type'/>
         <result property='score' column='score'/>
-        <result property='dateTime' column='date'/>
+        <result property='timestamp' column='date'/>
         <result property='numRounds' column='numRounds'/>
     </resultMap>
 

@@ -5,6 +5,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Timestamp;
 
@@ -16,6 +18,7 @@ import java.sql.Timestamp;
  * To change this template use File | Settings | File Templates.
  */
 public class DartsResult {
+    private static final Logger slf4jLogger = LoggerFactory.getLogger(DartsResult.class);
 
     @Expose private int id;
     private BasePracticeType type;
@@ -102,9 +105,6 @@ public class DartsResult {
     }
 
     public Timestamp getTimestamp() {
-        if (timestamp == null) {
-            timestamp = new Timestamp(dateTime.getMillis());
-        }
         return timestamp;
     }
 
@@ -114,6 +114,7 @@ public class DartsResult {
      */
     public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
+        initializeDates();
     }
 
     public long getDateMilliseconds() {
@@ -125,15 +126,13 @@ public class DartsResult {
     }
 
     public void initializeDates() {
-        if (dateTime == null) {
-            dateTime = DateTime.now();
+        if (timestamp == null) {
+            timestamp = new Timestamp(DateTime.now().getMillis());
         }
-        DateTimeFormatter fmt2 = DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss");
-        dateMilliseconds = dateTime.getMillis();
+        DateTime date = new DateTime(timestamp);
+        dateMilliseconds = date.getMillis();
         DateTimeFormatter fmt3 = DateTimeFormat.forPattern("MMM dd, yyyy");
-        displayDateTime = fmt3.print(dateTime);
-        this.timestamp = new Timestamp(dateTime.getMillis());
-
+        displayDateTime = fmt3.print(date);
     }
 
 
