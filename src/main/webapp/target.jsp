@@ -49,9 +49,14 @@
         <span ng-click="showAll()" style="cursor:pointer;" class="button blue">Show all results</span>
     </div>
 
+    <div class="blue smallButton" ng-hide="isShowChart" ng-click="showChart()">Show chart</div>
+    <div class="blue smallButton" ng-show="isShowChart" ng-click="isShowChart = false">Hide chart</div>
+
+    <div id="container" class="resultsChart" ng-show="isShowChart"></div>
+
 </div>
 
- <div id="container" style="width: 100%; height: 400px"></div>
+
 
 <script src="/js/jquery/jquery-1.8.3.js" type="text/javascript"></script>
 <script src="/js/highcharts.js" type="text/javascript"></script>

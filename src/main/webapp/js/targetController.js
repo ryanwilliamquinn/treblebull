@@ -3,13 +3,14 @@
 /* Controllers */
 
 angular.module("dartsApp.controller", []);
-function mainController($scope, $http, $log, chartService, postDataService) {
+function mainController($scope, $http, $log, $location, chartService, postDataService) {
     $scope.targetData = {};
     $scope.targetData.round = {"number" : 1};
     $scope.numRoundsAvailable = [{id : "5", rounds : "five", num : 5}, {id : "10", rounds : "ten", num : 10}];
     $scope.targetData.numRounds = $scope.numRoundsAvailable[1];
     $scope.targetData.isShowRounds = false;
     $scope.initialNumGames = 10;
+    $scope.isShowChart = false;
 
     $scope.targetData.results = [];
     $scope.targetData.games = [];
@@ -38,6 +39,15 @@ function mainController($scope, $http, $log, chartService, postDataService) {
         $scope.targetData.postUrl = "/data/" + $scope.targetData.practiceType;
         $scope.targetData.loadUrl = "/data/load" + $scope.targetData.urlPracticeType;
         $scope.targetData.loadAllUrl = "/data/loadAll" + $scope.targetData.urlPracticeType;
+    }
+
+    $scope.showChart = function() {
+      $scope.isShowChart = true;
+      $log.info("out freaking here");
+      if ($scope.targetData.allGames.length > 0) {
+        $log.info("in here dammit");
+        chartService($scope.targetData.allGames);
+      }
     }
 
     $scope.setUpUrls();
@@ -181,7 +191,9 @@ function mainController($scope, $http, $log, chartService, postDataService) {
     $scope.$watch(
         function() {return $scope.targetData.allGames.length},
         function() {
+          if ($scope.isShowChart) {
             chartService($scope.targetData.allGames);
+          }
         }
     );
 
