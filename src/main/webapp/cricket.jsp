@@ -34,7 +34,7 @@
             <table>
                 <tr ng-repeat="target in targets | orderBy:predicate">
                     <td><div style="margin-right:15px;">{{target.label}}</div></td>
-                    <td>{{target.num}}</td>
+                    <td><image src="/images/mark_{{target.num}}.png"/ style="vertical-align:middle; position:relative; bottom:1px;"></td>
                 </tr>
             </table>
         </div>
