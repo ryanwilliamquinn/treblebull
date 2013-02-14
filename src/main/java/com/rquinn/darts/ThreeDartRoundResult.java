@@ -9,17 +9,16 @@ import com.google.gson.annotations.Expose;
  * Time: 12:53 PM
  * To change this template use File | Settings | File Templates.
  */
-public class CricketRoundResult {
-    @Expose
-    private int id;
+public class ThreeDartRoundResult {
+    @Expose private int id;
     @Expose private int round;
     @Expose private String firstDart;
     @Expose private String secondDart;
     @Expose private String thirdDart;
 
-    public CricketRoundResult(){};
+    public ThreeDartRoundResult(){};
 
-    public CricketRoundResult(int round, String firstDart, String secondDart, String thirdDart) {
+    public ThreeDartRoundResult(int round, String firstDart, String secondDart, String thirdDart) {
         this.round = round;
         this.firstDart = firstDart;
         this.secondDart = secondDart;

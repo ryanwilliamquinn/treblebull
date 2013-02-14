@@ -14,15 +14,13 @@ public interface DartsMapper {
 
     public void insertResult(DartsResult dartsResult);
 
-    public int insertGame(SimplePracticeResult simplePracticeResult);
-
-    public int insertCricketGame(CricketResult cricketResult);
+    public int insertGame(DartsResult dartsResult);
 
     public void insertUser(@Param("name") String name, @Param("encryptedPassword") String encryptedPassword);
 
     public void insertRound(@Param("foreignKey") int foreignKey, @Param("roundResult") RoundResult roundResult);
 
-    public void insertCricketRound(@Param("foreignKey") int foreignKey, @Param("roundResult") CricketRoundResult roundResult);
+    public void insertCricketRound(@Param("foreignKey") int foreignKey, @Param("roundResult") ThreeDartRoundResult roundResult);
 
     public int getPrimaryKey();
 

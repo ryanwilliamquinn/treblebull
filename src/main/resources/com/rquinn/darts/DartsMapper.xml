@@ -54,11 +54,6 @@
         VALUES(#{type.value}, #{score}, #{timestamp}, #{username}, #{numRounds})
     </insert>
 
-    <insert id='insertCricketGame' parameterType='DartsResult' useGeneratedKeys='true' keyProperty='id'>
-        INSERT INTO darts_result(type, score, date, darts_user, numRounds)
-        VALUES(#{type.value}, #{score}, #{timestamp}, #{username}, #{numRounds})
-    </insert>
-
     <insert id='insertRound' parameterType='map' useGeneratedKeys='true' keyProperty='roundResult.id'>
         INSERT INTO turn(round, score, game_id)
         VALUES(#{roundResult.round}, #{roundResult.score}, #{foreignKey})

@@ -23,6 +23,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
     $scope.allDataLoaded = false;
     $scope.displayShowAll = "hide";
     $scope.predicate = '-dateMillis';
+    $scope.selectEditRound = {};
 
     //$scope.targetTypes = [{id : "bull", label : "bullseye"}, {id : "t20", label : "triple 20"}, {id : "d20", label : "double 20"}, {id : "20", label :"20"},
     //                        {id : "t19", label : "triple 19"}, {id : "d19", label : "double 19"}, {id : "19", label : "19"}];
@@ -33,12 +34,21 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
     $scope.target = $scope.targetTypes[0];
 
     $scope.setUpUrls = function() {
-        $scope.targetData.games = [];
-        $scope.targetData.practiceType = $scope.target.id;
-        $scope.targetData.urlPracticeType = capitaliseFirstLetter($scope.targetData.practiceType)
-        $scope.targetData.postUrl = "/data/" + $scope.targetData.practiceType;
-        $scope.targetData.loadUrl = "/data/load" + $scope.targetData.urlPracticeType;
-        $scope.targetData.loadAllUrl = "/data/loadAll" + $scope.targetData.urlPracticeType;
+      $scope.targetData.games = [];
+      $scope.targetData.practiceType = $scope.target.id;
+      $scope.targetData.urlPracticeType = capitaliseFirstLetter($scope.targetData.practiceType)
+      $scope.targetData.postUrl = "/data/" + $scope.targetData.practiceType;
+      $scope.targetData.loadUrl = "/data/load" + $scope.targetData.urlPracticeType;
+      $scope.targetData.loadAllUrl = "/data/loadAll" + $scope.targetData.urlPracticeType;
+    }
+
+    $scope.selectEditRound = function(item) {
+      $scope.selectedEditRound = item;
+    }
+
+    $scope.finishEditing = function(result) {
+      $scope.selectedEditRound = {};
+      $scope.markTargets();
     }
 
     $scope.showChart = function() {

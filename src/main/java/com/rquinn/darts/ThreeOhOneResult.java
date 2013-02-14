@@ -5,21 +5,22 @@ import java.util.List;
 /**
  * Created with IntelliJ IDEA.
  * User: rquinn
- * Date: 2/3/13
- * Time: 12:34 PM
+ * Date: 2/13/13
+ * Time: 9:28 AM
  * To change this template use File | Settings | File Templates.
  */
-public class CricketResult extends DartsResult {
+public class ThreeOhOneResult extends DartsResult {
     private List<ThreeDartRoundResult> rounds;
 
-    public CricketResult(List<ThreeDartRoundResult> rounds, String type) {
+    // might need this for mybatis
+    public ThreeOhOneResult(List<ThreeDartRoundResult> rounds, String type) {
         this.rounds = rounds;
         this.setNumRounds(rounds.size());
         calculateScore();
         PracticeType.getPracticeTypeForString(type);
     }
 
-    public CricketResult(List<ThreeDartRoundResult> rounds, BasePracticeType type) {
+    public ThreeOhOneResult(List<ThreeDartRoundResult> rounds, BasePracticeType type) {
         setType(type);
         this.rounds = rounds;
         calculateScore();

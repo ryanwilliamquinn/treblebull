@@ -50,6 +50,8 @@
 
 	</package>
     <package name="data" namespace="/data" extends="struts-default">
+        <action name="loadCricket" class="com.rquinn.darts.action.CricketAction" method="load"/>
+        <action name="loadAllCricket" class="com.rquinn.darts.action.CricketAction" method="loadAll"/>
         <action name="loadAll*" class="com.rquinn.darts.action.TargetPracticeAction" method="loadAll"/>
         <action name="load*" class="com.rquinn.darts.action.TargetPracticeAction" method="load"/>
         <action name="gameDetails*" class="com.rquinn.darts.action.TargetPracticeAction" method="getGameDetails"/>

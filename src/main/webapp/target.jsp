@@ -21,13 +21,11 @@
             <div style="margin-top:10px;">
                 <div ng-repeat="result in targetData.results">
                     Round: <span>{{result.round}}</span>
-                    <span style="margin-left:20px;" ng-hide="result.isEditRound" ng-click="result.isEditRound = true">{{result.score}}</span>
-                    <input type="text" ng-show="result.isEditRound" ng-model="result.score"/>
-                    <span class="blue smallButton" ng-show="result.isEditRound" ng-click="result.isEditRound = false">Save</span>
-
+                    <span style="margin-left:20px;" ng-hide="selectedEditRound == result" ng-click="selectEditRound(result)">{{result.score}}</span>
+                    <input type="text" ng-show="selectedEditRound == result" ng-model="result.score"/>
+                    <span class="blue smallButton" ng-show="selectedEditRound == result" ng-click="finishEditing(result)">Save</span>
                 </div>
             </div>
-
             <span ng-click="cancelGame()" class="smallButton red" style="margin-top:15px; display:inline-block;" ng-hide="isEditRound">Cancel game</span>
         </div>
         <div style="float:left; margin:10px 0px 0px 20px;" ng-show="targetData.results.length > 0">
