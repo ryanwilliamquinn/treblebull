@@ -34,7 +34,7 @@
             <div style="margin-top:10px;">
                 <div ng-repeat="result in targetData.results">
                     Round: <span>{{result.round}}</span>
-                    <span style="margin-left:20px;" ng-hide="selectedEditRound == result" ng-click="selectEditRound(result)">score...{{result.score}}</span>
+                    <span style="margin-left:20px;" ng-hide="selectedEditRound == result" ng-click="selectEditRound(result)">{{result.firstDart}},{{result.secondDart}}, {{result.thirdDart}}, {{result.score}}</span>
                     <input type="text" ng-show="selectedEditRound == result" ng-model="result.score"/>
                     <span class="blue smallButton" ng-show="selectedEditRound == result" ng-click="finishEditing(result)">Save</span>
                 </div>
