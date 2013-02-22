@@ -50,3 +50,46 @@ ang.filter('cricketLifetimeAverage', function() {
        return average.toFixed(1);
    }
 })
+
+ang.filter('reverseRange', function() {
+    return function(input, total) {
+      total = parseInt(total);
+      for (var i=total; i>0; i--) {
+        input.push(i);
+      }
+      return input;
+    }
+  })
+
+ang.filter('reverseRangeWithBull', function() {
+    return function(input, total) {
+      total = parseInt(total);
+      input.push("bull");
+      for (var i=total; i>0; i--) {
+        input.push(i);
+      }
+      return input;
+    }
+  })
+
+
+ang.filter('dartAverage', function() {
+  return function(input, numDarts) {
+    if (numDarts > 0) {
+      return input / numDarts;
+    } else {
+      return "";
+    }
+  }
+})
+
+// crap how do i deal with the round average if we calculate this score every dart?  hrm.  i guess best to just update this score per round...
+ang.filter('roundAverage', function() {
+  return function(input, roundNumber) {
+    if (roundNumber > 0) {
+      return input / (roundNumber - 1);
+    } else {
+      return "";
+    }
+  }
+})

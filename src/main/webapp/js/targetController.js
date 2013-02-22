@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module("dartsApp.controller", []);
-function mainController($scope, $http, $log, $location, chartService, postDataService) {
+function mainController($scope, $http, $log, $location, chartService, postDataService, scoreCalculator) {
     $scope.targetData = {};
     $scope.targetData.round = {"number" : 1};
     $scope.numRoundsAvailable = [{id : "5", rounds : "five", num : 5}, {id : "10", rounds : "ten", num : 10}];
@@ -11,8 +11,15 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
     $scope.targetData.isShowRounds = false;
     $scope.initialNumGames = 10;
     $scope.isShowChart = false;
+    $scope.targetData.turn = [];
+    $scope.targetData.modifier = "";
 
+    $scope.roundResult = [];
     $scope.targetData.results = [];
+    $scope.targetData.score = 0;
+    $scope.targetData.turnScore = 0;
+    $scope.targetData.roundScore = 0;
+    $scope.targetData.numDartsThrown = 0;
     $scope.targetData.games = [];
     $scope.targetData.allGames = [];
     $scope.targetData.postUrl = "";
@@ -53,9 +60,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
 
     $scope.showChart = function() {
       $scope.isShowChart = true;
-      $log.info("out freaking here");
       if ($scope.targetData.allGames.length > 0) {
-        $log.info("in here dammit");
         chartService($scope.targetData.allGames);
       }
     }
@@ -82,24 +87,17 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
         data.isShowRounds = false;
         data.results = [];
         data.round.number = 1;
+        $scope.targetData.roundScore = 0;
+
     }
 
     // cancel a game
     $scope.cancelGame = function() {
         $scope.targetData.results = [];
+        $scope.targetData.turn = [];
+        $scope.targetData.modifier = "";
         $scope.targetData.round.number = 1;
         $scope.targetData.isShowRounds = false;
-    }
-
-    // record a single round/turn
-    $scope.recordResult = function(result) {
-        if (result && isNumber(result.score)) {
-            var newResult = {score : result.score, round : $scope.targetData.round.number, isEditRound : false};
-            $scope.targetData.results.push(newResult);
-            $scope.targetData.round.number++;
-            result.score = "";
-            //var editRoundText = "isEditRound" + $scope.targetData.round.number;
-        }
     }
 
     // method for hiding rounds input once we finish the correct number of turns
@@ -114,7 +112,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
 
     // save data to database, push it into games
     $scope.postResult = function() {
-        postDataService($scope.createNewResult, $scope.targetData, $scope.resetAfterPost);
+      postDataService($scope.createNewResult, $scope.targetData, $scope.resetAfterPost);
     }
 
     // called from "show all" button click
@@ -206,6 +204,54 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
           }
         }
     );
+
+    // i want to be able to calculate the total score, the turn score, and remember the turns in order.
+    $scope.markDart = function(result) {
+
+
+
+      var dart = "";
+      if ($scope.targetData.modifier) {
+        dart = $scope.targetData.modifier + result;
+      } else {
+        dart = result;
+      }
+      $scope.targetData.turn.push(dart);
+      $scope.targetData.numDartsThrown++;
+      var score = scoreCalculator(result, $scope.targetData.modifier);
+      $scope.roundResult.push(dart);
+
+
+      if (result == $scope.target.id) {
+        $scope.targetData.score = $scope.targetData.score + score;
+        $scope.targetData.turnScore = $scope.targetData.turnScore + score;
+      }
+
+
+      // every round i want to show the three darts and the round score.
+      if ($scope.targetData.turn.length >= 3) {
+        $scope.targetData.turn = [];
+        var newResult = {"firstDart" : $scope.roundResult[0], "secondDart" : $scope.roundResult[1], "thirdDart" : $scope.roundResult[2], "round" : $scope.targetData.round.number, "score" : $scope.targetData.turnScore};
+        $scope.targetData.results.push(newResult);
+        $scope.targetData.round.number++;
+        // only update this every round, so the average doesn't get screwy...
+        $scope.targetData.roundScore = $scope.targetData.score;
+        $scope.targetData.turnScore = 0;
+        $scope.roundResult = [];
+      }
+
+      $scope.targetData.modifier = "";
+
+
+    }
+
+    $scope.toggleModifier = function(modifier) {
+      if ($scope.targetData.modifier == modifier) {
+        $scope.targetData.modifier = "";
+      } else {
+        $scope.targetData.modifier = modifier;
+      }
+    }
 
 
 

@@ -9,6 +9,7 @@ ang.factory('postDataService', ['$http', function($http) {
     return function(createNewResult, postData, reset) {
         if (postData.results && postData.results.length > 0) {
             var myjson = JSON.stringify(postData.results, replacer);
+            console.log(myjson);
             $http.post(postData.postUrl, myjson).
                 success(function(data, status) {
                     if (data) {
@@ -25,6 +26,22 @@ ang.factory('postDataService', ['$http', function($http) {
         }
     }
 }]);
+
+ang.factory('scoreCalculator', [function() {
+  // take a dart and return its score, in the form of 19, d19, t19
+  return function(result, modifier) {
+    var score = 0;
+    if (modifier == 'd') {
+      score = 2;
+    } else if (modifier == 't') {
+      score = 3;
+    } else {
+      score = 1;
+    }
+    return score;
+
+  }
+}])
 
 ang.factory('chartService', [function() {
     return function(gamesContainer) {
