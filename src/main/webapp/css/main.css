@@ -1,11 +1,14 @@
-body {margin:0px;}
+body {margin:0 auto}
+@media all and (min-width:40em){body{max-width:31em;}}
+@media all and (min-width:62.66em){body{max-width:47em;}}
+@media all and (min-width:78.32em){body{max-width:62.66em;}}
+@media all and (min-width:93.98em){body{max-width:74.65em;}}
 h3 {margin:0px;}
 .block {display:block;}
 .hide {display:none;}
 .header {width:100%; background-color:#eee; border-bottom:2px solid #ccc; margin-bottom:5px; line-height:30px;}
-.content {width:780px; margin:0 auto;}
 .scoreInput {width:40px; margin:10px;}
-#headerContent {width:780px; margin:0px auto;}
+#headerContent {margin:0px auto;}
 #headerTitle {float:left;}
 .headerAccount {float:right; font-size:12px;}
 .errorMessage {font-size:13px; color:red;}

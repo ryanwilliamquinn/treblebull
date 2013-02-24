@@ -5,6 +5,7 @@
 <html lang="en" ng-app="dartsApp">
     <head>
         <title>freaking darts</title>
+        <meta name="viewport" content="width=device-width">
         <link rel="stylesheet" href="/css/main.css" type="text/css"/>
     </head>
     <body>

@@ -88,6 +88,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
         data.results = [];
         data.round.number = 1;
         $scope.targetData.roundScore = 0;
+        $scope.targetData.score = 0;
 
     }
 
