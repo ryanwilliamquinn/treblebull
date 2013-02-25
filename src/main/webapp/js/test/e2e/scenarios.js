@@ -4,42 +4,53 @@
 
 describe('my app', function() {
 
-  beforeEach(function() {
-    browser().navigateTo('../../app/index.html');
+  it('get the damn title right', function() {
+    browser().navigateTo('/login');
+    expect(browser().window().path()).toBe('/login');
+    expect(element('title').text()).toBe("freaking darts");
   });
 
-
-  it('should automatically redirect to /view1 when location hash/fragment is empty', function() {
-    expect(browser().location().url()).toBe("/view1");
-  });
-
-
-  describe('view1', function() {
-
-    beforeEach(function() {
-      browser().navigateTo('#/view1');
-    });
-
-
-    it('should render view1 when user navigates to /view1', function() {
-      expect(element('[ng-view] p:first').text()).
-        toMatch(/partial for view 1/);
-    });
+  it('should be able to login with test credentials', function() {
+    browser().navigateTo('/login');
+    input('username').enter('ryan');
+    input('password').enter('t7c7f7a7m7');
+    input('rememberMe').check();
+    element(':submit').click();
+    expect(element('title').text()).toBe("freaking darts");
 
   });
 
 
-  describe('view2', function() {
-
-    beforeEach(function() {
-      browser().navigateTo('#/view2');
-    });
-
-
-    it('should render view2 when user navigates to /view2', function() {
-      expect(element('[ng-view] p:first').text()).
-        toMatch(/partial for view 2/);
-    });
-
-  });
 });
+
+describe('target practice', function() {
+
+  it('should show navigate the practice modes', function() {
+    sleep(1);
+    browser().navigateTo("/practice");
+    sleep(1);
+    expect(element(".button", "target buttons").count()).toBeGreaterThan(0);
+  });
+
+  it('should show the bullseye by default', function() {
+    sleep(1);
+    browser().navigateTo("/practice/target");
+    expect(element("select:first option:selected").text()).toBe("bullseye");
+    expect(element("select:nth-child(2) option:selected").text()).toBe("ten");
+  });
+
+  it('should show the buttons when you click on the start button', function() {
+    sleep(1);
+    browser().navigateTo("/practice/target");
+    sleep(1);
+    expect(element('.rounds').css('display')).toBe('none');
+    element('#gameStart').click();
+    expect(element('.rounds').css('display')).toBe('block');
+    expect(element)
+  });
+
+
+});
+
+
+

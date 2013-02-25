@@ -87,18 +87,16 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
         data.isShowRounds = false;
         data.results = [];
         data.round.number = 1;
-        $scope.targetData.roundScore = 0;
-        $scope.targetData.score = 0;
+        data.roundScore = 0;
+        data.score = 0;
+        data.modifier = "";
+        data.turn = [];
 
     }
 
     // cancel a game
     $scope.cancelGame = function() {
-        $scope.targetData.results = [];
-        $scope.targetData.turn = [];
-        $scope.targetData.modifier = "";
-        $scope.targetData.round.number = 1;
-        $scope.targetData.isShowRounds = false;
+        $scope.resetAfterPost($scope.targetData);
     }
 
     // method for hiding rounds input once we finish the correct number of turns
