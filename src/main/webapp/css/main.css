@@ -1,12 +1,14 @@
-body {margin:0 auto}
-@media all and (min-width:40em){body{max-width:31em;}}
-@media all and (min-width:62.66em){body{max-width:47em;}}
-@media all and (min-width:78.32em){body{max-width:62.66em;}}
-@media all and (min-width:93.98em){body{max-width:74.65em;}}
+body {margin:0px}
+.content {margin:0 auto;}
+@media all and (min-width:40em){.content{max-width:31em;}}
+@media all and (min-width:62.66em){.content{max-width:47em;}}
+@media all and (min-width:78.32em){.content{max-width:62.66em;}}
+@media all and (min-width:93.98em){.content{max-width:74.65em;}}
 h3 {margin:0px;}
+
 .block {display:block;}
 .hide {display:none;}
-.header {width:100%; background-color:#eee; border-bottom:2px solid #ccc; margin-bottom:5px; line-height:30px;}
+.header {width:100%; background-color:#eee; border-bottom:2px solid #ccc; margin-bottom:5px; line-height:30px; padding:0 10px 0 10px;}
 .scoreInput {width:40px; margin:10px;}
 #headerContent {margin:0px auto;}
 #headerTitle {float:left;}

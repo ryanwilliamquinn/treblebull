@@ -4,13 +4,13 @@
 
 <div ng-controller="mainController">
     <div style="float:left; margin-bottom:20px;">
-        <div>Game mode: ${practiceMode} : {{target.label}}</div>
+        <div id="gameMode">${practiceMode} : {{target.label}}</div>
         <div ng-hide="targetData.isShowRounds">
             Target:
             <select ng-model="target" ng-options="target.label for target in targetTypes" ng-change="changedTarget()"></select>
             Rounds Per Game:
             <select ng-model="targetData.numRounds" ng-options="numRounds.rounds for numRounds in numRoundsAvailable" ng-change="changedRounds()"></select>
-            <span ng-click="showRounds()" class="smallButton blue" style="margin-left:20px;">Start game</span>
+            <span ng-click="showRounds()" id="gameStart" class="smallButton blue" style="margin-left:20px;">Start game</span>
         </div>
         <div class="rounds" ng-show="targetData.isShowRounds">
           <div ng-hide="checkRoundsComplete()">
