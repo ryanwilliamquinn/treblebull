@@ -41,7 +41,7 @@
             </div>
             <span ng-click="cancelGame()" class="smallButton red" style="margin-top:15px; display:inline-block;" ng-hide="isEditRound">Cancel game</span>
         </div>
-        <div style="float:left; margin:10px 0px 0px 20px;" ng-show="targetData.results.length > 0">
+        <div style="float:left; margin:10px 0px 0px 20px;" id="gameAverage" ng-show="targetData.results.length > 0">
             Round average: {{targetData.roundScore|roundAverage:targetData.round.number}}
         </div>
         <div style="clear:both; float:left; margin-top:30px;">

@@ -28,7 +28,6 @@ describe('target practice', function() {
   it('should show navigate the practice modes', function() {
     sleep(1);
     browser().navigateTo("/practice");
-    sleep(1);
     expect(element(".button", "target buttons").count()).toBeGreaterThan(0);
   });
 
@@ -42,12 +41,45 @@ describe('target practice', function() {
   it('should show the buttons when you click on the start button', function() {
     sleep(1);
     browser().navigateTo("/practice/target");
-    sleep(1);
     expect(element('.rounds').css('display')).toBe('none');
     element('#gameStart').click();
     expect(element('.rounds').css('display')).toBe('block');
-    expect(element)
+    expect(element('#gameMode').text()).toBe('target : bullseye');
   });
+
+  it('should record some scores and stuff', function() {
+     sleep(1);
+     browser().navigateTo("/practice/target");
+     element('#gameStart').click();
+     expect(element('#gameAverage').css("display")).toBe("none");
+     element('.sTarget:first').click();
+     element('.sTarget:first').click();
+     element('.sTarget:first').click();
+     expect(element('#gameAverage').text()).toContain("Round average: 3");
+  });
+
+
+  it('the double and triple button should work', function() {
+       sleep(1);
+       browser().navigateTo("/practice/target");
+       element('#gameStart').click();
+       expect(element('#gameAverage').css("display")).toBe("none");
+
+       // test the scoring mechanism
+       element('.sTarget:first').click(); // round score is 1
+       element('.dtTarget:first').click(); // click the double
+       element('.sTarget:first').click(); // round score is 3
+       element('.dtTarget:nth-child(2)').click(); // click the triple
+       element('.sTarget:first').click(); // round score is 6
+       expect(element('#gameAverage').text()).toContain("Round average: 6");
+
+       // test the highlighting
+       expect(element('.dtTarget:first').text()).toBe("D");
+       element('.dtTarget:first').click();
+       expect(element('.dtTarget:first').css('background-color')).toBe('rgb(0, 238, 0)');
+       element('.dtTarget:first').click();
+       expect(element('.dtTarget:first').css('background-color')).toBe('rgba(0, 0, 0, 0)');
+    });
 
 
 });
