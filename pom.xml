@@ -10,6 +10,7 @@
 
   <properties>
     <tomcat.version>7.0.34</tomcat.version>
+    <java.version>1.6</java.version>
   </properties>
 
   <dependencies>
@@ -141,6 +142,15 @@
   <build>
     <finalName>embeddedTomcatSample</finalName>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.0</version>
+              <configuration>
+                <source>1.6</source>
+                <target>1.6</target>
+              </configuration>
+          </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>appassembler-maven-plugin</artifactId>
