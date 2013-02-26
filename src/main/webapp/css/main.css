@@ -12,7 +12,7 @@ h3 {margin:0px;}
 .scoreInput {width:40px; margin:10px;}
 #headerContent {margin:0px auto;}
 #headerTitle {float:left;}
-.headerAccount {float:right; font-size:12px;}
+.headerAccount {float:right; font-size:12px; margin-right:20px;}
 .errorMessage {font-size:13px; color:red;}
 /* need to set up some rules for this, don't want all inputs to deal with this.  just for signup at this point i think */
 #signupform input.ng-invalid.ng-dirty {border:solid 2px red;}

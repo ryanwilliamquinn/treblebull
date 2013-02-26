@@ -49,16 +49,21 @@ public class TargetPracticeAction extends PracticeAction {
 
         slf4jLogger.debug("request type: " + type);
 
-        SimplePracticeResult simplePracticeResult = null;
+        ThreeDartResult simplePracticeResult = null;
         try {
             BufferedReader is = new BufferedReader(new InputStreamReader(request.getInputStream()));
-            Type listType = new TypeToken<ArrayList<RoundResult>>() {}.getType();
-            ArrayList<RoundResult> roundResultList = new Gson().fromJson(is, listType);
+            Type listType = new TypeToken<ArrayList<ThreeDartRoundResult>>() {}.getType();
+            ArrayList<ThreeDartRoundResult> roundResultList = new Gson().fromJson(is, listType);
 
+            if (roundResultList != null && roundResultList.size() > 0) {
+                slf4jLogger.debug(roundResultList.get(0).toString());
+            } else {
+                slf4jLogger.debug("something is real broken");
+            }
             slf4jLogger.debug("practiceType: " + practiceType.getValue());
 
 
-            simplePracticeResult = new SimplePracticeResult(roundResultList, practiceType);
+            simplePracticeResult = new ThreeDartResult(roundResultList, practiceType);
             Subject currentUser = SecurityUtils.getSubject();
             simplePracticeResult.setUsername(currentUser.getPrincipal().toString());
             slf4jLogger.debug("simple practice result: " + simplePracticeResult);

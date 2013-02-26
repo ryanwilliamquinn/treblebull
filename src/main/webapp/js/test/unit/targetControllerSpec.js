@@ -18,7 +18,7 @@ describe('target controllers', function() {
         respond(
           {
             totalNumResults : 1,
-            dartsResults : [{'date' : "Jan 1, 2012", 'score' : 5, 'dateMillis' : 1234123412, 'numRounds' : 3, 'avg' : 2}]
+            dartsResults : [{'id': 1, 'displayDateTime' : "Jan 1, 2012", 'score' : 5, 'dateMilliseconds' : 1234123412, 'numRounds' : 3, 'avg' : 2}]
           });
         scope = $rootScope.$new();
         ctrl = $controller(mainController, {$scope: scope});
@@ -31,13 +31,26 @@ describe('target controllers', function() {
       expect(scope.targetData.loadAllUrl).toBe("/data/loadAllBull");
     });
 
-    it('should have 1 result'), function() {
+    it('should have 1 result', function() {
       expect(scope.targetData.round.number).toBe(1);
       expect(scope.targetData.results.length).toBe(0);
       expect(scope.targetData.games.length).toBe(0);
       $httpBackend.flush();
       expect(scope.targetData.games.length).toBe(1);
-    }
+    });
+
+    it('should have a good tally method', function() {
+      // note - for this test the scoreCalculator service is mocked to always return 2
+      var turn = ["d20", "d20", "18"];
+      scope.target.id = "20";
+      expect(scope.tally(turn)).toBe(4);
+
+      turn = ["d20", "d20", "d20"];
+      expect(scope.tally(turn)).toBe(6);
+
+      turn = ["t19", "d18", "17"];
+      expect(scope.tally(turn)).toBe(0);
+    });
   });
 });
 

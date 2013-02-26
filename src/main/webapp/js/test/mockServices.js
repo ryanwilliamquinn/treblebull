@@ -8,3 +8,9 @@ ang.factory('chartService', function() {
     return "";
 });
 
+ang.factory('scoreCalculator', function() {
+  return function(dart) {
+    return 2;
+  };
+})
+

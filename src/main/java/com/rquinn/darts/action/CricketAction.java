@@ -51,7 +51,7 @@ public class CricketAction extends PracticeAction {
         slf4jLogger.debug("request type: " + type);
         slf4jLogger.debug("request practice type: " + practiceType.getValue());
 
-        CricketResult cricketResult = null;
+        ThreeDartResult cricketResult = null;
         try {
             BufferedReader is = new BufferedReader(new InputStreamReader(request.getInputStream()));
             Type listType = new TypeToken<ArrayList<ThreeDartRoundResult>>() {}.getType();
@@ -60,7 +60,7 @@ public class CricketAction extends PracticeAction {
             slf4jLogger.debug("practiceType: " + practiceType.getValue());
 
 
-            cricketResult = new CricketResult(roundResultList, practiceType);
+            cricketResult = new ThreeDartResult(roundResultList, practiceType);
             Subject currentUser = SecurityUtils.getSubject();
             cricketResult.setUsername(currentUser.getPrincipal().toString());
             slf4jLogger.debug("cricket result: " + cricketResult);

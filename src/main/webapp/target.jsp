@@ -23,7 +23,7 @@
               <span style="display:inline-block; margin:5px;" ng-repeat="n in [] | reverseRangeWithBull:20" class="sTarget" ng-click="markDart(n)">{{n}}</span>
             </div>
           </div>
-          <div><span ng-repeat="dart in targetData.turn" style="margin-right:10px;">{{dart}}</span></div>
+          <div><span ng-repeat="dart in roundResult" style="margin-right:10px;">{{dart}}</span></div>
             <%--
             <form name="simplePracticeForm" id="simplePracticeForm"  ng-submit="recordResult(result)" ng-hide="checkRoundsComplete()">
                 <label for="simplePracticeInput">Round {{targetData.round.number}} of {{targetData.numRounds.id}}:</label><input type="text" id="simplePracticeInput" class="scoreInput" data-ng-model="result.score"/>
@@ -32,17 +32,27 @@
             --%>
             <span ng-click="postResult()" style="margin-top:10px;" class="smallButton green" ng-show="checkRoundsComplete()">Save game</span>
             <div style="margin-top:10px;">
+              <div ng-repeat="result in targetData.results">
+                Round: <span>{{result.round}}</span>
+                <span style="margin-left:20px;" ng-hide="selectedEditRound == result" ng-click="selectEditRound(result)">{{result.firstDart}}, {{result.secondDart}}, {{result.thirdDart}}, {{result.score}}</span>
+                <input type="text" id="firstDartInput" class="scoreInput" ng-model="result.firstDart" ng-show="selectedEditRound == result"/>
+                <input type="text" id="secondDartInput" class="scoreInput" ng-model="result.secondDart" ng-show="selectedEditRound == result"/>
+                <input type="text" id="thirdDartInput" class="scoreInput" ng-model="result.thirdDart" ng-show="selectedEditRound == result"/>
+                <span class="blue smallButton" ng-show="selectedEditRound == result" ng-click="finishEditing(result)">Save</span>
+              </div>
+              <%--
                 <div ng-repeat="result in targetData.results">
                     Round: <span>{{result.round}}</span>
                     <span style="margin-left:20px;" ng-hide="selectedEditRound == result" ng-click="selectEditRound(result)">{{result.firstDart}},{{result.secondDart}}, {{result.thirdDart}}, {{result.score}}</span>
                     <input type="text" ng-show="selectedEditRound == result" ng-model="result.score"/>
                     <span class="blue smallButton" ng-show="selectedEditRound == result" ng-click="finishEditing(result)">Save</span>
                 </div>
+                --%>
             </div>
             <span ng-click="cancelGame()" class="smallButton red" style="margin-top:15px; display:inline-block;" ng-hide="isEditRound">Cancel game</span>
         </div>
         <div style="float:left; margin:10px 0px 0px 20px;" id="gameAverage" ng-show="targetData.results.length > 0">
-            Round average: {{targetData.roundScore|roundAverage:targetData.round.number}}
+            Round average: {{targetData.score|roundAverage:targetData.round.number}}
         </div>
         <div style="clear:both; float:left; margin-top:30px;">
             <div style="border-bottom:solid 1px #000; margin-bottom:20px; padding-bottom:2px; width:200px;">Past ${practiceMode} totals:</div>

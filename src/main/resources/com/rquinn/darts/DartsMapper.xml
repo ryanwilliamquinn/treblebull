@@ -59,8 +59,8 @@
         VALUES(#{roundResult.round}, #{roundResult.score}, #{foreignKey})
     </insert>
 
-    <insert id="insertCricketRound" parameterType='map' useGeneratedKeys="true" keyProperty="roundResult.id">
-        INSERT INTO cricket_turn(firstDart, secondDart, thirdDart, round, game_id)
+    <insert id="insertThreeDartRound" parameterType='map' useGeneratedKeys="true" keyProperty="roundResult.id">
+        INSERT INTO three_dart_turn(firstDart, secondDart, thirdDart, round, game_id)
         VALUES(#{roundResult.firstDart}, #{roundResult.secondDart}, #{roundResult.thirdDart}, #{roundResult.round}, #{foreignKey})
     </insert>
 

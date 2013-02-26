@@ -118,10 +118,11 @@ function mainController($scope, $http, $log, chartService, postDataService) {
         $scope.resetTargets();
         for (var i=0; i<$scope.targetData.results.length;i++) {
             var result = $scope.targetData.results[i];
-            console.log(result);
             $scope.tally(result.firstDart, result.secondDart, result.thirdDart);
         }
     }
+
+
     $scope.tally = function(firstDart, secondDart, thirdDart) {
         var darts = [firstDart, secondDart, thirdDart];
         for (var i=0; i<darts.length; i++) {

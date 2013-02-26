@@ -15,6 +15,7 @@ public class ThreeDartRoundResult {
     @Expose private String firstDart;
     @Expose private String secondDart;
     @Expose private String thirdDart;
+    @Expose private int score;
 
     public ThreeDartRoundResult(){};
 
@@ -64,6 +65,15 @@ public class ThreeDartRoundResult {
     public void setThirdDart(String thirdDart) {
         this.thirdDart = thirdDart;
     }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
 
     public String toString() {
         return "RoundResult: round " + round + ", firstDart: " + firstDart + ", secondDart: " + secondDart + ", thirdDart: " + thirdDart;

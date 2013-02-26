@@ -20,7 +20,7 @@ public interface DartsMapper {
 
     public void insertRound(@Param("foreignKey") int foreignKey, @Param("roundResult") RoundResult roundResult);
 
-    public void insertCricketRound(@Param("foreignKey") int foreignKey, @Param("roundResult") ThreeDartRoundResult roundResult);
+    public void insertThreeDartRound(@Param("foreignKey") int foreignKey, @Param("roundResult") ThreeDartRoundResult roundResult);
 
     public int getPrimaryKey();
 

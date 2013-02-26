@@ -25,7 +25,7 @@ public class DartsResultService
      * @param spr
      * @return
      */
-    public void insertGame(SimplePracticeResult spr) {
+    public void insertGame(ThreeDartResult spr) {
 
         SqlSession sqlSession = null;
         try {
@@ -34,8 +34,8 @@ public class DartsResultService
             DartsMapper dartsMapper = sqlSession.getMapper(DartsMapper.class);
             dartsMapper.insertGame(spr);
             int primaryKey = dartsMapper.getPrimaryKey();
-            for (RoundResult result : spr.getRoundResult()) {
-                dartsMapper.insertRound(primaryKey, result);
+            for (ThreeDartRoundResult result : spr.getRoundResult()) {
+                dartsMapper.insertThreeDartRound(primaryKey, result);
             }
             sqlSession.commit();
         } catch (Exception e) {
@@ -51,7 +51,7 @@ public class DartsResultService
      * @param cricketResult
      * @return
      */
-    public void insertCricketGame(CricketResult cricketResult) {
+    public void insertCricketGame(ThreeDartResult cricketResult) {
         slf4jLogger.debug(cricketResult.getType() + " " + cricketResult.getScore() + " " + cricketResult.getTimestamp() + " " + cricketResult.getUsername());
         SqlSession sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
         try {
@@ -59,7 +59,7 @@ public class DartsResultService
             dartsMapper.insertGame(cricketResult);
             int primaryKey = dartsMapper.getPrimaryKey();
             for (ThreeDartRoundResult result : cricketResult.getRoundResult()) {
-                dartsMapper.insertCricketRound(primaryKey, result);
+                dartsMapper.insertThreeDartRound(primaryKey, result);
             }
             sqlSession.commit();
         }finally{
@@ -81,7 +81,7 @@ public class DartsResultService
             dartsMapper.insertGame(threeOhOneResult);
             int primaryKey = dartsMapper.getPrimaryKey();
             for (ThreeDartRoundResult result : threeOhOneResult.getRoundResult()) {
-                dartsMapper.insertCricketRound(primaryKey, result);
+                dartsMapper.insertThreeDartRound(primaryKey, result);
             }
             sqlSession.commit();
         }finally{

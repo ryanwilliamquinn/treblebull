@@ -9,17 +9,17 @@ import java.util.List;
  * Time: 12:34 PM
  * To change this template use File | Settings | File Templates.
  */
-public class CricketResult extends DartsResult {
+public class ThreeDartResult extends DartsResult {
     private List<ThreeDartRoundResult> rounds;
 
-    public CricketResult(List<ThreeDartRoundResult> rounds, String type) {
+    public ThreeDartResult(List<ThreeDartRoundResult> rounds, String type) {
         this.rounds = rounds;
         this.setNumRounds(rounds.size());
         calculateScore();
         PracticeType.getPracticeTypeForString(type);
     }
 
-    public CricketResult(List<ThreeDartRoundResult> rounds, BasePracticeType type) {
+    public ThreeDartResult(List<ThreeDartRoundResult> rounds, BasePracticeType type) {
         setType(type);
         this.rounds = rounds;
         calculateScore();
@@ -27,7 +27,18 @@ public class CricketResult extends DartsResult {
     }
 
     public void calculateScore() {
-        this.setScore(rounds.size());
+        if (getType() == PracticeType.CRICKET) {
+            setScore(rounds.size());
+        } else {
+            int total = 0;
+            for(ThreeDartRoundResult round : rounds) {
+                if (round != null) {
+                    total += round.getScore();
+                }
+            }
+            setScore(total);
+        }
+
     }
 
     public List<ThreeDartRoundResult> getRoundResult() {
