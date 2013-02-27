@@ -84,7 +84,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   * save data to database, and push it into games and allgames arrays
   */
   $scope.postResult = function() {
-    postDataService($scope.createNewResult, $scope.targetData, $scope.targetData.reset);
+    postDataService($scope.createNewResult, $scope.targetData, $scope.targetData.resetAfterPost);
   }
 
   /*
@@ -95,10 +95,13 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
       return {'date' : data.displayDateTime, 'score' : data.score, 'dateMillis' : data.dateMilliseconds, 'numRounds' : data.numRounds, 'avg' : avg}
   }
 
-  /*
-  * returns the front end back to a clean state.
-  */
-  $scope.targetData.reset = function(data) {
+  $scope.targetData.reset = function() {
+     $scope.targetData.games = [];
+     $scope.targetData.allGames = [];
+     $scope.targetData.results = [];
+  }
+
+  $scope.targetData.resetAfterPost = function(data) {
     data.isShowRounds = false;
     data.results = [];
     data.round.number = 1;
@@ -221,7 +224,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   * cancel a game
   */
   $scope.cancelGame = function() {
-      $scope.targetData.reset($scope.targetData);
+      $scope.targetData.reset();
   }
 
   /*
@@ -230,7 +233,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   */
   $scope.changedTarget = function() {
       $scope.setUpUrls();
-      $scope.targetData.reset($scope.targetData);
+      $scope.targetData.reset();
       $scope.getData();
   }
 
