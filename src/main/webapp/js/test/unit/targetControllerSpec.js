@@ -20,6 +20,7 @@ describe('target controllers', function() {
             totalNumResults : 1,
             dartsResults : [{'id': 1, 'displayDateTime' : "Jan 1, 2012", 'score' : 5, 'dateMilliseconds' : 1234123412, 'numRounds' : 3, 'avg' : 2}]
           });
+
         scope = $rootScope.$new();
         ctrl = $controller(mainController, {$scope: scope});
     }));
@@ -51,6 +52,27 @@ describe('target controllers', function() {
       turn = ["t19", "d18", "17"];
       expect(scope.tally(turn)).toBe(0);
     });
+
+    it('should update the score correctly', function() {
+      scope.targetData.results.push({score:10})
+      scope.updateScore();
+      expect(scope.targetData.score).toBe(10);
+      scope.targetData.results.push({score:5});
+      scope.updateScore();
+      expect(scope.targetData.score).toBe(15);
+    });
+
+    it('should mark the darts correctly', function() {
+      scope.markDart("dbull");
+      expect(scope.roundResult.length).toBe(1);
+      expect(scope.roundResult[0]).toBe("dbull");
+      scope.markDart("20");
+      expect(scope.roundResult.length).toBe(2);
+      expect(scope.roundResult[0]).toBe("dbull");
+      expect(scope.roundResult[1]).toBe("20");
+      scope.markDart("19");
+      expect(scope.roundResult.length).toBe(0);
+    })
   });
 });
 

@@ -59,7 +59,7 @@ describe('target practice', function() {
   });
 
 
-  it('the double and triple button should work', function() {
+  it('should have double and triple buttons that work', function() {
        sleep(1);
        browser().navigateTo("/practice/target");
        element('#gameStart').click();
@@ -81,6 +81,43 @@ describe('target practice', function() {
        expect(element('.dtTarget:first').css('background-color')).toBe('rgba(0, 0, 0, 0)');
     });
 
+  it('should have a working cancel button', function() {
+    sleep(1);
+    browser().navigateTo("/practice/target");
+    element('#gameStart').click();
+    expect(element('#gameAverage').css("display")).toBe("none");
+
+    // test the scoring mechanism
+    element('.sTarget:first').click(); // round score is 1
+    element('.dtTarget:first').click(); // click the double
+    element('.sTarget:first').click(); // round score is 3
+    element('.dtTarget:nth-child(2)').click(); // click the triple
+    element('.sTarget:first').click(); // round score is 6
+    expect(element('#gameAverage').css("display")).toBe("block");
+    expect(element('#gameAverage').text()).toContain("Round average: 6");
+
+    element('#cancelGame').click();
+    expect(element('#gameAverage').css("display")).toBe("none");
+
+  })
+
+  it('should have a functional editing', function() {
+    sleep(1);
+    browser().navigateTo("/practice/target");
+    element('#gameStart').click();
+    expect(element('#gameAverage').css("display")).toBe("none");
+
+    // test the scoring mechanism
+    element('.sTarget:first').click(); // round score is 1
+    element('.dtTarget:first').click(); // click the double
+    element('.sTarget:first').click(); // round score is 3
+    element('.dtTarget:nth-child(2)').click(); // click the triple
+    element('.sTarget:first').click(); // round score is 6
+    expect(element('#gameAverage').css("display")).toBe("block");
+    expect(element('#gameAverage').text()).toContain("Round average: 6");
+
+    element('#roundResults span[name=roundResult]:first').click();
+  })
 
 });
 

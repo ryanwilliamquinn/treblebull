@@ -12,7 +12,10 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   $scope.initialNumGames = 10;
   $scope.isShowChart = false;
   $scope.targetData.turn = [];
+  // placeholder for keeping track of the double/triple state
   $scope.targetData.modifier = "";
+
+  $scope.targetData.dartToUpdate = "";
 
   $scope.roundResult = [];
   $scope.targetData.results = [];
@@ -53,6 +56,8 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   // set the default target
   $scope.target = $scope.targetTypes[0];
 
+  $scope.targetData.isEditMode = false;
+
   /*
   * method to set up all the urls relative to the current practice type
   */
@@ -66,38 +71,14 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   }
 
   /*
-  * works with front end code to select a round for editing
-  * ng-show="selectedEditRound == result"
-  */
-  $scope.selectEditRound = function(item) {
-    $scope.selectedEditRound = item;
-  }
-
-  /*
-  * called after saving a round edit - updates a particular round's score
-  * and then calls update score to update the game score
-  */
-  $scope.finishEditing = function(result) {
-    var targetArray = [result.firstDart, result.secondDart, result.thirdDart];
-    var score = $scope.tally(targetArray);
-    result.score = score;
-    $scope.selectedEditRound = {};
-    $scope.updateScore();
-  }
-
-  /*
-  * turn flip the visibility of the rounds section
-  */
-  $scope.showRounds = function() {
-    $scope.targetData.isShowRounds = true;
-  }
-
-  /*
   * method for hiding rounds input once we finish the correct number of turns
   */
   $scope.checkRoundsComplete = function() {
     return $scope.targetData.round.number > $scope.targetData.numRounds.num;
   }
+
+
+  /***************** data loading and saving methods **********************/
 
   /*
   * save data to database, and push it into games and allgames arrays
@@ -196,6 +177,12 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   */
   $scope.getData();
 
+
+
+
+
+  /************** User/view initiated methods *****************/
+
   /*
   * toggleModifier allows the modifier (double/triple button) to be turned on or off, even if repeatedly clicked
   */
@@ -204,6 +191,15 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
       $scope.targetData.modifier = "";
     } else {
       $scope.targetData.modifier = modifier;
+    }
+  }
+
+
+  $scope.toggleDartToUpdate = function(dartToUpdate) {
+    if ($scope.targetData.dartToUpdate == dartToUpdate) {
+      $scope.targetData.dartToUpdate = "";
+    } else {
+      $scope.targetData.dartToUpdate = dartToUpdate;
     }
   }
 
@@ -225,7 +221,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   * cancel a game
   */
   $scope.cancelGame = function() {
-      $scope.resetAfterPost($scope.targetData);
+      $scope.targetData.reset($scope.targetData);
   }
 
   /*
@@ -249,6 +245,56 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   }
 
   /*
+  * works with front end code to select a round for editing
+  * ng-show="selectedEditRound == result"
+  */
+  $scope.selectEditRound = function(item) {
+    $scope.selectedEditRound = item;
+    $scope.targetData.isEditMode = true;
+  }
+
+  /*
+  * called after saving a round edit - updates a particular round's score
+  * and then calls update score to update the game score
+  */
+  $scope.finishEditing = function(result) {
+    var targetArray = [result.firstDart, result.secondDart, result.thirdDart];
+    var score = $scope.tally(targetArray);
+    result.score = score;
+    $scope.selectedEditRound = {};
+    $scope.updateScore();
+    $scope.targetData.dartToUpdate = "";
+    $scope.targetData.isEditMode = false;
+  }
+
+  /*
+  * flip the visibility of the rounds section, called from the start button on the view
+  */
+  $scope.showRounds = function() {
+    $scope.targetData.isShowRounds = true;
+  }
+
+  /*
+  * this is the fledgling attempt to bring back round data
+  */
+  $scope.gameClicked = function() {
+    var url = "/data/gameDetails" + this.game.id;
+    $log.info("url: " + url);
+    // this.game.id gets us the game id.
+    //$log.info(this.game);
+    $http.get(url).
+      success(function(data, status) {
+        $log.info(data);
+      }).
+      error(function(data, status) {
+        $log.error("failed")
+      })
+  }
+
+
+  /*************** score management methods *****************/
+
+  /*
   * this method gets called every time a score button is clicked.
   * every set of darts is then tallied and added to the score.
   */
@@ -257,20 +303,39 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
     if ($scope.targetData.modifier) {
       dart = $scope.targetData.modifier + result;
     }
-    // round result is used to show the darts that have been selected in the current turn
-    $scope.roundResult.push(dart);
+    // if we are not in edit mode, go ahead and mark the dart in the results
+    if (!$scope.targetData.isEditMode) {
+      // round result is used to show the darts that have been selected in the current turn
+      $scope.roundResult.push(dart);
 
-    // at the end of every turn submit the turn to the scoring.
-    if ($scope.roundResult.length >= 3) {
-      var score = $scope.tally($scope.roundResult);
-      var newResult = {"firstDart" : $scope.roundResult[0], "secondDart" : $scope.roundResult[1], "thirdDart" : $scope.roundResult[2], "round" : $scope.targetData.round.number, "score" : score};
-      $scope.targetData.results.push(newResult);
-      $scope.targetData.round.number++;
-      // only update this every round, so the average doesn't get screwy...
-      $scope.updateScore();
-      $scope.roundResult = [];
+      // at the end of every turn submit the turn to the scoring.
+      if ($scope.roundResult.length >= 3) {
+        $scope.scoreTurn();
+      }
+    } else {
+      // what to do with the result?
+      if ($scope.targetData.dartToUpdate == "first") {
+        $scope.selectedEditRound.firstDart = dart;
+      } else if ($scope.targetData.dartToUpdate == "second") {
+        $scope.selectedEditRound.secondDart = dart;
+      } else if ($scope.targetData.dartToUpdate == "third") {
+        $scope.selectedEditRound.thirdDart = dart;
+      }
     }
     $scope.targetData.modifier = "";
+  }
+
+  /*
+  * responsible for updating the score every turn, and managing the cleanup for the next turn
+  */
+  $scope.scoreTurn = function() {
+    var score = $scope.tally($scope.roundResult);
+    var newResult = {"firstDart" : $scope.roundResult[0], "secondDart" : $scope.roundResult[1], "thirdDart" : $scope.roundResult[2], "round" : $scope.targetData.round.number, "score" : score};
+    $scope.targetData.results.push(newResult);
+    $scope.targetData.round.number++;
+    // only update this every round, so the average doesn't get screwy...
+    $scope.updateScore();
+    $scope.roundResult = [];
   }
 
   /*
@@ -307,23 +372,6 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
     }
   }
 
-   /*
-    * this is the fledgling attempt to bring back round data
-    */
-    $scope.gameClicked = function() {
-      var url = "/data/gameDetails" + this.game.id;
-      $log.info("url: " + url);
-      // this.game.id gets us the game id.
-      //$log.info(this.game);
-      $http.get(url).
-        success(function(data, status) {
-          $log.info(data);
-        }).
-        error(function(data, status) {
-          $log.error("failed")
-        })
-    }
-
 
   /*
   * this watcher updates the chart each time the 'allGames' array changes length,
@@ -337,9 +385,6 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
       }
     }
   )
-
-
-
 }
 
 //mainController.$inject = [];
@@ -347,3 +392,12 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
 function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
+
+
+// idea for editing rounds
+/*
+you should click on the actual dart you want to change
+when you click on it, it gets highlighted
+then you select the score you want to replace it with
+then you click save
+*/
