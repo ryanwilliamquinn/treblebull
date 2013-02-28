@@ -16,8 +16,7 @@ describe('my app', function() {
     input('password').enter('t7c7f7a7m7');
     input('rememberMe').check();
     element(':submit').click();
-    expect(element('title').text()).toBe("freaking darts");
-
+    sleep(1);
   });
 
 
@@ -26,20 +25,17 @@ describe('my app', function() {
 describe('target practice', function() {
 
   it('should show navigate the practice modes', function() {
-    sleep(1);
     browser().navigateTo("/practice");
     expect(element(".button", "target buttons").count()).toBeGreaterThan(0);
   });
 
   it('should show the bullseye by default', function() {
-    sleep(1);
     browser().navigateTo("/practice/target");
     expect(element("select:first option:selected").text()).toBe("bullseye");
     expect(element("select:nth-child(2) option:selected").text()).toBe("ten");
   });
 
   it('should show the buttons when you click on the start button', function() {
-    sleep(1);
     browser().navigateTo("/practice/target");
     expect(element('.rounds').css('display')).toBe('none');
     element('#gameStart').click();
@@ -48,7 +44,6 @@ describe('target practice', function() {
   });
 
   it('should record some scores and stuff', function() {
-     sleep(1);
      browser().navigateTo("/practice/target");
      element('#gameStart').click();
      expect(element('#gameAverage').css("display")).toBe("none");
@@ -60,7 +55,6 @@ describe('target practice', function() {
 
 
   it('should have double and triple buttons that work', function() {
-       sleep(1);
        browser().navigateTo("/practice/target");
        element('#gameStart').click();
        expect(element('#gameAverage').css("display")).toBe("none");
@@ -82,7 +76,6 @@ describe('target practice', function() {
     });
 
   it('should have a working cancel button', function() {
-    sleep(1);
     browser().navigateTo("/practice/target");
     element('#gameStart').click();
     expect(element('#gameAverage').css("display")).toBe("none");
@@ -102,7 +95,6 @@ describe('target practice', function() {
   })
 
   it('should have a functional editing', function() {
-    sleep(1);
     browser().navigateTo("/practice/target");
     element('#gameStart').click();
     expect(element('#gameAverage').css("display")).toBe("none");
@@ -117,6 +109,22 @@ describe('target practice', function() {
     expect(element('#gameAverage').text()).toContain("Round average: 6");
 
     element('#roundResults span[name=roundResult]:first').click();
+  })
+
+  it('should have the same average if you switch targets and then return to your original target', function() {
+    browser().navigateTo("/practice/target");
+    expect(element("select:first option:selected").text()).toBe("bullseye");
+
+    // need to jump through some hoops to get the text value from the future
+    var ata = element('#allTimeAverage').text();
+    ata.execute(function() {
+    });
+
+    select('target').option('1');
+    expect(element("select:first option:selected").text()).toBe("20");
+    select('target').option('0');
+
+    expect(element('#allTimeAverage').text()).toBe(ata.value);
   })
 
 });

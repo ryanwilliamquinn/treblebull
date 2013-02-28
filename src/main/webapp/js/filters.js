@@ -76,7 +76,8 @@ ang.filter('reverseRangeWithBull', function() {
 ang.filter('dartAverage', function() {
   return function(input, numDarts) {
     if (numDarts > 0) {
-      return input / numDarts;
+      var avg = input / numDarts;
+      return avg.toFixed(1);
     } else {
       return "";
     }
@@ -87,7 +88,8 @@ ang.filter('dartAverage', function() {
 ang.filter('roundAverage', function() {
   return function(input, roundNumber) {
     if (roundNumber > 0) {
-      return input / (roundNumber - 1);
+      var avg = input / (roundNumber - 1);
+      return avg.toFixed(1);
     } else {
       return "";
     }

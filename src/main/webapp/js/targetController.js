@@ -84,7 +84,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   * save data to database, and push it into games and allgames arrays
   */
   $scope.postResult = function() {
-    postDataService($scope.createNewResult, $scope.targetData, $scope.targetData.resetAfterPost);
+    postDataService($scope.createNewResult, $scope.targetData, $scope.targetData.resetGameData);
   }
 
   /*
@@ -95,13 +95,20 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
       return {'date' : data.displayDateTime, 'score' : data.score, 'dateMillis' : data.dateMilliseconds, 'numRounds' : data.numRounds, 'avg' : avg}
   }
 
+  /*
+  * called when changing targets - clears all historical game data
+  */
+
   $scope.targetData.reset = function() {
      $scope.targetData.games = [];
      $scope.targetData.allGames = [];
      $scope.targetData.results = [];
   }
 
-  $scope.targetData.resetAfterPost = function(data) {
+  /*
+  * reset the existing game data, but don't touch the historical game data
+  */
+  $scope.targetData.resetGameData = function(data) {
     data.isShowRounds = false;
     data.results = [];
     data.round.number = 1;
@@ -197,7 +204,9 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
     }
   }
 
-
+  /*
+  * method to help visualize which dart is being edited (in a previously entered result)
+  */
   $scope.toggleDartToUpdate = function(dartToUpdate) {
     if ($scope.targetData.dartToUpdate == dartToUpdate) {
       $scope.targetData.dartToUpdate = "";
@@ -221,10 +230,10 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   }
 
   /*
-  * cancel a game
+  * cancel a game - clear the current game data
   */
   $scope.cancelGame = function() {
-      $scope.targetData.reset();
+      $scope.targetData.resetGameData($scope.targetData);
   }
 
   /*
