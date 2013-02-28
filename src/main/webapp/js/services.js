@@ -62,17 +62,17 @@ ang.factory('chartService', [function() {
               type: 'line'
            },
            title: {
-              text: 'Darts!'
+              text: ''
            },
            xAxis: {
               title: {
-                  text: 'Time'
+                  text: ''
               },
               categories: ""//dates
            },
            yAxis: {
               title: {
-                 text: 'Avg'
+                 text: ''
               }
            },
            series: [{

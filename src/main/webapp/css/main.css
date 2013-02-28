@@ -1,9 +1,10 @@
 body {margin:0px}
 .content {margin:0 auto;}
-@media all and (min-width:40em){.content{max-width:31em;}}
-@media all and (min-width:62.66em){.content{max-width:47em;}}
-@media all and (min-width:78.32em){.content{max-width:62.66em;}}
-@media all and (min-width:93.98em){.content{max-width:74.65em;}}
+.resultsChart{width:320px; height:400px;}
+@media all and (min-width:40em){.content{max-width:31em;} .resultsChart{width:31em;}}
+@media all and (min-width:62.66em){.content{max-width:47em;} .resultsChart{width:47em;}}
+@media all and (min-width:78.32em){.content{max-width:62.66em;} .resultsChart{width:62.66em;}}
+@media all and (min-width:93.98em){.content{max-width:74.65em;} .resultsChart{width:74.65em;}}
 h3 {margin:0px;}
 
 .block {display:block;}
@@ -29,7 +30,6 @@ h3 {margin:0px;}
 .green {background-color:green;}
 .rounds {float:left; margin-bottom:20px;}
 
-.resultsChart {width: 800px; height: 400px;}
 
 .dtTarget {height:20px; line-height:20px; width:20px; border:solid 1px black; display:inline-block; text-align:center; cursor:pointer;}
 .sTarget {height:20px; line-height:20px; width:30px; border:solid 1px black; display:inline-block; text-align:center; cursor:pointer;}

@@ -86,7 +86,7 @@ describe('target practice', function() {
     element('.sTarget:first').click(); // round score is 3
     element('.dtTarget:nth-child(2)').click(); // click the triple
     element('.sTarget:first').click(); // round score is 6
-    expect(element('#gameAverage').css("display")).toBe("block");
+    expect(element('#gameAverage').css("display")).toBe("inline");
     expect(element('#gameAverage').text()).toContain("Round average: 6");
 
     element('#cancelGame').click();
@@ -105,7 +105,7 @@ describe('target practice', function() {
     element('.sTarget:first').click(); // round score is 3
     element('.dtTarget:nth-child(2)').click(); // click the triple
     element('.sTarget:first').click(); // round score is 6
-    expect(element('#gameAverage').css("display")).toBe("block");
+    expect(element('#gameAverage').css("display")).toBe("inline");
     expect(element('#gameAverage').text()).toContain("Round average: 6");
 
     element('#roundResults span[name=roundResult]:first').click();
