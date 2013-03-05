@@ -9,27 +9,7 @@
             <span ng-click="showInputs()" class="smallButton blue">Start a game of cricket</span>
         </div>
 
-        <div class="rounds" ng-show="targetData.isShowRounds">
-            <form name="simplePracticeForm" id="simplePracticeForm"  ng-submit="recordResult(result)" ng-hide="gameFinished()">
-                <label for="firstDartInput">First dart:</label><input type="text" id="firstDartInput" class="scoreInput" ng-model="result.firstDart"/>
-                <label for="secondDartInput">Second dart:</label><input type="text" id="secondDartInput" class="scoreInput" ng-model="result.secondDart"/>
-                <label for="thirdDartInput">Third dart:</label><input type="text" id="thirdDartInput" class="scoreInput" ng-model="result.thirdDart"/>
-                <span style="margin-left:5px;" class="blue smallButton" ng-click="recordResult(result)">Next</span>
-            </form>
-            <span ng-click="postResult()" style="margin-top:10px;" class="smallButton green" ng-show="gameFinished()">Save game</span>
-            <div style="margin-top:10px;">
-                <div ng-repeat="result in targetData.results">
-                    Round: <span>{{result.round}}</span>
-                    <span style="margin-left:20px;" ng-hide="selectedEditRound == result" ng-click="selectEditRound(result)">{{result.firstDart}}, {{result.secondDart}}, {{result.thirdDart}}</span>
-                    <input type="text" id="firstDartInput" class="scoreInput" ng-model="result.firstDart" ng-show="selectedEditRound == result"/>
-                    <input type="text" id="secondDartInput" class="scoreInput" ng-model="result.secondDart" ng-show="selectedEditRound == result"/>
-                    <input type="text" id="thirdDartInput" class="scoreInput" ng-model="result.thirdDart" ng-show="selectedEditRound == result"/>
-                    <span class="blue smallButton" ng-show="selectedEditRound == result" ng-click="finishEditing(result)">Save</span>
-                </div>
-            </div>
-
-            <span ng-click="cancelGame()" class="smallButton red" style="margin-top:15px; display:inline-block;">Cancel game</span>
-        </div>
+        <jsp:include page="buttons.jsp"/>
         <div ng-show="targetData.isShowRounds" style="clear:both;">
             <table>
                 <tr ng-repeat="target in targets | orderBy:predicate">

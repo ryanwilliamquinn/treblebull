@@ -12,10 +12,12 @@
         <result property='numRounds' column='numRounds'/>
     </resultMap>
 
-    <resultMap type='com.rquinn.darts.RoundResult' id='gameDetails'>
+    <resultMap type='com.rquinn.darts.ThreeDartRoundResult' id='gameDetails'>
         <result property='id' column='id'/>
         <result property='round' column='round'/>
-        <result property='score' column='score'/>
+        <result property='firstDart' column='firstDart'/>
+        <result property='secondDart' column='secondDart'/>
+        <result property='thirdDart' column='thirdDart'/>
     </resultMap>
 
     <select id='getResultById' parameterType='int' resultMap="dartsResultValue">
@@ -69,7 +71,7 @@
     </select>
 
     <select id="getGameDetails" parameterType="int" resultMap="gameDetails">
-        select * from turn where game_id = #{gameId};
+        select * from three_dart_turn where game_id = #{gameId};
     </select>
 
     <update id='updateResult' parameterType='DartsResult'>

@@ -16,6 +16,9 @@ function mainController($scope, $http, $log, chartService, postDataService) {
     $scope.needsShowAll = false;
     $scope.predicate = '-dateMillis';
     $scope.selectedEditRound = {};
+    $scope.targetData.isEditMode = false;
+
+    $scope.roundResult = [];
 
     $scope.targetData.games = [];
     $scope.targetData.allGames = [];
@@ -23,7 +26,7 @@ function mainController($scope, $http, $log, chartService, postDataService) {
     $scope.acceptedInput = {
             "t20" : ["20","20","20"], "d20" : ["20","20"], "20" : ["20"], "t19" : ["19","19","19"], "d19" : ["19","19"], "19" : ["19"], "t18" : ["18","18","18"], "d18" : ["18","18"], "18" : ["18"],
             "t17" : ["17","17","17"], "d17" : ["17","17"], "17" : ["17"], "t16" : ["16","16","16"], "d16" : ["16","16"], "16" : ["16"], "t15" : ["15","15","15"], "d15" : ["15","15"], "15" : ["15"],
-            "db" : ["b", "b"], "b" : ["b"],
+            "dbull" : ["b", "b"], "bull" : ["b"],
             "t14" : [], "d14" : [], "14" : [], "t13" : [], "d13" : [], "13" : [], "t12" : [], "d12" : [], "12" : [], "t11" : [], "d11" : [], "11" : [], "t10" : [], "d10" : [], "10" : [], "t9" : [], "d9" : [], "9" : [],
             "t8" : [], "d8" : [], "8" : [], "t7" : [], "d7" : [], "7" : [], "t6" : [], "d6" : [], "6" : [], "t5" : [], "d5" : [], "5" : [], "t4" : [], "d4" : [], "4" : [], "t3" : [], "d3" : [], "3" : [], "t2" : [],
             "d2" : [], "2" : [], "t1" : [], "d1" : [], "1" : [], "0" : []
@@ -112,35 +115,9 @@ function mainController($scope, $http, $log, chartService, postDataService) {
     }
 
 
-    // reset the target each time, then run through all the rounds and mark the targets
-    // arguments are strings that are in the acceptedInput object
-    $scope.markTargets = function() {
-        $scope.resetTargets();
-        for (var i=0; i<$scope.targetData.results.length;i++) {
-            var result = $scope.targetData.results[i];
-            $scope.tally(result.firstDart, result.secondDart, result.thirdDart);
-        }
-    }
 
 
-    $scope.tally = function(firstDart, secondDart, thirdDart) {
-        var darts = [firstDart, secondDart, thirdDart];
-        for (var i=0; i<darts.length; i++) {
-            var dart = darts[i];
-            if (typeof dart != "undefined" && dart != "") {
-                var hits = $scope.acceptedInput[dart];
-                for (var j=0; j<hits.length; j++) {
-                    var target = hits[j];
-                    var targetIndex = $scope.targetIndexes[target];
-                    if ($scope.targets[targetIndex].num < 3) {
-                        $scope.targets[targetIndex].num++;
-                    }
-                }
-            }
-        }
-    }
-
-    $scope.gameFinished = function() {
+    $scope.checkRoundsComplete = function() {
         for(var i=0; i<$scope.targets.length; i++) {
             var target = $scope.targets[i];
             if (target.num < 3) {
@@ -248,5 +225,88 @@ function mainController($scope, $http, $log, chartService, postDataService) {
             chartService($scope.targetData.allGames);
         }
     );
+
+    /*
+    * toggleModifier allows the modifier (double/triple button) to be turned on or off, even if repeatedly clicked
+    */
+    $scope.toggleModifier = function(modifier) {
+      if ($scope.targetData.modifier == modifier) {
+        $scope.targetData.modifier = "";
+      } else {
+        $scope.targetData.modifier = modifier;
+      }
+    }
+
+    /*
+    * method to help visualize which dart is being edited (in a previously entered result)
+    */
+    $scope.toggleDartToUpdate = function(dartToUpdate) {
+      if ($scope.targetData.dartToUpdate == dartToUpdate) {
+        $scope.targetData.dartToUpdate = "";
+      } else {
+        $scope.targetData.dartToUpdate = dartToUpdate;
+      }
+    }
+
+    /*
+    * this method gets called every time a score button is clicked.
+    * every set of darts is then tallied and added to the score.
+    */
+    $scope.markDart = function(result) {
+      var dart = result;
+      if ($scope.targetData.modifier) {
+        dart = $scope.targetData.modifier + result;
+      }
+      // if we are not in edit mode, go ahead and mark the dart in the results
+      if (!$scope.targetData.isEditMode) {
+        // round result is used to show the darts that have been selected in the current turn
+        $scope.roundResult.push(dart);
+
+        // at the end of every turn submit the turn to the scoring.
+        if ($scope.roundResult.length >= 3) {
+          var newResult = {"firstDart" : $scope.roundResult[0], "secondDart" : $scope.roundResult[1], "thirdDart" : $scope.roundResult[2], "round" : $scope.targetData.round.number, "score" : 1};
+          $scope.targetData.results.push(newResult);
+          $scope.roundResult = [];
+          $scope.markTargets();
+        }
+      } else {
+        // what to do with the result?
+        if ($scope.targetData.dartToUpdate == "first") {
+          $scope.selectedEditRound.firstDart = dart;
+        } else if ($scope.targetData.dartToUpdate == "second") {
+          $scope.selectedEditRound.secondDart = dart;
+        } else if ($scope.targetData.dartToUpdate == "third") {
+          $scope.selectedEditRound.thirdDart = dart;
+        }
+      }
+      $scope.targetData.modifier = "";
+    }
+
+    // reset the target each time, then run through all the rounds and mark the targets
+    // arguments are strings that are in the acceptedInput object
+    $scope.markTargets = function() {
+        $scope.resetTargets();
+        for (var i=0; i<$scope.targetData.results.length;i++) {
+            var result = $scope.targetData.results[i];
+            $scope.tally([result.firstDart, result.secondDart, result.thirdDart]);
+        }
+    }
+
+
+    $scope.tally = function(darts) {
+      for (var i=0; i<darts.length; i++) {
+        var dart = darts[i];
+        if (typeof dart != "undefined" && dart != "") {
+          var hits = $scope.acceptedInput[dart];
+          for (var j=0; j<hits.length; j++) {
+              var target = hits[j];
+              var targetIndex = $scope.targetIndexes[target];
+              if ($scope.targets[targetIndex].num < 3) {
+                  $scope.targets[targetIndex].num++;
+              }
+          }
+        }
+      }
+    }
 }
 

@@ -92,7 +92,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   */
   $scope.createNewResult = function(data) {
       var avg = data.score / data.numRounds;
-      return {'date' : data.displayDateTime, 'score' : data.score, 'dateMillis' : data.dateMilliseconds, 'numRounds' : data.numRounds, 'avg' : avg}
+      return {'date' : data.displayDateTime, 'score' : data.score, 'dateMillis' : data.dateMilliseconds, 'numRounds' : data.numRounds, 'avg' : avg, 'id' : data.id}
   }
 
   /*
@@ -289,18 +289,32 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   /*
   * this is the fledgling attempt to bring back round data
   */
-  $scope.gameClicked = function() {
-    var url = "/data/gameDetails" + this.game.id;
-    $log.info("url: " + url);
-    // this.game.id gets us the game id.
-    //$log.info(this.game);
-    $http.get(url).
-      success(function(data, status) {
-        $log.info(data);
-      }).
-      error(function(data, status) {
-        $log.error("failed")
-      })
+  $scope.gameClicked = function(game) {
+    // if game.rounds is defined and has some data, just clear it
+    if (typeof game.rounds != "undefined" && game.rounds.length > 0) {
+      // we already loaded this data, so clicking again should hide it...
+      $scope.clearAllRounds();
+    } else {
+      var url = "/data/gameDetails" + game.id;
+      //$log.info("url: " + url);
+      //this.game.id gets us the game id.
+      //$log.info(this.game);
+      $http.get(url).
+        success(function(data, status) {
+          game.rounds = data;
+          // so we need to take this data, which is an array of round/scores, and dump it into the result
+        }).
+        error(function(data, status) {
+          $log.error("failed")
+        })
+    }
+  }
+
+  $scope.clearAllRounds = function() {
+    for (var i=0; i<$scope.targetData.games.length; i++) {
+      var game = $scope.targetData.games[i];
+      game.rounds = [];
+    }
   }
 
 
