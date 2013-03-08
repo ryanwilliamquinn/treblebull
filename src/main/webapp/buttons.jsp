@@ -1,12 +1,14 @@
 <%-- what do i need to add to the controller to make this just work?  can i do this in a directive somehow? seems like it would be a lot of things. --%>
 <div class="rounds unselectable" ng-show="targetData.isShowRounds">
   <div ng-hide="checkRoundsComplete()">
-    <div style="margin-left:5px;">
-      <div class="dtTarget" ng-click="toggleModifier('d')" ng-class="{activeModifier: targetData.modifier=='d'}">D</div>
-      <div class="dtTarget" ng-click="toggleModifier('t')" ng-class="{activeModifier: targetData.modifier=='t'}">T</div>
+    <div>
       <div style="display:inline-block; margin:5px;" class="sTarget" ng-click="markDart(target.id)" ng-show="target.id">{{target.id}}</div>
+      <div style="display:inline-block; margin:5px;" class="sdtTarget" ng-click="markDart('d' + target.id)" ng-show="target.id">double {{target.id}}</div>
+      <div style="display:inline-block; margin:5px;" class="sdtTarget" ng-click="markDart('t' + target.id)" ng-show="target.id && target.id != 'bull'">triple {{target.id}}</div>
     </div>
     <div style="width:300px;">
+      <span class="dtTarget" ng-click="toggleModifier('d')" ng-class="{activeModifier: targetData.modifier=='d'}">D</span>
+      <span class="dtTarget" ng-click="toggleModifier('t')" ng-class="{activeModifier: targetData.modifier=='t'}" ng-hide="target.id == 'bull'">T</span>
       <span style="display:inline-block; margin:5px;" ng-repeat="n in [] | reverseRangeWithBull:20" class="sTarget" ng-click="markDart(n)">{{n}}</span>
     </div>
   </div>

@@ -10,15 +10,12 @@
             Round average: {{targetData.score|roundAverage:targetData.round.number}}
           </span>
         </div>
-        <div ng-hide="targetData.isShowRounds">
+        <div>
             Target:
             <select ng-model="target" ng-options="target.label for target in targetTypes" ng-change="changedTarget()"></select>
-            Rounds Per Game:
-            <select ng-model="targetData.numRounds" ng-options="numRounds.rounds for numRounds in numRoundsAvailable" ng-change="changedRounds()"></select>
             <span ng-click="showRounds()" id="gameStart" class="smallButton blue" style="margin-left:20px;">Start game</span>
         </div>
         <jsp:include page="buttons.jsp"/>
-        <jsp:include page="pastRounds.jsp"/>
         <div id="allTimeAverage" style="margin:30px 0px 0px 20px; float:left;" ng-show="targetData.allGames.length > 0">
             All time average: {{targetData.allGames|lifetimeAverage}}
         </div>
@@ -36,9 +33,9 @@
 </div>
 
 
-
 <jsp:include page="bottomIncludes.jsp"/>
-<script src="/js/targetController.js"></script>
+
+<script src="/js/freeTargetController.js"></script>
 <jsp:include page="footer.jsp"/>
 
 

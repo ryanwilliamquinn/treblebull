@@ -220,4 +220,39 @@ public class TargetPracticeAction extends PracticeAction {
         }
         return NONE;
     }
+
+    public String loadFree() throws Exception {
+        slf4jLogger.debug("Load the last 100 darts from free practice");
+
+        Subject currentUser = SecurityUtils.getSubject();
+
+        SqlSessionFactory sqlSessionFactory = getSqlSession();
+
+        DartsResultResponse dartsResultResponse = null;
+
+        HttpServletRequest request = ServletActionContext.getRequest();
+        PracticeType practiceType = PracticeType.FREE_TARGET;
+        slf4jLogger.debug("targetPracticeType: " + practiceType.getValue());
+
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            DartsResultService dartsResultService = new DartsResultService();
+            // will be interesting what we do with this.  seems fun.
+            dartsResultResponse = dartsResultService.getTenResults(currentUser.getPrincipal().toString(), practiceType);
+        } finally {
+            session.close();
+        }
+
+        if (dartsResultResponse != null && dartsResultResponse.getDartsResults() != null && dartsResultResponse.getDartsResults().size() > 0) {
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+            String json = gson.toJson(dartsResultResponse);
+            //slf4jLogger.info("json response: " + json);
+            HttpServletResponse response = ServletActionContext.getResponse();
+            response.setHeader("Content-type", "application/json");
+            PrintWriter out = response.getWriter();
+            out.print(json);
+            out.flush();
+        }
+        return NONE;
+    }
 }

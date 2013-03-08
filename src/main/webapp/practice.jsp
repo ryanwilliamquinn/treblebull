@@ -5,7 +5,7 @@
         <a class="button blue" href="/practice/target">target</a>
         <a class="button blue" href="/practice/301">301</a>
         <a class="button blue" href="/practice/cricket">cricket</a>
-        <a class="button blue" href="/practice/multi-target">multi-target</a>
+        <a class="button blue" href="/practice/free">free target</a>
     </div>
 </div>
 

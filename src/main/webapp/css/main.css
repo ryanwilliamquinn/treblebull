@@ -31,8 +31,9 @@ h3 {margin:0px;}
 .rounds {float:left; margin-bottom:20px;}
 
 
-.dtTarget {height:20px; line-height:20px; width:20px; border:solid 1px black; display:inline-block; text-align:center; cursor:pointer;}
+.dtTarget {display:inline-block; height:20px; line-height:20px; width:30px; margin:0 1px 0 5px; border:solid 1px black; display:inline-block; text-align:center; cursor:pointer;}
 .sTarget {height:20px; line-height:20px; width:30px; border:solid 1px black; display:inline-block; text-align:center; cursor:pointer;}
+.sdtTarget {height:20px; line-height:20px; width:90px; border:solid 1px black; display:inline-block; text-align:center; cursor:pointer;}
 .activeModifier {background-color:#00EE00;}
 
 

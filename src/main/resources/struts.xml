@@ -51,11 +51,13 @@
 	</package>
     <package name="data" namespace="/data" extends="struts-default">
         <action name="loadCricket" class="com.rquinn.darts.action.CricketAction" method="load"/>
+        <action name="loadFree" class="com.rquinn.darts.action.TargetPracticeAction" method="loadFree"/>
         <action name="loadAllCricket" class="com.rquinn.darts.action.CricketAction" method="loadAll"/>
         <action name="loadAll*" class="com.rquinn.darts.action.TargetPracticeAction" method="loadAll"/>
         <action name="load*" class="com.rquinn.darts.action.TargetPracticeAction" method="load"/>
         <action name="gameDetails*" class="com.rquinn.darts.action.TargetPracticeAction" method="getGameDetails"/>
         <action name="cricket" class="com.rquinn.darts.action.CricketAction" method="insert"/>
+        <action name="free" class="com.rquinn.darts.action.TargetPracticeAction" method="insertFree"/>
         <action name="*" class="com.rquinn.darts.action.TargetPracticeAction" method="insert"/>
 
     </package>

@@ -18,13 +18,7 @@
                 </tr>
             </table>
         </div>
-        <div style="clear:both; float:left; margin-top:30px;">
-            <div style="border-bottom:solid 1px #000; margin-bottom:20px; padding-bottom:2px; width:200px;">Past ${practiceMode} totals:</div>
-            <div ng-repeat="game in targetData.games | orderBy:predicate" ng-click="gameClicked()">
-                <span>{{game.date}}</span>
-                <span style="margin-left:16px;">Average score: {{game.score}}</span>
-            </div>
-        </div>
+        <jsp:include page="pastRounds.jsp"/>
         <div style="margin:30px 0px 0px 20px; float:left;" ng-show="targetData.allGames.length > 0">
             All time average: {{targetData.allGames|runningAverage}}
         </div>
@@ -36,16 +30,9 @@
 
 </div>
 
- <div id="container" style="width: 100%; height: 400px"></div>
+<div id="container" style="width: 100%; height: 400px"></div>
 
-<script src="/js/jquery/jquery-1.8.3.js" type="text/javascript"></script>
-<script src="/js/highcharts.js" type="text/javascript"></script>
-<script src="/js/angular/angular.js"></script>
-<script src="/js/directives.js"></script>
-<script src="/js/services.js"></script>
-<script src="/js/filters.js"></script>
-<script src="/js/utils.js"></script>
-<script src="/js/dartsApp.js"></script>
+<jsp:include page="bottomIncludes.jsp"/>
 <script src="/js/cricketController.js"></script>
 <jsp:include page="footer.jsp"/>
 
