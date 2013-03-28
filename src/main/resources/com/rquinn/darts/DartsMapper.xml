@@ -20,6 +20,21 @@
         <result property='thirdDart' column='thirdDart'/>
     </resultMap>
 
+    <resultMap id="singleDartResult" type="com.rquinn.darts.SingleDartResult">
+        <result property='dart' column='dart'/>
+        <result property="target" column="target"/>
+        <result property="score" column="score"/>
+        <result property='dateTimeManagement.timestamp' column='dart_time'/>
+    </resultMap>
+
+
+
+    <resultMap id="freeAverageData" type="com.rquinn.darts.FreeAverageData">
+        <result property="type" column="target"></result>
+        <result property="score" column="aggregateScore"></result>
+        <result property="numDarts" column="numDarts"></result>
+    </resultMap>
+
     <select id='getResultById' parameterType='int' resultMap="dartsResultValue">
         SELECT
         id as id,
@@ -66,6 +81,11 @@
         VALUES(#{roundResult.firstDart}, #{roundResult.secondDart}, #{roundResult.thirdDart}, #{roundResult.round}, #{foreignKey})
     </insert>
 
+    <insert id="insertFreeDart" parameterType="SingleDartResult" useGeneratedKeys="true">
+      INSERT INTO free_dart(target, dart, score, dart_time)
+      VALUES(#{target}, #{dart}, #{score}, #{dateTimeManagement.timestamp})
+    </insert>
+
     <select id="getPrimaryKey" resultType="int">
         select lastval()
     </select>
@@ -89,5 +109,13 @@
     <insert id="insertUser" parameterType="map">
         INSERT INTO users (username, password) VALUES (#{name}, #{encryptedPassword});
     </insert>
+
+    <select id="getFreeAverages" parameterType="String" resultMap="freeAverageData">
+        SELECT target, sum(score) as aggregateScore, count(target) as numDarts from free_dart group by target;
+    </select>
+
+    <select id="getFreeTargetHistory" parameterType="map" resultMap="singleDartResult">
+        SELECT * from free_dart where target = #{target} ORDER BY dart_time LIMIT 100;
+    </select>
 
 </mapper>

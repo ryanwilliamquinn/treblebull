@@ -2,6 +2,7 @@ package com.rquinn.darts;
 
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -37,6 +38,12 @@ public interface DartsMapper {
     public void updateResult(DartsResult dartsResult);
 
     public void deleteResult(Integer userId);
+
+    public List<FreeAverageData> getFreeAverages(String userName);
+
+    public List<SingleDartResult> getFreeTargetHistory(@Param("username") String userName, @Param("target") String target);
+
+    public void insertFreeDart(SingleDartResult singleDartResult);
 
 }
 

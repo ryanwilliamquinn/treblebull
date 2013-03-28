@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Map;
 
 public class DartsResultService
 {
@@ -29,7 +30,7 @@ public class DartsResultService
 
         SqlSession sqlSession = null;
         try {
-            slf4jLogger.debug(spr.getType().getValue() + " " + spr.getScore() + " " + spr.getTimestamp() + " " + spr.getUsername());
+            slf4jLogger.debug(spr.getType().getValue() + " " + spr.getScore() + " " + spr.getDateTimeManagement().getTimestamp() + " " + spr.getUsername());
             sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
             DartsMapper dartsMapper = sqlSession.getMapper(DartsMapper.class);
             dartsMapper.insertGame(spr);
@@ -52,7 +53,7 @@ public class DartsResultService
      * @return
      */
     public void insertCricketGame(ThreeDartResult cricketResult) {
-        slf4jLogger.debug(cricketResult.getType() + " " + cricketResult.getScore() + " " + cricketResult.getTimestamp() + " " + cricketResult.getUsername());
+        slf4jLogger.debug(cricketResult.getType() + " " + cricketResult.getScore() + " " + cricketResult.getDateTimeManagement().getTimestamp() + " " + cricketResult.getUsername());
         SqlSession sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
         try {
             DartsMapper dartsMapper = sqlSession.getMapper(DartsMapper.class);
@@ -74,7 +75,7 @@ public class DartsResultService
      * @return
      */
     public void insert301Game(ThreeOhOneResult threeOhOneResult) {
-        slf4jLogger.debug(threeOhOneResult.getType().getValue() + " " + threeOhOneResult.getScore() + " " + threeOhOneResult.getTimestamp() + " " + threeOhOneResult.getUsername());
+        slf4jLogger.debug(threeOhOneResult.getType().getValue() + " " + threeOhOneResult.getScore() + " " + threeOhOneResult.getDateTimeManagement().getTimestamp() + " " + threeOhOneResult.getUsername());
         SqlSession sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
         try {
             DartsMapper dartsMapper = sqlSession.getMapper(DartsMapper.class);
@@ -87,6 +88,22 @@ public class DartsResultService
         }finally{
             sqlSession.close();
         }
+    }
+
+    public void insertFreeDart(List<SingleDartResult> darts) {
+        slf4jLogger.debug("in insert free dart");
+        SqlSession sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
+        try {
+            DartsMapper dartsMapper = sqlSession.getMapper(DartsMapper.class);
+            for (SingleDartResult dart : darts) {
+                slf4jLogger.debug("inserting dart: " + dart);
+                dartsMapper.insertFreeDart(dart);
+            }
+            sqlSession.commit();
+        }finally{
+            sqlSession.close();
+        }
+
     }
 
     public DartsResult getResultById(Integer id) {
@@ -124,7 +141,7 @@ public class DartsResultService
             DartsResultResponse dartsResultResponse = new DartsResultResponse();
             List<DartsResult> dartsResults = dartsMapper.getTenResults(userName, typeValue);
             for (DartsResult dr : dartsResults) {
-                dr.initializeDates();
+                dr.getDateTimeManagement().initializeDates();
             }
             dartsResultResponse.setDartsResults(dartsResults);
             int totalNumResults = dartsMapper.getNumResults(userName,typeValue);
@@ -169,6 +186,31 @@ public class DartsResultService
             DartsMapper dartsMapper = sqlSession.getMapper(DartsMapper.class);
             List<RoundResult> rounds = dartsMapper.getGameDetails(gameId);
             return rounds;
+        }finally{
+            sqlSession.close();
+        }
+    }
+
+    /*
+        return a map with key as target and value as average for this game mode for that target
+     */
+    public List<FreeAverageData> getFreeAverages(String userName) {
+        SqlSession sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
+        try{
+            DartsMapper dartsMapper = sqlSession.getMapper(DartsMapper.class);
+            List<FreeAverageData> rounds = dartsMapper.getFreeAverages(userName);
+            return rounds;
+        }finally{
+            sqlSession.close();
+        }
+    }
+
+    public List<SingleDartResult> getFreeTargetHistory(String userName, String target) {
+        SqlSession sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
+        try{
+            DartsMapper dartsMapper = sqlSession.getMapper(DartsMapper.class);
+            List<SingleDartResult> singleDartResults = dartsMapper.getFreeTargetHistory(userName, target);
+            return singleDartResults;
         }finally{
             sqlSession.close();
         }

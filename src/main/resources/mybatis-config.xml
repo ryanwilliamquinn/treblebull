@@ -6,6 +6,7 @@
     <properties resource='jdbc.properties'/>
     <typeAliases>
         <typeAlias type='com.rquinn.darts.DartsResult' alias='DartsResult'></typeAlias>
+        <typeAlias type='com.rquinn.darts.SingleDartResult' alias='SingleDartResult'></typeAlias>
         <typeAlias type='com.rquinn.darts.SimplePracticeResult' alias='TwentiesResult'></typeAlias>
         <typeAlias type='com.rquinn.darts.RoundResult' alias='RoundResult'></typeAlias>
     </typeAliases>

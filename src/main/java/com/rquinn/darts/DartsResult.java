@@ -24,12 +24,10 @@ public class DartsResult {
     private BasePracticeType type;
     @Expose private int score;
     @Expose private int numRounds;
-    private Timestamp timestamp;
-    @Expose private String displayDateTime;
-    private DateTime dateTime;
+
+    private DateTimeManagement dateTimeManagement = new DateTimeManagement();
+
     private String username;
-    // date millis used for sorting on the front end
-    @Expose private long dateMilliseconds;
 
     public String getUsername() {
         return username;
@@ -78,62 +76,8 @@ public class DartsResult {
         return "id: " + id + " type: " + type + " score: " + score;
     }
 
-    public DateTime getDateTime() {
-        return dateTime;
+    public DateTimeManagement getDateTimeManagement() {
+        return dateTimeManagement;
     }
-
-    public void setDateTime(String dateTime) {
-        dateTime = StringUtils.substringBeforeLast(dateTime, ".");
-        DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss");
-        this.dateTime = DateTime.parse(dateTime, fmt);
-        DateTimeFormatter fmt2 = DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss");
-        this.timestamp = new Timestamp(this.dateTime.getMillis());
-        DateTimeFormatter fmt3 = DateTimeFormat.forPattern("MMM dd, yyyy");
-        displayDateTime = fmt3.print(this.dateTime);
-    }
-
-    public String getDisplayDateTime() {
-        if (displayDateTime == null) {
-            DateTimeFormatter fmt2 = DateTimeFormat.forPattern("MMM dd, yyyy");
-            displayDateTime = fmt2.print(dateTime);
-        }
-        return displayDateTime;
-    }
-
-    public void setDisplayDateTime(String dipslayDateTime) {
-        this.displayDateTime = dipslayDateTime;
-    }
-
-    public Timestamp getTimestamp() {
-        return timestamp;
-    }
-
-    /**
-     * need to make this set all of the times
-     * @param timestamp
-     */
-    public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp;
-        initializeDates();
-    }
-
-    public long getDateMilliseconds() {
-        return dateMilliseconds;
-    }
-
-    public void setDateMilliseconds(long dateMilliseconds) {
-        this.dateMilliseconds = dateMilliseconds;
-    }
-
-    public void initializeDates() {
-        if (timestamp == null) {
-            timestamp = new Timestamp(DateTime.now().getMillis());
-        }
-        DateTime date = new DateTime(timestamp);
-        dateMilliseconds = date.getMillis();
-        DateTimeFormatter fmt3 = DateTimeFormat.forPattern("MMM dd, yyyy");
-        displayDateTime = fmt3.print(date);
-    }
-
 
 }

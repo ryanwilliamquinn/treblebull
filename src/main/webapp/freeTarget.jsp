@@ -12,23 +12,22 @@
         </div>
         <div>
             Target:
-            <select ng-model="target" ng-options="target.label for target in targetTypes" ng-change="changedTarget()"></select>
-            <span ng-click="showRounds()" id="gameStart" class="smallButton blue" style="margin-left:20px;">Start game</span>
+            <select ng-model="target" ng-options="target.label for target in targetTypes"></select>
         </div>
         <jsp:include page="buttons.jsp"/>
+        <%--
+        could be interesting to eventually have an overriding average of all darts.  but it would just come from the database i suppose
         <div id="allTimeAverage" style="margin:30px 0px 0px 20px; float:left;" ng-show="targetData.allGames.length > 0">
             All time average: {{targetData.allGames|lifetimeAverage}}
         </div>
+        --%>
     </div>
     <a href="/practice" style="display:block; float:right;" class="button blue">Practice home</a>
-    <div style="clear:both;" ng-show="needsShowAll">
-        <span ng-click="showAll()" style="cursor:pointer;" class="button blue">Show all results</span>
+    <div style="clear:both;" ng-repeat="avg in targetData.combinedAverages">
+    {{avg.type}}, {{avg.targetAverage}}
     </div>
 
-    <div class="blue smallButton" ng-hide="isShowChart" ng-click="showChart()">Show chart</div>
-    <div class="blue smallButton" ng-show="isShowChart" ng-click="isShowChart = false">Hide chart</div>
 
-    <div id="container" class="resultsChart" ng-show="isShowChart"></div>
 
 </div>
 

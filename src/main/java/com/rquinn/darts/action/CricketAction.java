@@ -65,7 +65,7 @@ public class CricketAction extends PracticeAction {
             cricketResult.setUsername(currentUser.getPrincipal().toString());
             slf4jLogger.debug("cricket result: " + cricketResult);
             DartsResultService dartsResultService = new DartsResultService();
-            cricketResult.initializeDates();
+            cricketResult.getDateTimeManagement().initializeDates();
             dartsResultService.insertCricketGame(cricketResult);
         } catch (Exception e) {
             slf4jLogger.error("Error inserting data: " + e);

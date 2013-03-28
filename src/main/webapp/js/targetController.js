@@ -43,7 +43,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   $scope.predicate = '-dateMillis';
 
   // model used in selectEditRound method
-  $scope.selectedEditRound = {};
+  $scope.targetData.selectedEditRound = {};
 
   // here is an old array that included doubles and triples.  not sure how i feel about that.
   //$scope.targetTypes = [{id : "bull", label : "bullseye"}, {id : "t20", label : "triple 20"}, {id : "d20", label : "double 20"}, {id : "20", label :"20"},
@@ -74,7 +74,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   * method for hiding rounds input once we finish the correct number of turns
   */
   $scope.checkRoundsComplete = function() {
-    return $scope.targetData.round.number > $scope.targetData.numRounds.num;
+    return (($scope.targetData.round.number > $scope.targetData.numRounds.num) && ($scope.targetData.isEditMode == false));
   }
 
 
@@ -115,6 +115,8 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
     data.score = 0;
     data.modifier = "";
     data.turn = [];
+    data.selectedEditRound = {};
+    data.isEditMode = false;
   }
 
   /*
@@ -261,7 +263,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   * ng-show="selectedEditRound == result"
   */
   $scope.selectEditRound = function(item) {
-    $scope.selectedEditRound = item;
+    $scope.targetData.selectedEditRound = item;
     $scope.targetData.isEditMode = true;
   }
 
@@ -273,7 +275,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
     var targetArray = [result.firstDart, result.secondDart, result.thirdDart];
     var score = $scope.tally(targetArray);
     result.score = score;
-    $scope.selectedEditRound = {};
+    $scope.targetData.selectedEditRound = {};
     $scope.updateScore();
     $scope.targetData.dartToUpdate = "";
     $scope.targetData.isEditMode = false;
@@ -310,6 +312,9 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
     }
   }
 
+  /*
+  * this function makes it so that multiple round details aren't open at the same time
+  */
   $scope.clearAllRounds = function() {
     for (var i=0; i<$scope.targetData.games.length; i++) {
       var game = $scope.targetData.games[i];
@@ -341,11 +346,11 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
     } else {
       // what to do with the result?
       if ($scope.targetData.dartToUpdate == "first") {
-        $scope.selectedEditRound.firstDart = dart;
+        $scope.targetData.selectedEditRound.firstDart = dart;
       } else if ($scope.targetData.dartToUpdate == "second") {
-        $scope.selectedEditRound.secondDart = dart;
+        $scope.targetData.selectedEditRound.secondDart = dart;
       } else if ($scope.targetData.dartToUpdate == "third") {
-        $scope.selectedEditRound.thirdDart = dart;
+        $scope.targetData.selectedEditRound.thirdDart = dart;
       }
     }
     $scope.targetData.modifier = "";
@@ -413,17 +418,8 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   )
 }
 
-//mainController.$inject = [];
-
 function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
 
-// idea for editing rounds
-/*
-you should click on the actual dart you want to change
-when you click on it, it gets highlighted
-then you select the score you want to replace it with
-then you click save
-*/

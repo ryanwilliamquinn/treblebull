@@ -19,6 +19,7 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -68,7 +69,7 @@ public class TargetPracticeAction extends PracticeAction {
             simplePracticeResult.setUsername(currentUser.getPrincipal().toString());
             slf4jLogger.debug("simple practice result: " + simplePracticeResult);
             DartsResultService dartsResultService = new DartsResultService();
-            simplePracticeResult.initializeDates();
+            simplePracticeResult.getDateTimeManagement().initializeDates();
             dartsResultService.insertGame(simplePracticeResult);
         } catch (IOException e) {
             slf4jLogger.error("Error inserting data: " + e);
@@ -235,24 +236,104 @@ public class TargetPracticeAction extends PracticeAction {
         slf4jLogger.debug("targetPracticeType: " + practiceType.getValue());
 
         SqlSession session = sqlSessionFactory.openSession();
+        List<FreeAverageData> averages = null;
+        FreeResultResponse freeResultResponse = new FreeResultResponse();
         try {
             DartsResultService dartsResultService = new DartsResultService();
-            // will be interesting what we do with this.  seems fun.
-            dartsResultResponse = dartsResultService.getTenResults(currentUser.getPrincipal().toString(), practiceType);
+            /* will be interesting what we do with this.
+            * options:
+            *   get last 10 turns
+            *   show averages for all targets (could be expensive?)
+            *   show nothing
+            */
+            averages = dartsResultService.getFreeAverages(currentUser.getPrincipal().toString());
+            freeResultResponse.setAggregateData(averages);
+
+            /* okay, so we got all of the averages
+                the next thing we need is to get the single target histories.  this means we need lists of say the last 100 darts for each target
+                the sql will iterate through all the targets that exist (select uniq target types from results, make them into a list, then run
+                a select for each of them to get the last 100 results by date)
+
+                select * from free_targets where target
+             */
+            for (TargetPracticeType target : TargetPracticeType.values()) {
+                List<SingleDartResult> singleDartsResult = dartsResultService.getFreeTargetHistory(currentUser.getPrincipal().toString(), target.getValue());
+                if (singleDartsResult != null) {
+                    FreeTargetHistory freeTargetHistory = new FreeTargetHistory();
+                    freeTargetHistory.setSingleDartResults(singleDartsResult);
+                    freeResultResponse.getFreeTargetHistories().add(freeTargetHistory);
+                }
+            }
+
+
         } finally {
             session.close();
         }
 
-        if (dartsResultResponse != null && dartsResultResponse.getDartsResults() != null && dartsResultResponse.getDartsResults().size() > 0) {
-            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-            String json = gson.toJson(dartsResultResponse);
-            //slf4jLogger.info("json response: " + json);
+        if (averages != null && averages.size() > 0) {
+            Gson gson = new GsonBuilder().create();
+            String json = gson.toJson(averages);
+            slf4jLogger.info("json response: " + json);
             HttpServletResponse response = ServletActionContext.getResponse();
             response.setHeader("Content-type", "application/json");
             PrintWriter out = response.getWriter();
             out.print(json);
             out.flush();
         }
+        return NONE;
+    }
+
+    public String insertFree() throws Exception {
+
+        slf4jLogger.debug("are we even getting here??  wtf?");
+
+        SqlSessionFactory sqlSessionFactory = getSqlSession();
+        SqlSession session = sqlSessionFactory.openSession();
+
+        HttpServletRequest request = ServletActionContext.getRequest();
+        PracticeType practiceType = PracticeType.FREE_TARGET;
+
+        if (practiceType == null) {
+            slf4jLogger.error("practice type is not recognized: " + practiceType.getValue() + ", redirecting back to the practice page");
+            // maybe return a json error message to the front end?
+            return NONE;
+        }
+
+        slf4jLogger.debug("request type: " + practiceType.getValue());
+
+        try {
+            BufferedReader is = new BufferedReader(new InputStreamReader(request.getInputStream()));
+            slf4jLogger.debug("before gson builder");
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(SingleDartResult.class, new SingleDartResultDeserializer())
+                    .create();
+            slf4jLogger.debug("before type token");
+            Type listType = new TypeToken<ArrayList<SingleDartResult>>() {}.getType();
+            slf4jLogger.debug("before fromJson");
+            ArrayList<SingleDartResult> singleDartResults = gson.fromJson(is, listType);
+            slf4jLogger.debug("whats going on here?");
+            if (singleDartResults != null && singleDartResults.size() > 0) {
+                slf4jLogger.debug(singleDartResults.get(0).toString());
+            } else {
+                slf4jLogger.debug("something is real broken");
+            }
+            slf4jLogger.debug("practiceType: " + practiceType.getValue());
+
+            Subject currentUser = SecurityUtils.getSubject();
+            DartsResultService dartsResultService = new DartsResultService();
+            for (SingleDartResult dart : singleDartResults) {
+                dart.setUsername(currentUser.getPrincipal().toString());
+                dart.getDateTimeManagement().initializeDatesWithEpochTime();
+                slf4jLogger.debug("display date time: " + dart.getDateTimeManagement().getDisplayDateTime());
+            }
+            dartsResultService.insertFreeDart(singleDartResults);
+
+        } catch (IOException e) {
+            slf4jLogger.debug("Error inserting data: " + e);
+        }  finally {
+            session.close();
+        }
+
         return NONE;
     }
 }

@@ -74,7 +74,7 @@ public class ThreeOhOneAction extends PracticeAction {
             slf4jLogger.debug("301 result: " + threeOhOneResult);
             DartsResultService dartsResultService = new DartsResultService();
             dartsResultService.insert301Game(threeOhOneResult);
-            threeOhOneResult.initializeDates();
+            threeOhOneResult.getDateTimeManagement().initializeDates();
         } catch (Exception e) {
             slf4jLogger.error("Error inserting data: " + e);
         }  finally {

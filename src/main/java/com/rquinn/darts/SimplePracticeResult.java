@@ -61,7 +61,7 @@ public class SimplePracticeResult extends DartsResult {
             }
         }
         sb.append("total score: ").append(getScore()).append("\n");
-        sb.append("dateTime: ").append(getDateTime()).append("\n");
+        sb.append("display time: ").append(getDateTimeManagement().getDisplayDateTime()).append("\n");
         sb.append("type: ").append(getType());
         return sb.toString();
     }

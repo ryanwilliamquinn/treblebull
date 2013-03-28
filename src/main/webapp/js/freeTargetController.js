@@ -3,35 +3,32 @@
 /* Controllers */
 
 angular.module("dartsApp.controller", []);
-function mainController($scope, $http, $log, $location, chartService, postDataService, scoreCalculator) {
+function mainController($scope, $http, $log, $location, postDataService, scoreCalculator) {
   $scope.targetData = {};
-  $scope.targetData.round = {"number" : 1};
-  $scope.numRoundsAvailable = [{id : "5", rounds : "five", num : 5}, {id : "10", rounds : "ten", num : 10}];
-  $scope.targetData.numRounds = $scope.numRoundsAvailable[1];
   $scope.targetData.isShowRounds = false;
-  $scope.initialNumGames = 10;
   $scope.isShowChart = false;
   $scope.targetData.turn = [];
   // placeholder for keeping track of the double/triple state
   $scope.targetData.modifier = "";
 
+  // helps display which dart to update
   $scope.targetData.dartToUpdate = "";
 
-  $scope.roundResult = [];
+  // theoretically we could hold multiple turns or darts in here?
   $scope.targetData.results = [];
 
-  //
+  // there is a turn score i guess
   $scope.targetData.score = 0;
 
-  // games contains first 10 games
-  $scope.targetData.games = [];
-  // allgames is not just a clever name.  container for all games for a game mode and player
-  $scope.targetData.allGames = [];
+  // hold the average data we get from the database
+  $scope.targetData.averages = [];
+
+  // hold the combined average data (new darts and db info)
+  $scope.targetData.combinedAverages = [];
 
   // urls required for loading and posting data
-  $scope.targetData.postUrl = "";
-  $scope.targetData.loadUrl = "";
-  $scope.targetData.loadAllUrl = "";
+  $scope.targetData.postUrl = "/data/free";
+  $scope.targetData.loadUrl = "/data/loadFree";
 
   // determines if 'show all' button will be present
   $scope.needsShowAll = true;
@@ -43,7 +40,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   $scope.predicate = '-dateMillis';
 
   // model used in selectEditRound method
-  $scope.selectedEditRound = {};
+  $scope.targetData.selectedEditRound = {};
 
   // here is an old array that included doubles and triples.  not sure how i feel about that.
   //$scope.targetTypes = [{id : "bull", label : "bullseye"}, {id : "t20", label : "triple 20"}, {id : "d20", label : "double 20"}, {id : "20", label :"20"},
@@ -58,62 +55,48 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
 
   $scope.targetData.isEditMode = false;
 
-  /*
-  * method to set up all the urls relative to the current practice type
-  */
-  $scope.setUpUrls = function() {
-    $scope.targetData.games = [];
-    $scope.targetData.practiceType = $scope.target.id;
-    $scope.targetData.urlPracticeType = capitaliseFirstLetter($scope.targetData.practiceType)
-    $scope.targetData.postUrl = "/data/free" + $scope.targetData.practiceType;
-    $scope.targetData.loadUrl = "/data/loadFree" + $scope.targetData.urlPracticeType;
-  }
-
-  /*
-  * method for hiding rounds input once we finish the correct number of turns
-  */
-  $scope.checkRoundsComplete = function() {
-    return $scope.targetData.round.number > $scope.targetData.numRounds.num;
-  }
-
 
   /***************** data loading and saving methods **********************/
 
   /*
-  * save data to database, and push it into games and allgames arrays
+  * this is going to be a little interesting, since we are batch posting
   */
   $scope.postResult = function() {
-    postDataService($scope.createNewResult, $scope.targetData, $scope.targetData.resetGameData);
+    var myjson = JSON.stringify($scope.targetData.results, replacer);
+    $http.post($scope.targetData.postUrl, myjson).
+      success(function(data, status) {
+        $log.info("posted successfully");
+      }).
+      error(function(data, status) {
+        postData.data = data || "Request failed";
+        postData.status = status;
+      });
   }
+  //  postDataService($scope.createNewResult, $scope.targetData, $scope.targetData.reset);
+  //}
 
   /*
   * this is called from postDataService, so that it can create the new result appropriately
   */
   $scope.createNewResult = function(data) {
-      var avg = data.score / data.numRounds;
-      return {'date' : data.displayDateTime, 'score' : data.score, 'dateMillis' : data.dateMilliseconds, 'numRounds' : data.numRounds, 'avg' : avg, 'id' : data.id}
+      // only thing we need to do is update the average, so i guess we either get the total score and number of darts and keep track of it in js, or else we have to
+      // constantly hit the database to get the average, which is silly i think.
+      //return {'date' : data.displayDateTime, 'score' : data.score, 'dateMillis' : data.dateMilliseconds, 'numRounds' : data.numRounds, 'avg' : avg, 'id' : data.id}
   }
 
   /*
-  * called when changing targets - clears all historical game data
+  * called from cancel game
   */
 
   $scope.targetData.reset = function() {
-     $scope.targetData.games = [];
-     $scope.targetData.allGames = [];
-     $scope.targetData.results = [];
-  }
-
-  /*
-  * reset the existing game data, but don't touch the historical game data
-  */
-  $scope.targetData.resetGameData = function(data) {
-    data.isShowRounds = false;
-    data.results = [];
-    data.round.number = 1;
-    data.score = 0;
-    data.modifier = "";
-    data.turn = [];
+    $scope.targetData.isShowRounds = false;
+    $scope.targetData.results = [];
+    $scope.targetData.turn = [];
+    $scope.targetData.modifier = "";
+    $scope.targetData.averages = [];
+    $scope.targetData.combinedAverages = [];
+    // theoretically we could be updating the average with each dart or turn or something, so we can hold onto the original values for the averages,
+    // if we cancel the round we could reset to the old averages.
   }
 
   /*
@@ -123,63 +106,37 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   $scope.getResults = function(url, gamesContainer) {
     $http.get(url).
           success(function(data, status) {
-            $log.info(data);
-            var numResults = data.totalNumResults;
-            var tempResults = data.dartsResults;
-            if (tempResults) {
-              var resultsLength = tempResults.length;
-              $log.info("results length: " + resultsLength + ", total number of results: " + numResults);
-              for (var i=0; i < resultsLength; i++) {
-                var tempdata = tempResults[i];
-                var oldRound = {};
-                oldRound.id = tempdata.id;
-                oldRound.date = tempdata.displayDateTime;
-                oldRound.score = tempdata.score;
-                oldRound.dateMillis = tempdata.dateMilliseconds;
-                oldRound.numRounds = tempdata.numRounds;
-                oldRound.avg = (oldRound.score / oldRound.numRounds);
-                if (tempdata.score && tempdata.displayDateTime) {
-                  gamesContainer.push(oldRound);
-                }
-              }
-              // if there are more results than we show, we need the show all button, and we also need to load up the rest of the data for calculating averages
-              if ($scope.initialNumGames <= resultsLength && resultsLength < numResults) {
-                $scope.needsShowAll = true;
-                $scope.loadAll();
-              // if there are fewer total results than we ask for, then just copy the data over into the structure for calculating averages.
-              } else if ($scope.initialNumGames >= resultsLength && resultsLength >= numResults) {
-                $scope.needsShowAll = false;
-                $scope.targetData.allGames = gamesContainer.slice();
-              } else {
-                // if we get here, do we have to set allGames?
-                $scope.targetData.allGames = gamesContainer.slice();
-              }
-            }
+            $scope.parseResults(data);
           }).
           error(function(data, status) {
             $log.error("failed")
           })
   }
 
+  $scope.parseResults = function(data) {
+    //var aggregateData = data.aggregateData
+    var aggregateData = data
+    if (aggregateData) {
+      for (var i=0; i<aggregateData.length; i++) {
+        var tempData = aggregateData[i];
+        var avgData = {};
+        avgData.type = tempData.type;
+        avgData.score = tempData.score;
+        avgData.numDarts = tempData.numDarts;
+        avgData.targetAverage = (avgData.score / avgData.numDarts).toFixed(1);
+        $scope.targetData.averages.push(avgData);
+        $scope.targetData.combinedAverages = $scope.targetData.averages.slice(0);
+      }
+    }
+  }
+
   /*
   * standardized method to load the initial data.  not sure it is totally necessary.
   */
   $scope.getData = function() {
-    // first, load the last 10 results, show this right away
-    // $scope.getResults($scope.targetData.loadUrl, $scope.targetData.games);
+    // load the averages data
+    $scope.getResults($scope.targetData.loadUrl, $scope.targetData.averages);
   }
-
-  /*
-  * load up all results for user and game mode.  we may have to put some limit on this as data gets big
-  */
-  $scope.loadAll = function() {
-    // $scope.getResults($scope.targetData.loadAllUrl, $scope.targetData.allGames);
-  }
-
-  /*
-  * set the data loading/posting urls to be appropriate for the current target
-  */
-  $scope.setUpUrls();
 
   /*
   * load up the data when we get here...
@@ -214,51 +171,32 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
     }
   }
 
-  /*
-  * get all the games into targetData.games array, either by copying or loading
-  * called from "show all" button click
-  */
-  $scope.showAll = function() {
-      $scope.targetData.games = [];
-      if ($scope.targetData.allGames.length == 0) {
-          $scope.getResults($scope.targetData.loadAllUrl, $scope.targetData.games);
-      } else if ($scope.targetData.allGames.length > 0) {
-          $scope.targetData.games = $scope.targetData.allGames.slice();
-      }
-      $scope.needsShowAll = false;
-  }
 
   /*
   * cancel a game - clear the current game data
   */
   $scope.cancelGame = function() {
-      $scope.targetData.resetGameData($scope.targetData);
-  }
-
-  /*
-  * called when a user picks a new target from select box.
-  * resets urls and data, and reloads data
-  */
-  $scope.changedTarget = function() {
-      $scope.setUpUrls();
+      $scope.targetData.reset();
+      $scope.getData();
   }
 
   /*
   * called from button on front end - loads the chart if there is data
-  */
+  * not sure a chart makes sense here.
   $scope.showChart = function() {
     $scope.isShowChart = true;
     if ($scope.targetData.allGames.length > 0) {
       chartService($scope.targetData.allGames);
     }
   }
+*/
 
   /*
   * works with front end code to select a round for editing
   * ng-show="selectedEditRound == result"
   */
   $scope.selectEditRound = function(item) {
-    $scope.selectedEditRound = item;
+    $scope.targetData.selectedEditRound = item;
     $scope.targetData.isEditMode = true;
   }
 
@@ -267,11 +205,9 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   * and then calls update score to update the game score
   */
   $scope.finishEditing = function(result) {
-    var targetArray = [result.firstDart, result.secondDart, result.thirdDart];
-    var score = $scope.tally(targetArray);
-    result.score = score;
-    $scope.selectedEditRound = {};
-    $scope.updateScore();
+    $scope.scoreDart(result.dart, result.type);
+    $scope.targetData.selectedEditRound = {};
+    $scope.updateScore(result);
     $scope.targetData.dartToUpdate = "";
     $scope.targetData.isEditMode = false;
   }
@@ -283,144 +219,109 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
     $scope.targetData.isShowRounds = true;
   }
 
-  /*
-  * this is the fledgling attempt to bring back round data
-  */
-  $scope.gameClicked = function(game) {
-    // if game.rounds is defined and has some data, just clear it
-    if (typeof game.rounds != "undefined" && game.rounds.length > 0) {
-      // we already loaded this data, so clicking again should hide it...
-      $scope.clearAllRounds();
-    } else {
-      var url = "/data/gameDetails" + game.id;
-      //$log.info("url: " + url);
-      //this.game.id gets us the game id.
-      //$log.info(this.game);
-      $http.get(url).
-        success(function(data, status) {
-          game.rounds = data;
-          // so we need to take this data, which is an array of round/scores, and dump it into the result
-        }).
-        error(function(data, status) {
-          $log.error("failed")
-        })
-    }
-  }
-
-  $scope.clearAllRounds = function() {
-    for (var i=0; i<$scope.targetData.games.length; i++) {
-      var game = $scope.targetData.games[i];
-      game.rounds = [];
-    }
-  }
-
-
   /*************** score management methods *****************/
 
   /*
   * this method gets called every time a score button is clicked.
-  * every set of darts is then tallied and added to the score.
+  * every dart should be scored individually and added to the total averages
   */
-  $scope.markDart = function(result) {
-    var dart = result;
+  $scope.markDart = function(dart) {
     if ($scope.targetData.modifier) {
-      dart = $scope.targetData.modifier + result;
+      dart = $scope.targetData.modifier + dart;
     }
     // if we are not in edit mode, go ahead and mark the dart in the results
     if (!$scope.targetData.isEditMode) {
       // round result is used to show the darts that have been selected in the current turn
-      $scope.roundResult.push(dart);
+      $scope.targetData.turn.push(dart);
 
-      // at the end of every turn submit the turn to the scoring.
-      if ($scope.roundResult.length >= 3) {
-        $scope.scoreTurn();
+      // score after every dart, but only send to the database on save.
+      // can maybe temp save in local storage so there is some durability/safety
+      var score = $scope.scoreDart(dart, $scope.target.id);
+      var newResult = {"type" : $scope.target.id, "dart" : dart, "score" : score, 'dateMilliseconds' : new Date().getTime()};
+      $scope.targetData.results.push(newResult);
+      $scope.updateScore();
+
+      if ($scope.targetData.turn.length >= 3) {
+        $scope.turn = [];
       }
     } else {
-      // what to do with the result?
-      if ($scope.targetData.dartToUpdate == "first") {
-        $scope.selectedEditRound.firstDart = dart;
-      } else if ($scope.targetData.dartToUpdate == "second") {
-        $scope.selectedEditRound.secondDart = dart;
-      } else if ($scope.targetData.dartToUpdate == "third") {
-        $scope.selectedEditRound.thirdDart = dart;
-      }
+      // we are in edit mode wheeeee
+      // this needs work...
+      $scope.targetData.selectedEditRound.dart = dart;
+      $scope.updateScore();
     }
+
     $scope.targetData.modifier = "";
   }
 
   /*
   * responsible for updating the score every turn, and managing the cleanup for the next turn
   */
-  $scope.scoreTurn = function() {
-    var score = $scope.tally($scope.roundResult);
-    var newResult = {"firstDart" : $scope.roundResult[0], "secondDart" : $scope.roundResult[1], "thirdDart" : $scope.roundResult[2], "round" : $scope.targetData.round.number, "score" : score};
-    $scope.targetData.results.push(newResult);
-    $scope.targetData.round.number++;
-    // only update this every round, so the average doesn't get screwy...
-    $scope.updateScore();
-    $scope.roundResult = [];
+  $scope.scoreDart = function(dart, target) {
+    var score = 0;
+    if (typeof(dart) == "number") {
+      dart = dart.toString();
+    }
+    if (dart.indexOf(target) !== -1) {
+      score = scoreCalculator(dart);
+    }
+
+    return score;
+    // okay so we have the dart, the target and the score, so we create this object and add it to a list of darts to save
+    // and we aggregate this list and add that aggregate to the database to get the moving average.
+    // what could possibly go wrong...
+    // on save we shove results into the database
+
   }
 
   /*
-  * tally takes a particular turn and returns the aggregate score for three darts
-  */
-  $scope.tally = function(turn) {
-    // turn.length sure ought to be 3 here
-    if (turn.length != 3) {
-      $log.info("turn is not 3, this is weird, man");
-    }
-    var total = 0;
-    for (var i=0; i<turn.length; i++) {
-      var dart = turn[i];
-      if (typeof(dart) == "number") {
-        dart = dart.toString();
-      }
-      if (dart.indexOf($scope.target.id) !== -1) {
-        var score = scoreCalculator(dart);
-
-        total = total + score;
-      }
-    }
-    return total;
-  }
-
-  /*
-  * update score resets the total score to zero, and then re-sums all of the round scores
+  * update the score - add the new results to the aggregated results
+  * but don't aggregate the damn results together, because then lol good luck when you edit a turn
   */
   $scope.updateScore = function() {
-    $scope.targetData.score = 0;
-    for (var i=0; i<$scope.targetData.results.length;i++) {
-        var result = $scope.targetData.results[i];
-        $scope.targetData.score = $scope.targetData.score + result.score;
+    var newResults = $scope.targetData.results;
+    $scope.targetData.combinedAverages = $scope.targetData.averages.slice(0);
+    console.log($scope.targetData.combinedAverages);
+    //console.log($scope.targetData.combinedAverages);
+
+    // for each of the new results,
+    for (var i=0; i<newResults.length; i++) {
+      var result = newResults[i];
+      var isScored = false;
+      for (var j=0; j<$scope.targetData.combinedAverages.length;j++) {
+        var target = $scope.targetData.combinedAverages[j];
+        if (target.type == result.type) {
+          target.numDarts++;
+          target.score += result.score;
+          target.targetAverage = (target.score / target.numDarts).toFixed(1);
+          isScored = true;
+          break;
+        }
+      }
+      if (!isScored) {
+        var newAverage = {};
+        newAverage.type = result.type;
+        newAverage.numDarts = 1;
+        newAverage.score = result.score;
+        newAverage.targetAverage = result.score;
+        $scope.targetData.combinedAverages.push(newAverage);
+      }
     }
   }
 
 
-  /*
-  * this watcher updates the chart each time the 'allGames' array changes length,
-  * but only calls the chart service if the chart is visible
-  */
-  $scope.$watch(
-    function() {return $scope.targetData.allGames.length},
-    function() {
-      if ($scope.isShowChart) {
-        chartService($scope.targetData.allGames);
-      }
-    }
-  )
-}
 
-//mainController.$inject = [];
+  $scope.checkRoundsComplete = function() {
+    return $scope.targetData.turn.length > 0;
+  }
+
+  $scope.isHideCancel = function() {
+    return $scope.targetData.turn.length == 0 || $scope.targetData.isEditMode;
+  }
+
+}
 
 function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-
-// idea for editing rounds
-/*
-you should click on the actual dart you want to change
-when you click on it, it gets highlighted
-then you select the score you want to replace it with
-then you click save
-*/
