@@ -25,7 +25,7 @@ public class DartsResult {
     @Expose private int score;
     @Expose private int numRounds;
 
-    private DateTimeManagement dateTimeManagement = new DateTimeManagement();
+    @Expose private DateTimeManagement dateTimeManagement = new DateTimeManagement();
 
     private String username;
 
