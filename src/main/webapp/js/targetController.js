@@ -92,7 +92,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   */
   $scope.createNewResult = function(data) {
       var avg = data.score / data.numRounds;
-      return {'date' : data.displayDateTime, 'score' : data.score, 'dateMillis' : data.dateMilliseconds, 'numRounds' : data.numRounds, 'avg' : avg, 'id' : data.id}
+      return {'date' : data.dateTimeManagement.displayDateTime, 'score' : data.score, 'dateMillis' : data.dateTimeManagement.dateMilliseconds, 'numRounds' : data.numRounds, 'avg' : avg, 'id' : data.id}
   }
 
   /*

@@ -68,7 +68,7 @@
 
     <insert id='insertGame' parameterType='DartsResult' useGeneratedKeys='true' keyProperty='id'>
         INSERT INTO darts_result(type, score, date, darts_user, numRounds)
-        VALUES(#{type.value}, #{score}, #{timestamp}, #{username}, #{numRounds})
+        VALUES(#{type.value}, #{score}, #{dateTimeManagement.timestamp}, #{username}, #{numRounds})
     </insert>
 
     <insert id='insertRound' parameterType='map' useGeneratedKeys='true' keyProperty='roundResult.id'>
