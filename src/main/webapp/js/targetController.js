@@ -77,6 +77,10 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
     return (($scope.targetData.round.number > $scope.targetData.numRounds.num) && ($scope.targetData.isEditMode == false));
   }
 
+  $scope.hideTriple = function() {
+    return target.id == 'bull';
+  }
+
 
   /***************** data loading and saving methods **********************/
 

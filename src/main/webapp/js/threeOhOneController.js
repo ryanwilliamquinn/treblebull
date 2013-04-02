@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module("dartsApp.controller", []);
-function mainController($scope, $http, $log, $location, postDataService, scoreCalculator) {
+function mainController($scope, $http, $log, $location, postDataService, ohOneScoreCalculator) {
   $scope.targetData = {};
   $scope.targetData.isShowRounds = false;
   $scope.isShowChart = false;
@@ -42,19 +42,17 @@ function mainController($scope, $http, $log, $location, postDataService, scoreCa
   // model used in selectEditRound method
   $scope.targetData.selectedEditRound = {};
 
-  // here is an old array that included doubles and triples.  not sure how i feel about that.
-  //$scope.targetTypes = [{id : "bull", label : "bullseye"}, {id : "t20", label : "triple 20"}, {id : "d20", label : "double 20"}, {id : "20", label :"20"},
-  //                        {id : "t19", label : "triple 19"}, {id : "d19", label : "double 19"}, {id : "19", label : "19"}];
-
-  // the available targets.  this could be expanded.
-  $scope.targetTypes = [{id : "bull", label : "bullseye"}, {id : "20", label :"20"}, {id : "19", label :"19"}, {id : "18", label :"18"}, {id : "17", label :"17"},
-                          {id : "16", label :"16"}, {id : "15", label :"15"}]
+  $scope.targetData.targetScore = 301;
+  $scope.targetData.remainingScore = 301;
 
   // set the default target
-  $scope.target = $scope.targetTypes[0];
+  $scope.target = {};
 
   $scope.targetData.isEditMode = false;
 
+  $scope.checkRoundsComplete = function() {
+      return false;
+    }
 
   /***************** data loading and saving methods **********************/
 
@@ -236,8 +234,8 @@ function mainController($scope, $http, $log, $location, postDataService, scoreCa
 
       // score after every dart, but only send to the database on save.
       // can maybe temp save in local storage so there is some durability/safety
-      var score = $scope.scoreDart(dart, $scope.target.id);
-      var newResult = {"type" : $scope.target.id, "dart" : dart, "score" : score, 'dateMilliseconds' : new Date().getTime()};
+      var score = $scope.scoreDart(dart);
+      var newResult = {"type" : "301", "dart" : dart, "score" : score, 'dateMilliseconds' : new Date().getTime()};
       $scope.targetData.results.push(newResult);
       $scope.updateScore();
 
@@ -248,6 +246,8 @@ function mainController($scope, $http, $log, $location, postDataService, scoreCa
       // we are in edit mode wheeeee
       // this needs work...
       $scope.targetData.selectedEditRound.dart = dart;
+      $scope.targetData.selectedEditRound.score = $scope.scoreDart(dart);
+
       $scope.updateScore();
     }
 
@@ -257,25 +257,15 @@ function mainController($scope, $http, $log, $location, postDataService, scoreCa
   /*
   * responsible for updating the score every turn, and managing the cleanup for the next turn
   */
-  $scope.scoreDart = function(dart, target) {
-    var score = 0;
+  $scope.scoreDart = function(dart) {
     if (typeof(dart) == "number") {
       dart = dart.toString();
     }
-    if (dart.indexOf(target) !== -1) {
-      score = scoreCalculator(dart);
-    }
-
-    return score;
-    // okay so we have the dart, the target and the score, so we create this object and add it to a list of darts to save
-    // and we aggregate this list and add that aggregate to the database to get the moving average.
-    // what could possibly go wrong...
-    // on save we shove results into the database
-
+    return ohOneScoreCalculator(dart);
   }
 
   $scope.hideTriple = function() {
-    return target.id == 'bull';
+    return false;
   }
 
   /*
@@ -284,39 +274,30 @@ function mainController($scope, $http, $log, $location, postDataService, scoreCa
   */
   $scope.updateScore = function() {
     var newResults = $scope.targetData.results;
-    $scope.targetData.combinedAverages = $scope.targetData.averages.slice(0);
-    console.log($scope.targetData.combinedAverages);
-    //console.log($scope.targetData.combinedAverages);
-
-    // for each of the new results,
-    for (var i=0; i<newResults.length; i++) {
-      var result = newResults[i];
-      var isScored = false;
-      for (var j=0; j<$scope.targetData.combinedAverages.length;j++) {
-        var target = $scope.targetData.combinedAverages[j];
-        if (target.type == result.type) {
-          target.numDarts++;
-          target.score += result.score;
-          target.targetAverage = (target.score / target.numDarts).toFixed(1);
-          isScored = true;
-          break;
+    // each time we update the score, start off with the full score again
+    $scope.targetData.remainingScore = $scope.targetData.targetScore;
+    var isDoubledIn = false;
+    for (var i=0; i<$scope.targetData.results.length; i++) {
+      var result = $scope.targetData.results[i];
+      if (!isDoubledIn) {
+        var dart = result.dart;
+        if (typeof(dart) == "number") {
+          dart = dart.toString();
+        }
+        // check if it is a double, if not, continue;
+        if (dart.lastIndexOf("d", 0) !== 0) {
+          result.score = 0;
+          continue;
+        } else {
+          isDoubledIn = true;
         }
       }
-      if (!isScored) {
-        var newAverage = {};
-        newAverage.type = result.type;
-        newAverage.numDarts = 1;
-        newAverage.score = result.score;
-        newAverage.targetAverage = result.score;
-        $scope.targetData.combinedAverages.push(newAverage);
+      if (isDoubledIn) {
+        $scope.targetData.remainingScore -= result.score;
       }
     }
-  }
 
 
-
-  $scope.checkRoundsComplete = function() {
-    return $scope.targetData.turn.length > 0;
   }
 
   $scope.isHideCancel = function() {

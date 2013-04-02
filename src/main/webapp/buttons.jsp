@@ -9,8 +9,9 @@
       <div style="display:inline-block; margin:5px;" class="sdtTarget" ng-click="markDart('t' + target.id)" ng-show="target.id && target.id != 'bull'">triple {{target.id}}</div>
     </div>
     <div style="width:300px;">
+      <%-- need to make it so that the bull is unclickable if the triple is selected --%>
       <span class="dtTarget" ng-click="toggleModifier('d')" ng-class="{activeModifier: targetData.modifier=='d'}">D</span>
-      <span class="dtTarget" ng-click="toggleModifier('t')" ng-class="{activeModifier: targetData.modifier=='t'}" ng-hide="target.id == 'bull'">T</span>
+      <span class="dtTarget" ng-click="toggleModifier('t')" ng-class="{activeModifier: targetData.modifier=='t'}" ng-hide="hideTriple()">T</span>
       <span style="display:inline-block; margin:5px;" ng-repeat="n in [] | reverseRangeWithBull:20" class="sTarget" ng-click="markDart(n)">{{n}}</span>
     </div>
   </div>
@@ -25,6 +26,11 @@
           <span name="roundResult" ng-hide="targetData.selectedEditRound == result" ng-click="selectEditRound(result)">Target: {{result.type}}, <span style="margin-left:20px;">Result: {{result.dart}},</span> <span style="margin-left:20px;">score: {{result.score}}</span></span>
           <span name="targetInput" class="sTarget" ng-show="targetData.selectedEditRound == result" ng-click="toggleDartToUpdate('target')" ng-class="{activeModifier: targetData.dartToUpdate == 'target'}">{{result.type}}:</span>
           <span name="resultInput" class="sTarget" ng-show="targetData.selectedEditRound == result" ng-click="toggleDartToUpdate('dartResult')" ng-class="{activeModifier: targetData.dartToUpdate == 'dartResult'}" style="margin-left:20px;">{{result.dart}}</span>
+         </c:when>
+         <c:when test="${practiceMode == '301'}">
+           <span name="roundResult" ng-hide="targetData.selectedEditRound == result" ng-click="selectEditRound(result)"><span style="margin-left:20px;">Result: {{result.dart}},</span> <span style="margin-left:20px;">score: {{result.score}}</span></span>
+           <span name="targetInput" class="sTarget" ng-show="targetData.selectedEditRound == result" ng-click="toggleDartToUpdate('target')" ng-class="{activeModifier: targetData.dartToUpdate == 'target'}">{{result.type}}:</span>
+           <span name="resultInput" class="sTarget" ng-show="targetData.selectedEditRound == result" ng-click="toggleDartToUpdate('dartResult')" ng-class="{activeModifier: targetData.dartToUpdate == 'dartResult'}" style="margin-left:20px;">{{result.dart}}</span>
          </c:when>
          <c:otherwise>
           Round: <span>{{result.round}}</span>
