@@ -78,7 +78,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   }
 
   $scope.hideTriple = function() {
-    return target.id == 'bull';
+    return $scope.target.id == 'bull';
   }
 
 
