@@ -2,7 +2,7 @@
 
 <jsp:include page="header.jsp"/>
 
-<div ng-controller="mainController">
+<div ng-controller="threeOhOneController">
   <div>Game mode: ${practiceMode}</div>
   <a href="/practice" style="display:block; float:right;" class="button blue">Practice home</a>
   <div ng-hide="targetData.isShowRounds">
@@ -12,6 +12,7 @@
   <jsp:include page="buttons.jsp"/>
 
   <div>Double in/double out.  You have: {{targetData.remainingScore}} points left</div>
+  <div>Turn count: {{targetData.turnCounter}} ::: {{targetData.dartCounter}}
 </div>
 
 

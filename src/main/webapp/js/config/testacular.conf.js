@@ -7,6 +7,7 @@ files = [
   'angular/angular-*.js',
   'test/lib/angular/angular-mocks.js',
   'targetController.js',
+  'threeOhOneController.js',
   'filters.js',
   'services.js',
   'utils.js',

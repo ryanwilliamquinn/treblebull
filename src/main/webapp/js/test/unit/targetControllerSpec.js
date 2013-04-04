@@ -18,7 +18,7 @@ describe('target controllers', function() {
         respond(
           {
             totalNumResults : 1,
-            dartsResults : [{'id': 1, 'displayDateTime' : "Jan 1, 2012", 'score' : 5, 'dateMilliseconds' : 1234123412, 'numRounds' : 3, 'avg' : 2}]
+            dartsResults : [{'id': 1, dateTimeManagement:{'displayDateTime' : "Jan 1, 2012", 'dateMilliseconds' : 1234123412}, 'score' : 5, 'numRounds' : 3, 'avg' : 2}]
           });
 
         scope = $rootScope.$new();

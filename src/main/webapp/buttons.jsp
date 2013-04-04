@@ -28,7 +28,7 @@
           <span name="resultInput" class="sTarget" ng-show="targetData.selectedEditRound == result" ng-click="toggleDartToUpdate('dartResult')" ng-class="{activeModifier: targetData.dartToUpdate == 'dartResult'}" style="margin-left:20px;">{{result.dart}}</span>
          </c:when>
          <c:when test="${practiceMode == '301'}">
-           <span name="roundResult" ng-hide="targetData.selectedEditRound == result" ng-click="selectEditRound(result)"><span style="margin-left:20px;">Result: {{result.dart}},</span> <span style="margin-left:20px;">score: {{result.score}}</span></span>
+           <span name="roundResult" ng-hide="targetData.selectedEditRound == result" ng-click="selectEditRound(result)"><span style="margin-left:20px;">Result: {{result.dart}},</span> <span style="margin-left:20px;">score: {{result.score}}, {{result.turn}}</span></span>
            <span name="targetInput" class="sTarget" ng-show="targetData.selectedEditRound == result" ng-click="toggleDartToUpdate('target')" ng-class="{activeModifier: targetData.dartToUpdate == 'target'}">{{result.type}}:</span>
            <span name="resultInput" class="sTarget" ng-show="targetData.selectedEditRound == result" ng-click="toggleDartToUpdate('dartResult')" ng-class="{activeModifier: targetData.dartToUpdate == 'dartResult'}" style="margin-left:20px;">{{result.dart}}</span>
          </c:when>

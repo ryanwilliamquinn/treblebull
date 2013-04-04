@@ -3,11 +3,13 @@
 /* Controllers */
 
 angular.module("dartsApp.controller", []);
-function mainController($scope, $http, $log, $location, postDataService, ohOneScoreCalculator) {
+function threeOhOneController($scope, $http, $log, $location, postDataService, ohOneScoreCalculator) {
   $scope.targetData = {};
   $scope.targetData.isShowRounds = false;
   $scope.isShowChart = false;
   $scope.targetData.turn = [];
+  $scope.targetData.turnCounter = 1;
+  $scope.targetData.dartCounter = 0;
   // placeholder for keeping track of the double/triple state
   $scope.targetData.modifier = "";
 
@@ -51,13 +53,14 @@ function mainController($scope, $http, $log, $location, postDataService, ohOneSc
   $scope.targetData.isEditMode = false;
 
   $scope.checkRoundsComplete = function() {
-      return false;
-    }
+    return $scope.targetData.remainingScore == 0;
+  }
 
   /***************** data loading and saving methods **********************/
 
   /*
   * this is going to be a little interesting, since we are batch posting
+  * also should post number of rounds and the number you took out
   */
   $scope.postResult = function() {
     var myjson = JSON.stringify($scope.targetData.results, replacer);
@@ -91,10 +94,9 @@ function mainController($scope, $http, $log, $location, postDataService, ohOneSc
     $scope.targetData.results = [];
     $scope.targetData.turn = [];
     $scope.targetData.modifier = "";
-    $scope.targetData.averages = [];
-    $scope.targetData.combinedAverages = [];
-    // theoretically we could be updating the average with each dart or turn or something, so we can hold onto the original values for the averages,
-    // if we cancel the round we could reset to the old averages.
+    $scope.targetData.remainingScore = 301;
+    $scope.targetData.dartCounter = 0;
+    $scope.targetData.turnCounter = 1;
   }
 
   /*
@@ -128,22 +130,6 @@ function mainController($scope, $http, $log, $location, postDataService, ohOneSc
     }
   }
 
-  /*
-  * standardized method to load the initial data.  not sure it is totally necessary.
-  */
-  $scope.getData = function() {
-    // load the averages data
-    $scope.getResults($scope.targetData.loadUrl, $scope.targetData.averages);
-  }
-
-  /*
-  * load up the data when we get here...
-  */
-  $scope.getData();
-
-
-
-
 
   /************** User/view initiated methods *****************/
 
@@ -175,7 +161,6 @@ function mainController($scope, $http, $log, $location, postDataService, ohOneSc
   */
   $scope.cancelGame = function() {
       $scope.targetData.reset();
-      $scope.getData();
   }
 
   /*
@@ -235,13 +220,11 @@ function mainController($scope, $http, $log, $location, postDataService, ohOneSc
       // score after every dart, but only send to the database on save.
       // can maybe temp save in local storage so there is some durability/safety
       var score = $scope.scoreDart(dart);
-      var newResult = {"type" : "301", "dart" : dart, "score" : score, 'dateMilliseconds' : new Date().getTime()};
+      var newResult = {'type' : '301', 'dart' : dart, 'score' : score, 'dateMilliseconds' : new Date().getTime(), 'turn' : $scope.targetData.turnCounter};
       $scope.targetData.results.push(newResult);
       $scope.updateScore();
 
-      if ($scope.targetData.turn.length >= 3) {
-        $scope.turn = [];
-      }
+
     } else {
       // we are in edit mode wheeeee
       // this needs work...
@@ -269,16 +252,26 @@ function mainController($scope, $http, $log, $location, postDataService, ohOneSc
   }
 
   /*
-  * update the score - add the new results to the aggregated results
-  * but don't aggregate the damn results together, because then lol good luck when you edit a turn
+  *   we need to deal with turns and individual darts here.
+  *   the score should be updated on each dart, but it needs to be aware of turns.
+  *
   */
   $scope.updateScore = function() {
     var newResults = $scope.targetData.results;
+    var isIncrementTurn = false;
+
     // each time we update the score, start off with the full score again
     $scope.targetData.remainingScore = $scope.targetData.targetScore;
+
+    // only start scoring after we are doubled in
     var isDoubledIn = false;
-    for (var i=0; i<$scope.targetData.results.length; i++) {
+
+
+    var resultsLength = $scope.targetData.results.length;
+    for (var i=0; i<resultsLength; i++) {
       var result = $scope.targetData.results[i];
+
+      // if we aren't double in yet, check each dart in the results until we are
       if (!isDoubledIn) {
         var dart = result.dart;
         if (typeof(dart) == "number") {
@@ -292,17 +285,56 @@ function mainController($scope, $http, $log, $location, postDataService, ohOneSc
           isDoubledIn = true;
         }
       }
+
       if (isDoubledIn) {
         $scope.targetData.remainingScore -= result.score;
       }
+    }
+
+    if ($scope.targetData.remainingScore == 0) {
+
+      // check if the last dart was a double
+      var lastDart = $scope.targetData.results[resultsLength - 1];
+      var lastDartResult = lastDart.dart;
+      if (typeof(lastDartResult) == "number") {
+        lastDartResult = lastDartResult.toString();
+      }
+
+      // if the last dart was not a double, zero out the scores for the last turn
+      if (lastDartResult.lastIndexOf("d", 0) !== 0) {
+        $scope.setLastTurnScoresToZero();
+      }
+    } else if ($scope.targetData.remainingScore < 2) {
+      $scope.setLastTurnScoresToZero();
+      isIncrementTurn = true;
+    }
+
+    if (isIncrementTurn || $scope.targetData.dartCounter == 2) {
+      $scope.targetData.dartCounter = 0;
+      $scope.targetData.turnCounter++;
+      $scope.targetData.turn = [];
+    } else {
+      $scope.targetData.dartCounter++;
     }
 
 
   }
 
   $scope.isHideCancel = function() {
-    return $scope.targetData.turn.length == 0 || $scope.targetData.isEditMode;
+    return $scope.targetData.results.length == 0 || $scope.targetData.isEditMode;
   }
+
+  $scope.setLastTurnScoresToZero = function() {
+    var turnToRollBack = $scope.targetData.turnCounter;
+    for (var i=0; i<$scope.targetData.results.length; i++) {
+      var dart = $scope.targetData.results[i];
+      if (dart.turn == turnToRollBack) {
+        dart.score = 0;
+      }
+    }
+    $scope.updateScore();
+  }
+
 
 }
 
