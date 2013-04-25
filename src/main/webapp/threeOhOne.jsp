@@ -4,9 +4,9 @@
 
 <div ng-controller="threeOhOneController">
   <div>Game mode: ${practiceMode}</div>
-  <a href="/practice" style="display:block; float:right;" class="button blue">Practice home</a>
+  <a href="/practice" style="display:block; float:right;" class="button dbGreen">Practice home</a>
   <div ng-hide="targetData.isShowRounds">
-    <span ng-click="showRounds()" id="gameStart" class="smallButton blue" style="margin-left:20px;">Start game</span>
+    <span ng-click="showRounds()" id="gameStart" class="smallButton dbGreen" style="margin-left:20px;">Start game</span>
   </div>
 
   <jsp:include page="buttons.jsp"/>

@@ -22,7 +22,7 @@
         </div>
         --%>
     </div>
-    <a href="/practice" style="display:block; float:right;" class="button blue">Practice home</a>
+    <a href="/practice" style="display:block; float:right;" class="button dbGreen">Practice home</a>
     <div style="clear:both;" ng-repeat="avg in targetData.combinedAverages">
     {{avg.type}}, {{avg.targetAverage}}
     </div>

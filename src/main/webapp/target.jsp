@@ -15,7 +15,7 @@
             <select ng-model="target" ng-options="target.label for target in targetTypes" ng-change="changedTarget()"></select>
             Rounds Per Game:
             <select ng-model="targetData.numRounds" ng-options="numRounds.rounds for numRounds in numRoundsAvailable" ng-change="changedRounds()"></select>
-            <span ng-click="showRounds()" id="gameStart" class="smallButton blue" style="margin-left:20px;">Start game</span>
+            <span ng-click="showRounds()" id="gameStart" class="smallButton dbGreen" style="margin-left:20px;">Start game</span>
         </div>
         <jsp:include page="buttons.jsp"/>
         <jsp:include page="pastRounds.jsp"/>
@@ -23,13 +23,13 @@
             All time average: {{targetData.allGames|lifetimeAverage}}
         </div>
     </div>
-    <a href="/practice" style="display:block; float:right;" class="button blue">Practice home</a>
+    <a href="/practice" style="display:block; float:right;" class="button dbGreen">Practice home</a>
     <div style="clear:both;" ng-show="needsShowAll">
-        <span ng-click="showAll()" style="cursor:pointer;" class="button blue">Show all results</span>
+        <span ng-click="showAll()" style="cursor:pointer;" class="button dbGreen">Show all results</span>
     </div>
 
-    <div class="blue smallButton" ng-hide="isShowChart" ng-click="showChart()">Show chart</div>
-    <div class="blue smallButton" ng-show="isShowChart" ng-click="isShowChart = false">Hide chart</div>
+    <div class="dbGreen smallButton" ng-hide="isShowChart" ng-click="showChart()">Show chart</div>
+    <div class="dbGreen smallButton" ng-show="isShowChart" ng-click="isShowChart = false">Hide chart</div>
 
     <div id="container" class="resultsChart" ng-show="isShowChart"></div>
 

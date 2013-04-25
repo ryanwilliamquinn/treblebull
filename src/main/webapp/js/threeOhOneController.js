@@ -29,8 +29,8 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   $scope.targetData.combinedAverages = [];
 
   // urls required for loading and posting data
-  $scope.targetData.postUrl = "/data/free";
-  $scope.targetData.loadUrl = "/data/loadFree";
+  $scope.targetData.postUrl = "/data/301";
+  $scope.targetData.loadUrl = "/data/load301";
 
   // determines if 'show all' button will be present
   $scope.needsShowAll = true;
@@ -66,6 +66,7 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
     var myjson = JSON.stringify($scope.targetData.results, replacer);
     $http.post($scope.targetData.postUrl, myjson).
       success(function(data, status) {
+        $scope.targetData.reset();
         $log.info("posted successfully");
       }).
       error(function(data, status) {

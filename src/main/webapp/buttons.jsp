@@ -40,7 +40,7 @@
           <span name="thirdDartInput" class="sTarget" ng-show="targetData.selectedEditRound == result" ng-click="toggleDartToUpdate('third')" ng-class="{activeModifier: targetData.dartToUpdate=='third'}">{{result.thirdDart}}</span>
          </c:otherwise>
         </c:choose>
-        <span class="blue smallButton unselectable" ng-show="targetData.selectedEditRound == result" ng-click="finishEditing(result)">Save</span>
+        <span class="dbGreen smallButton unselectable" ng-show="targetData.selectedEditRound == result" ng-click="finishEditing(result)">Save</span>
       </div>
     </div>
     <span ng-click="cancelGame()" id="cancelGame" class="smallButton red unselectable" style="margin-top:15px; display:inline-block;" ng-hide="isHideCancel()">Cancel game</span>

@@ -1,4 +1,4 @@
-body {margin:0px}
+body {margin:0px; background-color:#222; color:#ccc;}
 .content {margin:0 auto;}
 .resultsChart{width:320px; height:400px;}
 @media all and (min-width:40em){.content{max-width:31em;} .resultsChart{width:31em;}}
@@ -7,9 +7,11 @@ body {margin:0px}
 @media all and (min-width:93.98em){.content{max-width:74.65em;} .resultsChart{width:74.65em;}}
 h3 {margin:0px;}
 
+a:link,a:active,a:hover,a:visited {color:#ccc;}
+
 .block {display:block;}
 .hide {display:none;}
-.header {width:100%; background-color:#eee; border-bottom:2px solid #ccc; margin-bottom:5px; line-height:30px; padding:0 10px 0 10px;}
+.header {width:100%; background-color:#eee; border-bottom:2px solid #ccc; color:#000; margin-bottom:5px; line-height:30px; padding:0 10px 0 10px;}
 .scoreInput {width:40px; margin:10px;}
 #headerContent {margin:0px auto;}
 #headerTitle {float:left;}
@@ -19,14 +21,15 @@ h3 {margin:0px;}
 #signupform input.ng-invalid.ng-dirty {border:solid 2px red;}
 #signupform input.ng-valid.ng-dirty {border:solid 2px green;}
 .error {color:red; font-size:13px;}
-.button {display:inline-block; height:25px; line-height:25px; text-decoration:none; color:white; margin:5px 0px;
-             text-align:center;-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; border:solid 2px black; padding:0px 5px;
+.button {display:inline-block; height:25px; line-height:25px; text-decoration:none; margin:5px 0px;
+             text-align:center;-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; border:solid 2px #ddd; padding:0px 5px;
              cursor:pointer;}
-.smallButton {display:inline-block; height:18px; line-height:18px; font-size:13px; text-decoration:none; color:white; margin:5px 0px;
-                              text-align:center;-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; border:solid 2px black; padding:0px 6px;
+.smallButton {display:inline-block; height:18px; line-height:18px; font-size:13px; text-decoration:none; margin:5px 0px;
+                              text-align:center;-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; border:solid 2px #ddd; padding:0px 6px;
                               cursor:pointer;}
 .red {background-color:red;}
 .blue {background-color:blue;}
+.dbGreen {background-color:#0b3b0b;}
 .green {background-color:green;}
 .rounds {float:left; margin-bottom:20px;}
 

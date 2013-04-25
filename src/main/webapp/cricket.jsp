@@ -6,7 +6,7 @@
     <div style="float:left; margin-bottom:20px;">
         <div>Game mode: ${practiceMode}</div>
         <div ng-hide="targetData.isShowRounds">
-            <span ng-click="showInputs()" class="smallButton blue">Start a game of cricket</span>
+            <span ng-click="showInputs()" class="smallButton dbGreen">Start a game of cricket</span>
         </div>
 
         <jsp:include page="buttons.jsp"/>
@@ -23,9 +23,9 @@
             All time average: {{targetData.allGames|runningAverage}}
         </div>
     </div>
-    <a href="/practice" style="display:block; float:right;" class="button blue">Practice home</a>
+    <a href="/practice" style="display:block; float:right;" class="button dbGreen">Practice home</a>
     <div style="clear:both;" ng-show="needsShowAll">
-        <span ng-click="showAll()" style="cursor:pointer;" class="button blue">Show all results</span>
+        <span ng-click="showAll()" style="cursor:pointer;" class="button dbGreen">Show all results</span>
     </div>
 
 </div>
