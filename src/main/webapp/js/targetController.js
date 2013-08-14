@@ -335,7 +335,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   */
   $scope.markDart = function(result) {
     var dart = result;
-    if ($scope.targetData.modifier) {
+    if (dart != "no hit" && $scope.targetData.modifier) {
       dart = $scope.targetData.modifier + result;
     }
     // if we are not in edit mode, go ahead and mark the dart in the results
