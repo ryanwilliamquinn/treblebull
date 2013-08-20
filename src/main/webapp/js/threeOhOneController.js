@@ -12,6 +12,7 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   $scope.targetData.dartCounter = 0;
   // placeholder for keeping track of the double/triple state
   $scope.targetData.modifier = "";
+  $scope.targetData.numDartsThrown = 0
 
   // helps display which dart to update
   $scope.targetData.dartToUpdate = "";
@@ -98,6 +99,7 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
     $scope.targetData.remainingScore = 301;
     $scope.targetData.dartCounter = 0;
     $scope.targetData.turnCounter = 1;
+    $scope.targetData.numDartsThrown = 0;
   }
 
   /*
@@ -215,6 +217,7 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
     }
     // if we are not in edit mode, go ahead and mark the dart in the results
     if (!$scope.targetData.isEditMode) {
+      $scope.targetData.numDartsThrown += 1;
       // round result is used to show the darts that have been selected in the current turn
       $scope.targetData.turn.push(dart);
 
@@ -322,7 +325,7 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   }
 
   $scope.isHideCancel = function() {
-    return $scope.targetData.results.length == 0 || $scope.targetData.isEditMode;
+    return !$scope.targetData.isShowRounds;
   }
 
   $scope.setLastTurnScoresToZero = function() {
