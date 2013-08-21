@@ -68,7 +68,7 @@ ang.filter('reverseRangeWithBull', function() {
       for (var i=total; i>0; i--) {
         input.push(i);
       }
-      input.push("no hit")
+      input.push(CONST.nohit)
       return input;
     }
   })

@@ -212,13 +212,13 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   * every dart should be scored individually and added to the total averages
   */
   $scope.markDart = function(dart) {
-    if ($scope.targetData.modifier) {
+    if (dart != CONST.nohit && $scope.targetData.modifier) {
       dart = $scope.targetData.modifier + dart;
     }
     // if we are not in edit mode, go ahead and mark the dart in the results
     if (!$scope.targetData.isEditMode) {
       $scope.targetData.numDartsThrown += 1;
-      // round result is used to show the darts that have been selected in the current turn
+      // round result is used to show the darts that have been selected in the current turn, need to track this if the user busts
       $scope.targetData.turn.push(dart);
 
       // score after every dart, but only send to the database on save.
@@ -269,7 +269,6 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
 
     // only start scoring after we are doubled in
     var isDoubledIn = false;
-
 
     var resultsLength = $scope.targetData.results.length;
     for (var i=0; i<resultsLength; i++) {

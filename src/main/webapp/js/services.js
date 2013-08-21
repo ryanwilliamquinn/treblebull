@@ -47,21 +47,24 @@ ang.factory('ohOneScoreCalculator', [function() {
   return function(dart) {
     var score = 0;
     if (typeof dart != "undefined" && dart != "") {
-      if (dart.lastIndexOf("d", 0) === 0) {
-        dart = dart.substring(1);
-        if (dart == 'bull')  {
-          score = 50;
+      if (dart != CONST.nohit) { // if dart == CONST.nohit, we missed the board, so leave score at 0
+        if (dart.lastIndexOf("d", 0) === 0) {
+          dart = dart.substring(1);
+          if (dart == 'bull')  {
+            score = 50;
+          } else {
+            score = dart * 2;
+          }
+        } else if (dart.lastIndexOf("t",0) === 0) {
+          dart = dart.substring(1);
+          score = dart * 3;
+        } else if (dart == 'bull') {
+          score = 25;
         } else {
-          score = dart * 2;
+          score = dart;
         }
-      } else if (dart.lastIndexOf("t",0) === 0) {
-        dart = dart.substring(1);
-        score = dart * 3;
-      } else if (dart == 'bull') {
-        score = 25;
-      } else {
-        score = dart;
       }
+
     }
     return score;
   }
