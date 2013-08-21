@@ -1,4 +1,4 @@
-body {margin:0px; background-color:#222; color:#ccc;}
+body {margin:0px; background-color:#222; color:#ccc; font-family:arial;}
 .content {margin:0 auto;}
 .resultsChart{width:320px; height:400px;}
 @media all and (min-width:40em){.content{max-width:31em;} .resultsChart{width:31em;}}
@@ -25,9 +25,9 @@ a:link,a:active,a:hover,a:visited {color:#ccc;}
              text-align:center;-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; border:solid 2px #ddd; padding:0px 5px;
              cursor:pointer;}
 .smallButton {display:inline-block; height:18px; line-height:18px; font-size:13px; text-decoration:none; margin:5px 0px;
-                              text-align:center;-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; border:solid 2px #ddd; padding:0px 6px;
+                              text-align:center;-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; border:solid 2px #ddd; padding:0px 6px 2px;
                               cursor:pointer;}
-.red {background-color:red;}
+.red {background-color:#CD0000;}
 .blue {background-color:blue;}
 .dbGreen {background-color:#0b3b0b;}
 .green {background-color:green;}
@@ -37,7 +37,7 @@ a:link,a:active,a:hover,a:visited {color:#ccc;}
 .dtTarget {display:inline-block; height:20px; line-height:20px; width:30px; margin:0 1px 0 5px; border:solid 1px black; display:inline-block; text-align:center; cursor:pointer;}
 .sTarget {height:20px; line-height:20px; width:30px; border:solid 1px black; display:inline-block; text-align:center; cursor:pointer;}
 .sdtTarget {height:20px; line-height:20px; width:90px; border:solid 1px black; display:inline-block; text-align:center; cursor:pointer;}
-.activeModifier {background-color:#00EE00;}
+.activeModifier {background-color:#6495ED;}
 
 
 .unselectable {

@@ -7,7 +7,6 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   $scope.targetData = {};
   $scope.targetData.isShowRounds = false;
   $scope.isShowChart = false;
-  $scope.targetData.turn = [];
   $scope.targetData.turnCounter = 1;
   $scope.targetData.dartCounter = 0;
   // placeholder for keeping track of the double/triple state
@@ -19,6 +18,9 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
 
   // theoretically we could hold multiple turns or darts in here?
   $scope.targetData.results = [];
+  // this will contain an array of turn objects.  each turn object will have a results property, which will be an array of what they hit
+  //todo: right now you can only edit a turn, but you should also be able to remove it altogether
+  $scope.targetData.turns = [{ turnCount: 1, results: []}];
 
   // there is a turn score i guess
   $scope.targetData.score = 0;
@@ -43,7 +45,7 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   $scope.predicate = '-dateMillis';
 
   // model used in selectEditRound method
-  $scope.targetData.selectedEditRound = {};
+  $scope.targetData.selectedEditDart = {};
 
   $scope.targetData.targetScore = 301;
   $scope.targetData.remainingScore = 301;
@@ -94,12 +96,13 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   $scope.targetData.reset = function() {
     $scope.targetData.isShowRounds = false;
     $scope.targetData.results = [];
-    $scope.targetData.turn = [];
+    $scope.targetData.turns = [{ turnCount: 1, results: []}]
     $scope.targetData.modifier = "";
     $scope.targetData.remainingScore = 301;
     $scope.targetData.dartCounter = 0;
     $scope.targetData.turnCounter = 1;
     $scope.targetData.numDartsThrown = 0;
+    $scope.targetData.isEditMode = false;
   }
 
   /*
@@ -152,7 +155,7 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   */
   $scope.toggleDartToUpdate = function(dartToUpdate) {
     if ($scope.targetData.dartToUpdate == dartToUpdate) {
-      $scope.targetData.dartToUpdate = "";
+      $scope.targetData.dartToUpdate = {};
     } else {
       $scope.targetData.dartToUpdate = dartToUpdate;
     }
@@ -181,8 +184,8 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   * works with front end code to select a round for editing
   * ng-show="selectedEditRound == result"
   */
-  $scope.selectEditRound = function(item) {
-    $scope.targetData.selectedEditRound = item;
+  $scope.selectEditDart = function(result) {
+    $scope.targetData.selectedEditDart = result;
     $scope.targetData.isEditMode = true;
   }
 
@@ -191,9 +194,9 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   * and then calls update score to update the game score
   */
   $scope.finishEditing = function(result) {
-    $scope.scoreDart(result.dart, result.type);
-    $scope.targetData.selectedEditRound = {};
-    $scope.updateScore(result);
+    $scope.scoreDart($scope.targetData.dartToUpdate.dart, $scope.targetData.dartToUpdate.type); // i dont think this has any side effects...
+    $scope.targetData.selectedEditDart = {};
+    $scope.updateScore();
     $scope.targetData.dartToUpdate = "";
     $scope.targetData.isEditMode = false;
   }
@@ -218,23 +221,21 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
     // if we are not in edit mode, go ahead and mark the dart in the results
     if (!$scope.targetData.isEditMode) {
       $scope.targetData.numDartsThrown += 1;
-      // round result is used to show the darts that have been selected in the current turn, need to track this if the user busts
-      $scope.targetData.turn.push(dart);
+      // $scope.targetData.turns is an array
+      // turns[0] should be something like { turnCount: 1, results: []}
+
 
       // score after every dart, but only send to the database on save.
       // can maybe temp save in local storage so there is some durability/safety
       var score = $scope.scoreDart(dart);
       var newResult = {'type' : '301', 'dart' : dart, 'score' : score, 'dateMilliseconds' : new Date().getTime(), 'turn' : $scope.targetData.turnCounter};
       $scope.targetData.results.push(newResult);
+      $scope.targetData.turns[$scope.targetData.turnCounter - 1].results.push(newResult);
       $scope.updateScore();
-
-
     } else {
-      // we are in edit mode wheeeee
-      // this needs work...
-      $scope.targetData.selectedEditRound.dart = dart;
-      $scope.targetData.selectedEditRound.score = $scope.scoreDart(dart);
-
+      // edit mode
+      $scope.targetData.dartToUpdate.dart = dart;
+      $scope.targetData.dartToUpdate.score = $scope.scoreDart(dart);
       $scope.updateScore();
     }
 
@@ -255,13 +256,18 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
     return false;
   }
 
+
+  $scope.enableEditMode = function() {
+    $scope.targetData.isEditMode = true;
+  }
+
   /*
   *   we need to deal with turns and individual darts here.
   *   the score should be updated on each dart, but it needs to be aware of turns.
   *
   */
   $scope.updateScore = function() {
-    var newResults = $scope.targetData.results;
+    var newResults = $scope.targetData.turns;
     var isIncrementTurn = false;
 
     // each time we update the score, start off with the full score again
@@ -270,34 +276,40 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
     // only start scoring after we are doubled in
     var isDoubledIn = false;
 
-    var resultsLength = $scope.targetData.results.length;
-    for (var i=0; i<resultsLength; i++) {
-      var result = $scope.targetData.results[i];
-
-      // if we aren't double in yet, check each dart in the results until we are
-      if (!isDoubledIn) {
-        var dart = result.dart;
-        if (typeof(dart) == "number") {
-          dart = dart.toString();
+    var numTurns = $scope.targetData.turns.length;
+    for (var i=0; i<numTurns; i++) {
+      var turn = $scope.targetData.turns[i];
+      var resultsLength = turn.results.length;
+      for (var j=0; j<resultsLength; j++) {
+        var result = turn.results[j];
+        var score = result.score
+        // if we aren't double in yet, check each dart in the results until we are
+        if (!isDoubledIn) {
+          var dart = result.dart;
+          if (typeof(dart) == "number") {
+            dart = dart.toString();
+          }
+          // check if it is a double, if not, continue;
+          if (dart.lastIndexOf("d", 0) !== 0) {
+            score = 0;
+            continue;
+          } else {
+            isDoubledIn = true;
+          }
         }
-        // check if it is a double, if not, continue;
-        if (dart.lastIndexOf("d", 0) !== 0) {
-          result.score = 0;
-          continue;
-        } else {
-          isDoubledIn = true;
-        }
-      }
 
-      if (isDoubledIn) {
-        $scope.targetData.remainingScore -= result.score;
+        if (isDoubledIn) {
+          $scope.targetData.remainingScore -= score;
+        }
       }
     }
 
     if ($scope.targetData.remainingScore == 0) {
 
       // check if the last dart was a double
-      var lastDart = $scope.targetData.results[resultsLength - 1];
+      var lastTurn = $scope.targetData.turns[numTurns - 1].results;
+      var lastTurnLength = lastTurn.length;
+      var lastDart = lastTurn[lastTurnLength-1];
       var lastDartResult = lastDart.dart;
       if (typeof(lastDartResult) == "number") {
         lastDartResult = lastDartResult.toString();
@@ -315,7 +327,8 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
     if (isIncrementTurn || $scope.targetData.dartCounter == 2) {
       $scope.targetData.dartCounter = 0;
       $scope.targetData.turnCounter++;
-      $scope.targetData.turn = [];
+      $scope.targetData.turns.push({ turnCount: $scope.targetData.turnCounter, results: []})
+
     } else {
       $scope.targetData.dartCounter++;
     }
@@ -328,12 +341,11 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   }
 
   $scope.setLastTurnScoresToZero = function() {
-    var turnToRollBack = $scope.targetData.turnCounter;
-    for (var i=0; i<$scope.targetData.results.length; i++) {
-      var dart = $scope.targetData.results[i];
-      if (dart.turn == turnToRollBack) {
-        dart.score = 0;
-      }
+    var turnToRollBack = $scope.targetData.turns[$scope.targetData.turnCounter - 1].results;
+
+
+    for (var i=0; i<turnToRollBack.length; i++) {
+      turnToRollBack[i].score = 0;
     }
     $scope.updateScore();
   }
