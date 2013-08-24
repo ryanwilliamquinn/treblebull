@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.rquinn.darts.*;
+import com.rquinn.darts.model.Dart;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -50,21 +51,21 @@ public class TargetPracticeAction extends PracticeAction {
 
         slf4jLogger.debug("request type: " + type);
 
-        ThreeDartResult simplePracticeResult = null;
+        DartResult simplePracticeResult = null;
         try {
             BufferedReader is = new BufferedReader(new InputStreamReader(request.getInputStream()));
-            Type listType = new TypeToken<ArrayList<ThreeDartRoundResult>>() {}.getType();
-            ArrayList<ThreeDartRoundResult> roundResultList = new Gson().fromJson(is, listType);
+            Type listType = new TypeToken<ArrayList<Dart>>() {}.getType();
+            ArrayList<Dart> darts = new Gson().fromJson(is, listType);
 
-            if (roundResultList != null && roundResultList.size() > 0) {
-                slf4jLogger.debug(roundResultList.get(0).toString());
+            if (darts != null && darts.size() > 0) {
+                slf4jLogger.debug(darts.get(0).toString());
             } else {
                 slf4jLogger.debug("something is real broken");
             }
             slf4jLogger.debug("practiceType: " + practiceType.getValue());
 
 
-            simplePracticeResult = new ThreeDartResult(roundResultList, practiceType);
+            simplePracticeResult = new DartResult(darts, practiceType);
             Subject currentUser = SecurityUtils.getSubject();
             simplePracticeResult.setUsername(currentUser.getPrincipal().toString());
             slf4jLogger.debug("simple practice result: " + simplePracticeResult);

@@ -3,11 +3,7 @@ package com.rquinn.darts;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: rquinn
- * Date: 2/13/13
- * Time: 9:28 AM
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class ThreeOhOneResult extends DartsResult {
     private List<ThreeDartRoundResult> rounds;

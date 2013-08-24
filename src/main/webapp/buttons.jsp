@@ -37,17 +37,18 @@
                 <span name="resultInput" class="sTarget" ng-show="targetData.isEditMode" ng-click="toggleDartToUpdate(result)" ng-class="{activeModifier: targetData.dartToUpdate == result}" style="margin-left:20px;">{{result.dart}}</span>
               </span>
             </div>
-            <span class="dbGreen smallButton unselectable" ng-show="targetData.isEditMode" ng-click="finishEditing()" style="float:right;">Save</span>
+
           </c:when>
           <c:otherwise>
-            <div ng-repeat="result in targetData.results" ng-click="">
+            <div ng-click="enableEditMode()">Edit a dart</div>
+            <div ng-repeat="result in targetData.turns">
               Round: <span>{{result.round}}</span>
-              <span name="roundResult" style="margin-left:20px;" ng-hide="targetData.selectedEditRound == result" ng-click="selectEditRound(result)">{{result.firstDart}}, {{result.secondDart}}, {{result.thirdDart}}  <span style="margin-left:20px;">round score: {{result.score}}</span></span>
-              <span name="firstDartInput" class="sTarget" ng-show="targetData.selectedEditRound == result" ng-click="toggleDartToUpdate('first')" ng-class="{activeModifier: targetData.dartToUpdate=='first'}">{{result.firstDart}}</span>
-              <span name="secondDartInput" class="sTarget" ng-show="targetData.selectedEditRound == result" ng-click="toggleDartToUpdate('second')" ng-class="{activeModifier: targetData.dartToUpdate=='second'}">{{result.secondDart}}</span>
-              <span name="thirdDartInput" class="sTarget" ng-show="targetData.selectedEditRound == result" ng-click="toggleDartToUpdate('third')" ng-class="{activeModifier: targetData.dartToUpdate=='third'}">{{result.thirdDart}}</span>
-              <span class="dbGreen smallButton unselectable" ng-show="targetData.isEditMode" ng-click="finishEditing(result)" style="float:right;">Save</span>
+              <span name="roundResult" style="margin-left:20px;" ng-hide="targetData.isEditMode">{{result.firstDart.actual}}, {{result.secondDart.actual}}, {{result.thirdDart.actual}}</span>
+              <span name="firstDartInput" class="sTarget" ng-show="targetData.isEditMode" ng-click="toggleDartToUpdate(result.firstDart)" ng-class="{activeModifier: targetData.dartToUpdate==result.firstDart}">{{result.firstDart.actual}}</span>
+              <span name="secondDartInput" class="sTarget" ng-show="targetData.isEditMode" ng-click="toggleDartToUpdate(result.secondDart)" ng-class="{activeModifier: targetData.dartToUpdate==result.secondDart}">{{result.secondDart.actual}}</span>
+              <span name="thirdDartInput" class="sTarget" ng-show="targetData.isEditMode" ng-click="toggleDartToUpdate(result.thirdDart)" ng-class="{activeModifier: targetData.dartToUpdate==result.thirdDart}">{{result.thirdDart.actual}}</span>
             </div>
+            <span class="dbGreen smallButton unselectable" ng-show="targetData.isEditMode" ng-click="finishEditing()" style="float:right;">Save</span>
           </c:otherwise>
         </c:choose>
 

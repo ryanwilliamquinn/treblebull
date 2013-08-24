@@ -25,6 +25,9 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   // there is a turn score i guess
   $scope.targetData.score = 0;
 
+  // blank container for what we get back from the database
+  $scope.targetData.games = [];
+
   // hold the average data we get from the database
   $scope.targetData.averages = [];
 
@@ -349,6 +352,8 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
     }
     $scope.updateScore();
   }
+
+  $scope.getResults($scope.targetData.loadUrl, $scope.targetData.games);
 
 
 }

@@ -9,7 +9,7 @@
         <result property='type' column='type'/>
         <result property='score' column='score'/>
         <result property='dateTimeManagement.timestamp' column='date'/>
-        <result property='numRounds' column='numRounds'/>
+        <result property='numRounds' column='num_rounds'/>
     </resultMap>
 
     <resultMap type='com.rquinn.darts.ThreeDartRoundResult' id='gameDetails'>
@@ -45,7 +45,7 @@
     </select>
 
     <select id='getAllResults' parameterType="map"  resultMap='dartsResultValue'>
-        SELECT id, UPPER(type), score, date, numRounds FROM darts_result
+        SELECT id, UPPER(type), score, date, num_rounds FROM darts_result
         WHERE type = #{type}
         AND darts_user = #{username}
         ORDER BY date DESC;
@@ -53,7 +53,7 @@
     </select>
 
     <select id='getTenResults' parameterType="map"  resultMap='dartsResultValue'>
-        SELECT  id, UPPER(type), score, date, numRounds  FROM darts_result
+        SELECT  id, UPPER(type), score, date, num_rounds  FROM darts_result
         WHERE type = #{type}
         AND darts_user = #{username}
         ORDER BY date DESC
@@ -67,7 +67,7 @@
     </select>
 
     <insert id='insertGame' parameterType='DartsResult' useGeneratedKeys='true' keyProperty='id'>
-        INSERT INTO darts_result(type, score, date, darts_user, numRounds)
+        INSERT INTO darts_result(type, score, date, darts_user, num_rounds)
         VALUES(#{type.value}, #{score}, #{dateTimeManagement.timestamp}, #{username}, #{numRounds})
     </insert>
 
@@ -79,6 +79,11 @@
     <insert id="insertThreeDartRound" parameterType='map' useGeneratedKeys="true" keyProperty="roundResult.id">
         INSERT INTO three_dart_turn(firstDart, secondDart, thirdDart, round, game_id)
         VALUES(#{roundResult.firstDart}, #{roundResult.secondDart}, #{roundResult.thirdDart}, #{roundResult.round}, #{foreignKey})
+    </insert>
+
+    <insert id="insertDart" parameterType='map' useGeneratedKeys="true" keyProperty="dart.id">
+        INSERT INTO dart(target, actual, round, game_id)
+        VALUES(#{dart.target}, #{dart.actual}, #{dart.round}, #{foreignKey})
     </insert>
 
     <insert id="insertFreeDart" parameterType="SingleDartResult" useGeneratedKeys="true">

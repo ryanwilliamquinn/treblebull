@@ -8,6 +8,7 @@ package com.rquinn.darts;
  * To change this template use File | Settings | File Templates.
  */
 
+import com.rquinn.darts.model.Dart;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,7 @@ public class DartsResultService
      * @param spr
      * @return
      */
-    public void insertGame(ThreeDartResult spr) {
+    public void insertGame(DartResult spr) {
 
         SqlSession sqlSession = null;
         try {
@@ -35,8 +36,8 @@ public class DartsResultService
             DartsMapper dartsMapper = sqlSession.getMapper(DartsMapper.class);
             dartsMapper.insertGame(spr);
             int primaryKey = dartsMapper.getPrimaryKey();
-            for (ThreeDartRoundResult result : spr.getRoundResult()) {
-                dartsMapper.insertThreeDartRound(primaryKey, result);
+            for (Dart result : spr.getDarts()) {
+                dartsMapper.insertDart(primaryKey, result);
             }
             sqlSession.commit();
         } catch (Exception e) {

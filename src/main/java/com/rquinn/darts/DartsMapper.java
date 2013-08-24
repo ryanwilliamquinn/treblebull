@@ -1,5 +1,6 @@
 package com.rquinn.darts;
 
+import com.rquinn.darts.model.Dart;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +45,8 @@ public interface DartsMapper {
     public List<SingleDartResult> getFreeTargetHistory(@Param("username") String userName, @Param("target") String target);
 
     public void insertFreeDart(SingleDartResult singleDartResult);
+
+    public void insertDart(@Param("foreignKey") int foreignKey, @Param("dart") Dart dart);
 
 }
 

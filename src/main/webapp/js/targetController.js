@@ -11,7 +11,9 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   $scope.targetData.isShowRounds = false;
   $scope.initialNumGames = 10;
   $scope.isShowChart = false;
-  $scope.targetData.turn = [];
+  // turns contains the same data as results, but organized in a turn based manner for the view
+  $scope.targetData.turns = [];
+
   // placeholder for keeping track of the double/triple state
   $scope.targetData.modifier = "";
 
@@ -41,9 +43,6 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
 
   // order by date descending
   $scope.predicate = '-dateMillis';
-
-  // model used in selectEditRound method
-  $scope.targetData.selectedEditRound = {};
 
   // here is an old array that included doubles and triples.  not sure how i feel about that.
   //$scope.targetTypes = [{id : "bull", label : "bullseye"}, {id : "t20", label : "triple 20"}, {id : "d20", label : "double 20"}, {id : "20", label :"20"},
@@ -96,7 +95,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   */
   $scope.createNewResult = function(data) {
       var avg = data.score / data.numRounds;
-      return {'date' : data.dateTimeManagement.displayDateTime, 'score' : data.score, 'dateMillis' : data.dateTimeManagement.dateMilliseconds, 'numRounds' : data.numRounds, 'avg' : avg, 'id' : data.id}
+      return {'date' : data.dateTimeManagement.displayDateTime, 'score' : data.score, 'dateMillis' : data.dateTimeManagement.dateMilliseconds, 'numRounds' : data.numRounds.num, 'avg' : avg, 'id' : data.id}
   }
 
   /*
@@ -107,6 +106,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
      $scope.targetData.games = [];
      $scope.targetData.allGames = [];
      $scope.targetData.results = [];
+     $scope.targetData.turns = [];
   }
 
   /*
@@ -118,9 +118,8 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
     data.round.number = 1;
     data.score = 0;
     data.modifier = "";
-    data.turn = [];
-    data.selectedEditRound = {};
     data.isEditMode = false;
+    data.turns = []
   }
 
   /*
@@ -199,6 +198,35 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
 
   /************** User/view initiated methods *****************/
 
+
+  /*
+   * enables editing of previously entered darts
+   */
+  $scope.enableEditMode = function() {
+    $scope.targetData.isEditMode = true;
+  }
+
+  /*
+  *  sets the dart to be edited, also helps visualize which dart is being edited
+  */
+  $scope.toggleDartToUpdate = function(dartToUpdate) {
+    if ($scope.targetData.dartToUpdate == dartToUpdate) {
+      $scope.targetData.dartToUpdate = "";
+    } else {
+      $scope.targetData.dartToUpdate = dartToUpdate;
+    }
+  }
+
+  /*
+   * called after saving a round edit - updates a particular dart or darts hit (actual)
+   * and then calls update score to update the game score
+   */
+  $scope.finishEditing = function() {
+    $scope.updateScore();
+    $scope.targetData.dartToUpdate = "";
+    $scope.targetData.isEditMode = false;
+  }
+
   /*
   * toggleModifier allows the modifier (double/triple button) to be turned on or off, even if repeatedly clicked
   */
@@ -207,17 +235,6 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
       $scope.targetData.modifier = "";
     } else {
       $scope.targetData.modifier = modifier;
-    }
-  }
-
-  /*
-  * method to help visualize which dart is being edited (in a previously entered result)
-  */
-  $scope.toggleDartToUpdate = function(dartToUpdate) {
-    if ($scope.targetData.dartToUpdate == dartToUpdate) {
-      $scope.targetData.dartToUpdate = "";
-    } else {
-      $scope.targetData.dartToUpdate = dartToUpdate;
     }
   }
 
@@ -262,28 +279,8 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
     }
   }
 
-  /*
-  * works with front end code to select a round for editing
-  * ng-show="selectedEditRound == result"
-  */
-  $scope.selectEditRound = function(item) {
-    $scope.targetData.selectedEditRound = item;
-    $scope.targetData.isEditMode = true;
-  }
 
-  /*
-  * called after saving a round edit - updates a particular round's score
-  * and then calls update score to update the game score
-  */
-  $scope.finishEditing = function(result) {
-    var targetArray = [result.firstDart, result.secondDart, result.thirdDart];
-    var score = $scope.tally(targetArray);
-    result.score = score;
-    $scope.targetData.selectedEditRound = {};
-    $scope.updateScore();
-    $scope.targetData.dartToUpdate = "";
-    $scope.targetData.isEditMode = false;
-  }
+
 
   /*
   * flip the visibility of the rounds section, called from the start button on the view
@@ -348,14 +345,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
         $scope.scoreTurn();
       }
     } else {
-      // what to do with the result?
-      if ($scope.targetData.dartToUpdate == "first") {
-        $scope.targetData.selectedEditRound.firstDart = dart;
-      } else if ($scope.targetData.dartToUpdate == "second") {
-        $scope.targetData.selectedEditRound.secondDart = dart;
-      } else if ($scope.targetData.dartToUpdate == "third") {
-        $scope.targetData.selectedEditRound.thirdDart = dart;
-      }
+      $scope.targetData.dartToUpdate.actual = dart;
     }
     $scope.targetData.modifier = "";
   }
@@ -364,9 +354,37 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   * responsible for updating the score every turn, and managing the cleanup for the next turn
   */
   $scope.scoreTurn = function() {
-    var score = $scope.tally($scope.roundResult);
+    var turn = {}; // temp container for pushing into targetdata.turns for the view
+    turn.round = $scope.targetData.round.number;
+
+    for (var i=0; i<$scope.roundResult.length; i++) {
+      var dart = $scope.roundResult[i]
+      var newDart = {'actual' : dart, 'target' : $scope.target.id, 'round' : $scope.targetData.round.number, 'score': $scope.calculateScore(dart)}
+      $scope.targetData.results.push(newDart);
+      switch(i) {
+        case 0:
+          turn.firstDart = newDart;
+          break;
+        case 1:
+          turn.secondDart = newDart;
+          break;
+        case 2:
+          turn.thirdDart = newDart;
+          break;
+      }
+    }
+    $scope.targetData.turns.push(turn);
+
+    /*
+
     var newResult = {"firstDart" : $scope.roundResult[0], "secondDart" : $scope.roundResult[1], "thirdDart" : $scope.roundResult[2], "round" : $scope.targetData.round.number, "score" : score};
+
+    // currently we are pushing whole rounds into targetdata.results
+    // we now need to push single darts into targetdata.results.  they need to have these fields:
+    // actual, target, score, round
+    // how do we score these darts?
     $scope.targetData.results.push(newResult);
+    */
     $scope.targetData.round.number++;
     // only update this every round, so the average doesn't get screwy...
     $scope.updateScore();
@@ -375,6 +393,8 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
 
   /*
   * tally takes a particular turn and returns the aggregate score for three darts
+
+    we don't need the aggregate score anymore, we want to score darts individually
   */
   $scope.tally = function(turn) {
     // turn.length sure ought to be 3 here
@@ -397,13 +417,28 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   }
 
   /*
+   *  get the score of an individual dart
+   */
+  $scope.calculateScore = function(dart) {
+    if (typeof(dart) == "number") {
+      dart = dart.toString();
+    }
+    var score = 0
+    if (dart.indexOf($scope.target.id) !== -1) {
+      score = scoreCalculator(dart);
+    }
+    return score;
+  }
+
+
+  /*
   * update score resets the total score to zero, and then re-sums all of the round scores
   */
   $scope.updateScore = function() {
     $scope.targetData.score = 0;
     for (var i=0; i<$scope.targetData.results.length;i++) {
         var result = $scope.targetData.results[i];
-        $scope.targetData.score = $scope.targetData.score + result.score;
+        $scope.targetData.score = $scope.targetData.score + $scope.calculateScore(result.actual);
     }
   }
 
