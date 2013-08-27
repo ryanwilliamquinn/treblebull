@@ -11,7 +11,8 @@
     <body>
         <div class="header">
             <div id="headerContent">
-                <h3 id="headerTitle">Darts Practice</h3>
+                <h3 id="headerTitle">TrebleBull</h3>
+                <div style="display:inline-block; margin-left:20px;">darts practice</div>
 
                 <div class="headerAccount">
                     <shiro:guest>

@@ -9,14 +9,14 @@ package com.rquinn.darts;
  */
 public class FreeAverageData {
 
-    private String type;
+    private String target;
     private Integer score;
     private Integer numDarts;
 
     public FreeAverageData() {}
 
-    public FreeAverageData(String type, Integer score) {
-        this.type = type;
+    public FreeAverageData(String target, Integer score) {
+        this.target = target;
         this.score = score;
     }
 
@@ -28,12 +28,12 @@ public class FreeAverageData {
         this.score = score;
     }
 
-    public String getType() {
-        return type;
+    public String getTarget() {
+        return target;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setTarget(String target) {
+        this.target = target;
     }
 
     public Integer getNumDarts() {

@@ -29,7 +29,8 @@ public enum TargetPracticeType implements BasePracticeType {
     SIXTEEN ("16"),
     TRIPLE_FIFTEEN ("t15"),
     DOUBLE_FIFTEEN ("d15"),
-    FIFTEEN ("15");
+    FIFTEEN ("15"),
+    FREE ("free");
 
 
     private String value;

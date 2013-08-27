@@ -12,12 +12,22 @@
         <result property='numRounds' column='num_rounds'/>
     </resultMap>
 
-    <resultMap type='com.rquinn.darts.ThreeDartRoundResult' id='gameDetails'>
+    <resultMap type="com.rquinn.darts.ThreeOhOneResult" id="threeOhOneResult">
+        <id property='id' column='id'/>
+        <result property='type' column='type'/>
+        <result property='score' column='score'/>
+        <result property='dateTimeManagement.timestamp' column='date'/>
+        <result property='numRounds' column='num_rounds'/>
+        <result property='doubleIn' column='double_in'/>
+        <result property='doubleOut' column='double_out'/>
+        <result property='out' column='out'/>
+    </resultMap>
+
+    <resultMap type='com.rquinn.darts.model.Dart' id='gameDetails'>
         <result property='id' column='id'/>
         <result property='round' column='round'/>
-        <result property='firstDart' column='firstDart'/>
-        <result property='secondDart' column='secondDart'/>
-        <result property='thirdDart' column='thirdDart'/>
+        <result property='actual' column='firstDart'/>
+        <result property='score' column='secondDart'/>
     </resultMap>
 
     <resultMap id="singleDartResult" type="com.rquinn.darts.SingleDartResult">
@@ -30,7 +40,7 @@
 
 
     <resultMap id="freeAverageData" type="com.rquinn.darts.FreeAverageData">
-        <result property="type" column="target"></result>
+        <result property="target" column="target"></result>
         <result property="score" column="aggregateScore"></result>
         <result property="numDarts" column="numDarts"></result>
     </resultMap>
@@ -71,6 +81,11 @@
         VALUES(#{type.value}, #{score}, #{dateTimeManagement.timestamp}, #{username}, #{numRounds})
     </insert>
 
+    <insert id="insert301Game" parameterType='ThreeOhOneResult' useGeneratedKeys='true' keyProperty='id'>
+        INSERT INTO darts_result(type, score, date, darts_user, num_rounds, double_in, double_out, out)
+        VALUES(#{type.value}, #{score}, #{dateTimeManagement.timestamp}, #{username}, #{numRounds}, #{doubleIn}, #{doubleOut}, #{out})
+    </insert>
+
     <insert id='insertRound' parameterType='map' useGeneratedKeys='true' keyProperty='roundResult.id'>
         INSERT INTO turn(round, score, game_id)
         VALUES(#{roundResult.round}, #{roundResult.score}, #{foreignKey})
@@ -82,13 +97,8 @@
     </insert>
 
     <insert id="insertDart" parameterType='map' useGeneratedKeys="true" keyProperty="dart.id">
-        INSERT INTO dart(target, actual, round, game_id)
-        VALUES(#{dart.target}, #{dart.actual}, #{dart.round}, #{foreignKey})
-    </insert>
-
-    <insert id="insertFreeDart" parameterType="SingleDartResult" useGeneratedKeys="true">
-      INSERT INTO free_dart(target, dart, score, dart_time)
-      VALUES(#{target}, #{dart}, #{score}, #{dateTimeManagement.timestamp})
+        INSERT INTO dart(target, actual, round, score, game_id)
+        VALUES(#{dart.target}, #{dart.actual}, #{dart.round}, #{dart.score}, #{foreignKey})
     </insert>
 
     <select id="getPrimaryKey" resultType="int">
@@ -96,7 +106,7 @@
     </select>
 
     <select id="getGameDetails" parameterType="int" resultMap="gameDetails">
-        select * from three_dart_turn where game_id = #{gameId};
+        select * from dart where game_id = #{gameId};
     </select>
 
     <update id='updateResult' parameterType='DartsResult'>
@@ -116,7 +126,12 @@
     </insert>
 
     <select id="getFreeAverages" parameterType="String" resultMap="freeAverageData">
-        SELECT target, sum(score) as aggregateScore, count(target) as numDarts from free_dart group by target;
+        SELECT target, sum(score) as aggregateScore, count(target) as numDarts from dart
+        WHERE game_id in
+            (SELECT id FROM darts_result
+            WHERE type='free'
+            AND darts_user = #{userName})
+        GROUP BY target;
     </select>
 
     <select id="getFreeTargetHistory" parameterType="map" resultMap="singleDartResult">

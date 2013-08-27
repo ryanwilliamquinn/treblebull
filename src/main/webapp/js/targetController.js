@@ -94,8 +94,8 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   * this is called from postDataService, so that it can create the new result appropriately
   */
   $scope.createNewResult = function(data) {
-      var avg = data.score / data.numRounds;
-      return {'date' : data.dateTimeManagement.displayDateTime, 'score' : data.score, 'dateMillis' : data.dateTimeManagement.dateMilliseconds, 'numRounds' : data.numRounds.num, 'avg' : avg, 'id' : data.id}
+      var avg =  Math.round((data.score / data.numRounds) * 100) / 100;
+      return {'date' : data.dateTimeManagement.displayDateTime, 'score' : data.score, 'dateMillis' : data.dateTimeManagement.dateMilliseconds, 'numRounds' : data.numRounds, 'avg' : avg, 'id' : data.id}
   }
 
   /*
@@ -129,12 +129,10 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   $scope.getResults = function(url, gamesContainer) {
     $http.get(url).
           success(function(data, status) {
-            $log.info(data);
             var numResults = data.totalNumResults;
             var tempResults = data.dartsResults;
             if (tempResults) {
               var resultsLength = tempResults.length;
-              $log.info("results length: " + resultsLength + ", total number of results: " + numResults);
               for (var i=0; i < resultsLength; i++) {
                 var tempdata = tempResults[i];
                 var oldRound = {};
@@ -143,7 +141,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
                 oldRound.date = tempdata.dateTimeManagement.displayDateTime;
                 oldRound.dateMillis = tempdata.dateTimeManagement.dateMilliseconds;
                 oldRound.numRounds = tempdata.numRounds;
-                oldRound.avg = (oldRound.score / oldRound.numRounds);
+                oldRound.avg = Math.round((oldRound.score / oldRound.numRounds) * 100)/100;
                 if (tempdata.score && tempdata.dateTimeManagement.displayDateTime) {
                   gamesContainer.push(oldRound);
                 }
@@ -304,7 +302,20 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
       //$log.info(this.game);
       $http.get(url).
         success(function(data, status) {
-          game.rounds = data;
+          var rounds = [];
+          var round = 0;
+          var turn = [];
+          var dart = {};
+          for (var i=0; i<data.length; i++) {
+            dart = data[i];
+            round = dart.round - 1;
+            if (!rounds[round]) {
+              rounds[round] = [];
+            }
+            rounds[round].push(dart);
+          }
+
+          game.rounds = rounds;
           // so we need to take this data, which is an array of round/scores, and dump it into the result
         }).
         error(function(data, status) {

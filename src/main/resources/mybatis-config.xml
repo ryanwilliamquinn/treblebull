@@ -9,6 +9,7 @@
         <typeAlias type='com.rquinn.darts.SingleDartResult' alias='SingleDartResult'></typeAlias>
         <typeAlias type='com.rquinn.darts.SimplePracticeResult' alias='TwentiesResult'></typeAlias>
         <typeAlias type='com.rquinn.darts.RoundResult' alias='RoundResult'></typeAlias>
+        <typeAlias type='com.rquinn.darts.ThreeOhOneResult' alias='ThreeOhOneResult'></typeAlias>
     </typeAliases>
     <environments default="development">
         <environment id="development">

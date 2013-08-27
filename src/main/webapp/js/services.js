@@ -5,7 +5,8 @@
 var ang = angular.module('dartsApp.services', []);
 
 ang.factory('postDataService', ['$http', function($http) {
-  // save data to database, push it into games
+  // save data to database, then push it into games container
+  // what gets pushed into games container is really the server-processed data
   return function(createNewResult, postData, reset) {
     if (postData.results && postData.results.length > 0) {
       var myjson = JSON.stringify(postData.results, replacer);

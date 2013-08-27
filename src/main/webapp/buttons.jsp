@@ -16,31 +16,28 @@
     </div>
   </div>
   <div><span ng-repeat="dart in roundResult" style="margin-right:10px;">{{dart}}</span></div>
-    <span ng-click="postResult()" style="margin-top:10px;" class="smallButton green unselectable" ng-show="checkRoundsComplete()">
+    <span ng-click="postResult()" style="margin-top:10px;" class="smallButton green unselectable" ng-show="checkRoundsComplete() && targetData.isEditMode == false">
       Save game
     </span>
     <div style="margin-top:10px;">
       <div id="roundResults">
         <c:choose>
           <c:when test="${practiceMode == 'free'}">
-            <div ng-repeat="result in results">
-              <span name="roundResult" ng-hide="targetData.selectedEditRound == result" ng-click="selectEditRound(result)">Target: {{result.type}}, <span style="margin-left:20px;">Result: {{result.dart}},</span> <span style="margin-left:20px;">score: {{result.score}}</span></span>
-              <span name="targetInput" class="sTarget" ng-show="targetData.selectedEditRound == result" ng-click="toggleDartToUpdate('target')" ng-class="{activeModifier: targetData.dartToUpdate == 'target'}">{{result.type}}:</span>
-              <span name="resultInput" class="sTarget" ng-show="targetData.selectedEditRound == result" ng-click="toggleDartToUpdate('dartResult')" ng-class="{activeModifier: targetData.dartToUpdate == 'dartResult'}" style="margin-left:20px;">{{result.dart}}</span>
+            <div ng-repeat="result in targetData.results">
+              <span name="roundResult" ng-hide="targetData.isEditMode" ng-click="selectEditRound(result)">Target: {{result.target}}, <span style="margin-left:20px;">Result: {{result.actual}},</span> <span style="margin-left:20px;">score: {{result.score}}</span></span>
+              <span name="targetInput" class="sTarget" ng-show="targetData.isEditMode" ng-click="toggleDartToUpdate(result, 'target')" ng-class="{activeModifier: targetData.dartToUpdate == result && targetData.editMode == 'target'}">{{result.target}}:</span>
+              <span name="resultInput" class="sTarget" ng-show="targetData.isEditMode" ng-click="toggleDartToUpdate(result, 'actual')" ng-class="{activeModifier: targetData.dartToUpdate == result && targetData.editMode != 'target'}" style="margin-left:20px;">{{result.actual}}</span>
             </div>
           </c:when>
           <c:when test="${practiceMode == '301'}">
-            <div ng-click="enableEditMode()">Edit a dart</div>
             <div ng-repeat="turn in targetData.turns">
               <span ng-repeat="result in turn.results">
-                <span name="roundResult" ng-hide="targetData.isEditMode"><span style="margin-left:20px;">{{result.dart}}</span></span>
-                <span name="resultInput" class="sTarget" ng-show="targetData.isEditMode" ng-click="toggleDartToUpdate(result)" ng-class="{activeModifier: targetData.dartToUpdate == result}" style="margin-left:20px;">{{result.dart}}</span>
+                <span name="roundResult" ng-hide="targetData.isEditMode"><span style="margin-left:20px;">{{result.actual}}</span></span>
+                <span name="resultInput" class="sTarget" ng-show="targetData.isEditMode" ng-click="toggleDartToUpdate(result)" ng-class="{activeModifier: targetData.dartToUpdate == result}" style="margin-left:20px;">{{result.actual}}</span>
               </span>
             </div>
-
           </c:when>
           <c:otherwise>
-            <div ng-click="enableEditMode()">Edit a dart</div>
             <div ng-repeat="result in targetData.turns">
               Round: <span>{{result.round}}</span>
               <span name="roundResult" style="margin-left:20px;" ng-hide="targetData.isEditMode">{{result.firstDart.actual}}, {{result.secondDart.actual}}, {{result.thirdDart.actual}}</span>
@@ -48,10 +45,10 @@
               <span name="secondDartInput" class="sTarget" ng-show="targetData.isEditMode" ng-click="toggleDartToUpdate(result.secondDart)" ng-class="{activeModifier: targetData.dartToUpdate==result.secondDart}">{{result.secondDart.actual}}</span>
               <span name="thirdDartInput" class="sTarget" ng-show="targetData.isEditMode" ng-click="toggleDartToUpdate(result.thirdDart)" ng-class="{activeModifier: targetData.dartToUpdate==result.thirdDart}">{{result.thirdDart.actual}}</span>
             </div>
-            <span class="dbGreen smallButton unselectable" ng-show="targetData.isEditMode" ng-click="finishEditing()" style="float:right;">Save</span>
           </c:otherwise>
         </c:choose>
-
+        <div ng-click="enableEditMode()" ng-show="targetData.turns.length > 0 || targetData.results.length > 0">Edit a dart</div>
+        <span class="dbGreen smallButton unselectable" ng-show="targetData.isEditMode" ng-click="finishEditing()" style="float:right;">Save changes</span>
       </div>
     </div>
     <span ng-click="cancelGame()" id="cancelGame" class="smallButton red unselectable" style="margin-top:15px; display:inline-block;" ng-hide="isHideCancel()">Cancel game</span>

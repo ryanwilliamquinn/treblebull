@@ -62,8 +62,8 @@
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>3.0-alpha-1</version>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.0.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -139,40 +139,62 @@
     </dependency>
   </dependencies>
 
+  <packaging>war</packaging>
+
   <build>
-    <finalName>embeddedTomcatSample</finalName>
+    <finalName>trebleBull</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.0</version>
-              <configuration>
-                <source>1.6</source>
-                <target>1.6</target>
-              </configuration>
-          </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>appassembler-maven-plugin</artifactId>
-        <version>1.1.1</version>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.0</version>
         <configuration>
-          <assembleDirectory>target</assembleDirectory>
-          <programs>
-            <program>
-              <mainClass>launch.Main</mainClass>
-              <name>webapp</name>
-            </program>
-          </programs>
+          <source>1.6</source>
+          <target>1.6</target>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>2.3</version>
         <executions>
           <execution>
             <phase>package</phase>
-            <goals>
-              <goal>assemble</goal>
-            </goals>
+            <goals><goal>copy</goal></goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>com.github.jsimone</groupId>
+                  <artifactId>webapp-runner</artifactId>
+                  <version>7.0.34.1</version>
+                  <destFileName>webapp-runner.jar</destFileName>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
           </execution>
         </executions>
       </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.3</version>
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals><goal>copy</goal></goals>
+                    <configuration>
+                        <artifactItems>
+                            <artifactItem>
+                                <groupId>com.github.jsimone</groupId>
+                                <artifactId>webapp-runner</artifactId>
+                                <version>7.0.34.1</version>
+                                <destFileName>webapp-runner.jar</destFileName>
+                            </artifactItem>
+                        </artifactItems>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
     </plugins>
   </build>
 

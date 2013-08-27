@@ -1,11 +1,9 @@
 package com.rquinn.darts;
 
 /**
- * Created with IntelliJ IDEA.
  * User: rquinn
  * Date: 3/18/13
  * Time: 8:17 AM
- * To change this template use File | Settings | File Templates.
  */
 public class SingleDartResult {
     private int id;

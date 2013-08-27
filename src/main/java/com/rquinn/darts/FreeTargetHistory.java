@@ -1,5 +1,7 @@
 package com.rquinn.darts;
 
+import com.rquinn.darts.model.Dart;
+
 import java.util.List;
 
 /**
@@ -10,9 +12,9 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class FreeTargetHistory {
-    List<SingleDartResult> singleDartResults;
+    List<Dart> darts;
 
-    public void setSingleDartResults(List<SingleDartResult> singleDartResults) {
-        this.singleDartResults = singleDartResults;
+    public void setSingleDartResults(List<Dart> darts) {
+        this.darts = darts;
     }
 }

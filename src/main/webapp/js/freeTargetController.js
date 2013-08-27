@@ -7,7 +7,6 @@ function mainController($scope, $http, $log, $location, postDataService, scoreCa
   $scope.targetData = {};
   $scope.targetData.isShowRounds = false;
   $scope.isShowChart = false;
-  $scope.targetData.turn = [];
   // placeholder for keeping track of the double/triple state
   $scope.targetData.modifier = "";
 
@@ -37,10 +36,16 @@ function mainController($scope, $http, $log, $location, postDataService, scoreCa
   $scope.displayShowAll = "hide";
 
   // order by date descending
-  $scope.predicate = '-dateMillis';
+  $scope.predicate = '-target';
+
+  // edit mode flag
+  $scope.targetData.isEditMode = false;
 
   // model used in selectEditRound method
-  $scope.targetData.selectedEditRound = {};
+  $scope.targetData.dartToUpdate = {};
+
+  // used to tell if we should edit the target or actual, value can be either 'target' or 'actual'
+  $scope.targetData.editMode = 'actual';
 
   // here is an old array that included doubles and triples.  not sure how i feel about that.
   //$scope.targetTypes = [{id : "bull", label : "bullseye"}, {id : "t20", label : "triple 20"}, {id : "d20", label : "double 20"}, {id : "20", label :"20"},
@@ -53,7 +58,7 @@ function mainController($scope, $http, $log, $location, postDataService, scoreCa
   // set the default target
   $scope.target = $scope.targetTypes[0];
 
-  $scope.targetData.isEditMode = false;
+
 
 
   /***************** data loading and saving methods **********************/
@@ -66,22 +71,12 @@ function mainController($scope, $http, $log, $location, postDataService, scoreCa
     $http.post($scope.targetData.postUrl, myjson).
       success(function(data, status) {
         $log.info("posted successfully");
+        $scope.targetData.results = [];
       }).
       error(function(data, status) {
         postData.data = data || "Request failed";
         postData.status = status;
       });
-  }
-  //  postDataService($scope.createNewResult, $scope.targetData, $scope.targetData.reset);
-  //}
-
-  /*
-  * this is called from postDataService, so that it can create the new result appropriately
-  */
-  $scope.createNewResult = function(data) {
-      // only thing we need to do is update the average, so i guess we either get the total score and number of darts and keep track of it in js, or else we have to
-      // constantly hit the database to get the average, which is silly i think.
-      //return {'date' : data.displayDateTime, 'score' : data.score, 'dateMillis' : data.dateMilliseconds, 'numRounds' : data.numRounds, 'avg' : avg, 'id' : data.id}
   }
 
   /*
@@ -91,7 +86,6 @@ function mainController($scope, $http, $log, $location, postDataService, scoreCa
   $scope.targetData.reset = function() {
     $scope.targetData.isShowRounds = false;
     $scope.targetData.results = [];
-    $scope.targetData.turn = [];
     $scope.targetData.modifier = "";
     $scope.targetData.averages = [];
     $scope.targetData.combinedAverages = [];
@@ -103,7 +97,7 @@ function mainController($scope, $http, $log, $location, postDataService, scoreCa
   * gamesContainer is where we store the games that we parse from the response.  for the first request
   * we store them in the view container, for the lifetime stats we store them in a hidden container
   */
-  $scope.getResults = function(url, gamesContainer) {
+  $scope.getResults = function(url) {
     $http.get(url).
           success(function(data, status) {
             $scope.parseResults(data);
@@ -114,13 +108,12 @@ function mainController($scope, $http, $log, $location, postDataService, scoreCa
   }
 
   $scope.parseResults = function(data) {
-    //var aggregateData = data.aggregateData
     var aggregateData = data
     if (aggregateData) {
       for (var i=0; i<aggregateData.length; i++) {
         var tempData = aggregateData[i];
         var avgData = {};
-        avgData.type = tempData.type;
+        avgData.target = tempData.target;
         avgData.score = tempData.score;
         avgData.numDarts = tempData.numDarts;
         avgData.targetAverage = (avgData.score / avgData.numDarts).toFixed(1);
@@ -135,16 +128,13 @@ function mainController($scope, $http, $log, $location, postDataService, scoreCa
   */
   $scope.getData = function() {
     // load the averages data
-    $scope.getResults($scope.targetData.loadUrl, $scope.targetData.averages);
+    $scope.getResults($scope.targetData.loadUrl);
   }
 
   /*
   * load up the data when we get here...
   */
   $scope.getData();
-
-
-
 
 
   /************** User/view initiated methods *****************/
@@ -162,8 +152,14 @@ function mainController($scope, $http, $log, $location, postDataService, scoreCa
 
   /*
   * method to help visualize which dart is being edited (in a previously entered result)
+  * edit mode can either be 'target' or 'actual'
   */
-  $scope.toggleDartToUpdate = function(dartToUpdate) {
+  $scope.toggleDartToUpdate = function(dartToUpdate, editMode) {
+    if (editMode == 'target') {
+      $scope.targetData.editMode = 'target';
+    } else {
+      $scope.targetData.editMode = 'actual';
+    }
     if ($scope.targetData.dartToUpdate == dartToUpdate) {
       $scope.targetData.dartToUpdate = "";
     } else {
@@ -180,16 +176,6 @@ function mainController($scope, $http, $log, $location, postDataService, scoreCa
       $scope.getData();
   }
 
-  /*
-  * called from button on front end - loads the chart if there is data
-  * not sure a chart makes sense here.
-  $scope.showChart = function() {
-    $scope.isShowChart = true;
-    if ($scope.targetData.allGames.length > 0) {
-      chartService($scope.targetData.allGames);
-    }
-  }
-*/
 
   /*
   * works with front end code to select a round for editing
@@ -207,7 +193,7 @@ function mainController($scope, $http, $log, $location, postDataService, scoreCa
   $scope.finishEditing = function(result) {
     $scope.scoreDart(result.dart, result.type);
     $scope.targetData.selectedEditRound = {};
-    $scope.updateScore(result);
+    $scope.updateScore();
     $scope.targetData.dartToUpdate = "";
     $scope.targetData.isEditMode = false;
   }
@@ -226,33 +212,28 @@ function mainController($scope, $http, $log, $location, postDataService, scoreCa
   * every dart should be scored individually and added to the total averages
   */
   $scope.markDart = function(dart) {
+    var dartWithModifier = dart;
     if ($scope.targetData.modifier) {
-      dart = $scope.targetData.modifier + dart;
+      dartWithModifier = $scope.targetData.modifier + dart;
     }
     // if we are not in edit mode, go ahead and mark the dart in the results
     if (!$scope.targetData.isEditMode) {
-      // round result is used to show the darts that have been selected in the current turn
-      $scope.targetData.turn.push(dart);
-
-      // score after every dart, but only send to the database on save.
-      // can maybe temp save in local storage so there is some durability/safety
-      var score = $scope.scoreDart(dart, $scope.target.id);
-      var newResult = {"type" : $scope.target.id, "dart" : dart, "score" : score, 'dateMilliseconds' : new Date().getTime()};
+      var score = $scope.scoreDart(dartWithModifier, $scope.target.id);
+      var newResult = {"target" : $scope.target.id, "actual" : dartWithModifier, "score" : score, 'dateMilliseconds' : new Date().getTime()};
       $scope.targetData.results.push(newResult);
       $scope.updateScore();
-
-      if ($scope.targetData.turn.length >= 3) {
-        $scope.turn = [];
-      }
     } else {
-      // we are in edit mode wheeeee
-      // this needs work...
-      $scope.targetData.selectedEditRound.dart = dart;
-      $scope.updateScore();
+      if ($scope.targetData.editMode == 'target') {
+        $scope.targetData.dartToUpdate.target = dart;
+      } else {
+        $scope.targetData.dartToUpdate.actual = dartWithModifier;
+      }
+      $scope.targetData.dartToUpdate.score = $scope.scoreDart($scope.targetData.dartToUpdate.actual, $scope.targetData.dartToUpdate.target)
     }
-
     $scope.targetData.modifier = "";
   }
+
+
 
   /*
   * responsible for updating the score every turn, and managing the cleanup for the next turn
@@ -265,17 +246,11 @@ function mainController($scope, $http, $log, $location, postDataService, scoreCa
     if (dart.indexOf(target) !== -1) {
       score = scoreCalculator(dart);
     }
-
     return score;
-    // okay so we have the dart, the target and the score, so we create this object and add it to a list of darts to save
-    // and we aggregate this list and add that aggregate to the database to get the moving average.
-    // what could possibly go wrong...
-    // on save we shove results into the database
-
   }
 
   $scope.hideTriple = function() {
-    return target.id == 'bull';
+    return $scope.target.id == 'bull';
   }
 
   /*
@@ -285,26 +260,30 @@ function mainController($scope, $http, $log, $location, postDataService, scoreCa
   $scope.updateScore = function() {
     var newResults = $scope.targetData.results;
     $scope.targetData.combinedAverages = $scope.targetData.averages.slice(0);
-    console.log($scope.targetData.combinedAverages);
-    //console.log($scope.targetData.combinedAverages);
 
     // for each of the new results,
     for (var i=0; i<newResults.length; i++) {
       var result = newResults[i];
-      var isScored = false;
+      var isMarked = false;
+      var resultTarget = result.target;
+      if (typeof(resultTarget) == "number") {
+        resultTarget = resultTarget.toString();
+      }
+      // loop through each of the existing averages
       for (var j=0; j<$scope.targetData.combinedAverages.length;j++) {
         var target = $scope.targetData.combinedAverages[j];
-        if (target.type == result.type) {
+        if (target.target == resultTarget) {
           target.numDarts++;
           target.score += result.score;
           target.targetAverage = (target.score / target.numDarts).toFixed(1);
-          isScored = true;
+          isMarked = true;
           break;
         }
       }
-      if (!isScored) {
+
+      if (!isMarked) {
         var newAverage = {};
-        newAverage.type = result.type;
+        newAverage.target = resultTarget;
         newAverage.numDarts = 1;
         newAverage.score = result.score;
         newAverage.targetAverage = result.score;
@@ -313,15 +292,39 @@ function mainController($scope, $http, $log, $location, postDataService, scoreCa
     }
   }
 
+  $scope.enableEditMode = function() {
+    $scope.targetData.isEditMode = true;
+  }
 
+  /*
+    * called after saving an edit
+    * calls update score to update the game score
+    */
+    $scope.finishEditing = function(result) {
+      $scope.updateScore();
+      $scope.targetData.selectedEditDart = {};
+      $scope.targetData.dartToUpdate = "";
+      $scope.targetData.isEditMode = false;
+    }
 
   $scope.checkRoundsComplete = function() {
-    return $scope.targetData.turn.length > 0;
+    return $scope.targetData.results.length > 0;
   }
 
   $scope.isHideCancel = function() {
-    return $scope.targetData.turn.length == 0 || $scope.targetData.isEditMode;
+    return $scope.targetData.results.length == 0 || $scope.targetData.isEditMode;
   }
+
+  /*
+  * called from button on front end - loads the chart if there is data
+  * not sure a chart makes sense here.
+  $scope.showChart = function() {
+    $scope.isShowChart = true;
+    if ($scope.targetData.allGames.length > 0) {
+      chartService($scope.targetData.allGames);
+    }
+  }
+*/
 
 }
 

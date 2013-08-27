@@ -19,20 +19,20 @@ ang.filter('runningAverage', function() {
     });
 
 ang.filter('lifetimeAverage', function() {
-    return function(allGames) {
-        var sumScore = 0;
-        var sumRounds = 0;
-        if (allGames.length < 1) {
-            return "";
-        }
-        for (var i=0; i<allGames.length; i++) {
-            sumScore += Number(allGames[i].score);
-            sumRounds += Number(allGames[i].numRounds);
-        }
-
-        var average = sumScore / sumRounds;
-        return average.toFixed(1);
+  return function(allGames) {
+    var sumScore = 0;
+    var sumRounds = 0;
+    if (allGames.length < 1) {
+      return "";
     }
+    for (var i=0; i<allGames.length; i++) {
+      sumScore += Number(allGames[i].score);
+      sumRounds += Number(allGames[i].numRounds);
+    }
+
+    var average = sumScore / sumRounds;
+    return average.toFixed(1);
+  }
 })
 ang.filter('cricketLifetimeAverage', function() {
    return function(allGames) {

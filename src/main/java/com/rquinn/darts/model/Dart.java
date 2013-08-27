@@ -1,13 +1,12 @@
 package com.rquinn.darts.model;
 
 import com.google.gson.annotations.Expose;
+import com.rquinn.darts.DateTimeManagement;
 
 /**
- * Created with IntelliJ IDEA.
  * User: rquinn
  * Date: 8/24/13
  * Time: 2:46 PM
- * To change this template use File | Settings | File Templates.
  */
 public class Dart {
 
@@ -16,7 +15,7 @@ public class Dart {
   @Expose private int round;
   @Expose private String target;
   @Expose private String actual;
-  @Expose private int score;
+  @Expose private Integer score;
 
   public Dart(){};
 
@@ -71,11 +70,11 @@ public class Dart {
     this.actual = dart;
   }
 
-  public int getScore() {
+  public Integer getScore() {
     return score;
   }
 
-  public void setScore(int score) {
+  public void setScore(Integer score) {
     this.score = score;
   }
 

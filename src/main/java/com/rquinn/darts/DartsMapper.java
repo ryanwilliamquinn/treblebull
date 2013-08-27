@@ -6,47 +6,47 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
  * User: rquinn
  * Date: 12/10/12
  * Time: 10:25 PM
- * To change this template use File | Settings | File Templates.
  */
 public interface DartsMapper {
 
-    public void insertResult(DartsResult dartsResult);
+  public void insertResult(DartsResult dartsResult);
 
-    public int insertGame(DartsResult dartsResult);
+  public int insertGame(DartsResult dartsResult);
 
-    public void insertUser(@Param("name") String name, @Param("encryptedPassword") String encryptedPassword);
+  public int insert301Game(ThreeOhOneResult dartsResult);
 
-    public void insertRound(@Param("foreignKey") int foreignKey, @Param("roundResult") RoundResult roundResult);
+  public void insertUser(@Param("name") String name, @Param("encryptedPassword") String encryptedPassword);
 
-    public void insertThreeDartRound(@Param("foreignKey") int foreignKey, @Param("roundResult") ThreeDartRoundResult roundResult);
+  public void insertRound(@Param("foreignKey") int foreignKey, @Param("roundResult") RoundResult roundResult);
 
-    public int getPrimaryKey();
+  public void insertThreeDartRound(@Param("foreignKey") int foreignKey, @Param("roundResult") ThreeDartRoundResult roundResult);
 
-    public DartsResult getResultById(Integer id);
+  public int getPrimaryKey();
 
-    public List<DartsResult> getAllResults(@Param("username") String username, @Param("type") String type);
+  public DartsResult getResultById(Integer id);
 
-    public List<RoundResult> getGameDetails(int gameId);
+  public List<DartsResult> getAllResults(@Param("username") String username, @Param("type") String type);
 
-    public List<DartsResult> getTenResults(@Param("username") String username, @Param("type") String type);
+  public List<Dart> getGameDetails(int gameId);
 
-    public int getNumResults(@Param("username") String username, @Param("type") String type);
+  public List<DartsResult> getTenResults(@Param("username") String username, @Param("type") String type);
 
-    public void updateResult(DartsResult dartsResult);
+  public int getNumResults(@Param("username") String username, @Param("type") String type);
 
-    public void deleteResult(Integer userId);
+  public void updateResult(DartsResult dartsResult);
 
-    public List<FreeAverageData> getFreeAverages(String userName);
+  public void deleteResult(Integer userId);
 
-    public List<SingleDartResult> getFreeTargetHistory(@Param("username") String userName, @Param("target") String target);
+  public List<FreeAverageData> getFreeAverages(String userName);
 
-    public void insertFreeDart(SingleDartResult singleDartResult);
+  public List<Dart> getFreeTargetHistory(@Param("username") String userName, @Param("target") String target);
 
-    public void insertDart(@Param("foreignKey") int foreignKey, @Param("dart") Dart dart);
+  public void insertFreeDart(@Param("foreignKey") int foreignKey, @Param("dart") Dart dart);
+
+  public void insertDart(@Param("foreignKey") int foreignKey, @Param("dart") Dart dart);
 
 }
 

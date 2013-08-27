@@ -65,10 +65,14 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   /***************** data loading and saving methods **********************/
 
   /*
-  * this is going to be a little interesting, since we are batch posting
-  * also should post number of rounds and the number you took out
+  * the 301 darts result is going to take the number you doubled in on, the number you doubled out on, and total number of darts you threw
+  * that information can all be derived from sending the darts results in order.  easier to mess with it on the server side
+  * what we get back is the number of darts it took to complete (score), the date information, and the primary key
   */
   $scope.postResult = function() {
+    // hopefully we can implement the postDataService?  try it just manually first to get it going
+    // postDataService($scope.createNewResult, $scope.targetData, $scope.targetData.resetGameData);
+
     var myjson = JSON.stringify($scope.targetData.results, replacer);
     $http.post($scope.targetData.postUrl, myjson).
       success(function(data, status) {
@@ -197,7 +201,7 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   * and then calls update score to update the game score
   */
   $scope.finishEditing = function(result) {
-    $scope.scoreDart($scope.targetData.dartToUpdate.dart, $scope.targetData.dartToUpdate.type); // i dont think this has any side effects...
+    $scope.scoreDart($scope.targetData.dartToUpdate.actual, $scope.targetData.dartToUpdate.type); // i dont think this has any side effects...
     $scope.targetData.selectedEditDart = {};
     $scope.updateScore();
     $scope.targetData.dartToUpdate = "";
@@ -231,13 +235,13 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
       // score after every dart, but only send to the database on save.
       // can maybe temp save in local storage so there is some durability/safety
       var score = $scope.scoreDart(dart);
-      var newResult = {'type' : '301', 'dart' : dart, 'score' : score, 'dateMilliseconds' : new Date().getTime(), 'turn' : $scope.targetData.turnCounter};
+      var newResult = {'type' : '301', 'actual' : dart, 'score' : score, 'dateMilliseconds' : new Date().getTime(), 'round' : $scope.targetData.turnCounter};
       $scope.targetData.results.push(newResult);
       $scope.targetData.turns[$scope.targetData.turnCounter - 1].results.push(newResult);
       $scope.updateScore();
     } else {
       // edit mode
-      $scope.targetData.dartToUpdate.dart = dart;
+      $scope.targetData.dartToUpdate.actual = dart;
       $scope.targetData.dartToUpdate.score = $scope.scoreDart(dart);
       $scope.updateScore();
     }
@@ -267,7 +271,6 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   /*
   *   we need to deal with turns and individual darts here.
   *   the score should be updated on each dart, but it needs to be aware of turns.
-  *
   */
   $scope.updateScore = function() {
     var newResults = $scope.targetData.turns;
@@ -288,7 +291,7 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
         var score = result.score
         // if we aren't double in yet, check each dart in the results until we are
         if (!isDoubledIn) {
-          var dart = result.dart;
+          var dart = result.actual;
           if (typeof(dart) == "number") {
             dart = dart.toString();
           }
@@ -313,7 +316,7 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
       var lastTurn = $scope.targetData.turns[numTurns - 1].results;
       var lastTurnLength = lastTurn.length;
       var lastDart = lastTurn[lastTurnLength-1];
-      var lastDartResult = lastDart.dart;
+      var lastDartResult = lastDart.actual;
       if (typeof(lastDartResult) == "number") {
         lastDartResult = lastDartResult.toString();
       }
