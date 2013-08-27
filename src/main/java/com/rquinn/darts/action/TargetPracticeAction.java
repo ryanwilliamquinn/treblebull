@@ -257,7 +257,6 @@ public class TargetPracticeAction extends PracticeAction {
                 a select for each of them to get the last 100 results by date)
 
                 select * from free_targets where target
-             */
       for (TargetPracticeType target : TargetPracticeType.values()) {
         List<Dart> darts = dartsResultService.getFreeTargetHistory(currentUser.getPrincipal().toString(), target.getValue());
         if (darts != null) {
@@ -266,6 +265,8 @@ public class TargetPracticeAction extends PracticeAction {
           freeResultResponse.getFreeTargetHistories().add(freeTargetHistory);
         }
       }
+                   */
+
     } finally {
       session.close();
     }

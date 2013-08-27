@@ -26,18 +26,9 @@
     <resultMap type='com.rquinn.darts.model.Dart' id='gameDetails'>
         <result property='id' column='id'/>
         <result property='round' column='round'/>
-        <result property='actual' column='firstDart'/>
-        <result property='score' column='secondDart'/>
+        <result property='actual' column='actual'/>
+        <result property='score' column='score'/>
     </resultMap>
-
-    <resultMap id="singleDartResult" type="com.rquinn.darts.SingleDartResult">
-        <result property='dart' column='dart'/>
-        <result property="target" column="target"/>
-        <result property="score" column="score"/>
-        <result property='dateTimeManagement.timestamp' column='dart_time'/>
-    </resultMap>
-
-
 
     <resultMap id="freeAverageData" type="com.rquinn.darts.FreeAverageData">
         <result property="target" column="target"></result>
@@ -132,10 +123,6 @@
             WHERE type='free'
             AND darts_user = #{userName})
         GROUP BY target;
-    </select>
-
-    <select id="getFreeTargetHistory" parameterType="map" resultMap="singleDartResult">
-        SELECT * from free_dart where target = #{target} ORDER BY dart_time LIMIT 100;
     </select>
 
 </mapper>
