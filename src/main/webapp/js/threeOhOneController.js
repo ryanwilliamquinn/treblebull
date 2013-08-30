@@ -243,7 +243,6 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   $scope.finishEditing = function(result) {
     $scope.scoreDart($scope.targetData.dartToUpdate.actual, $scope.targetData.dartToUpdate.type); // i dont think this has any side effects...
     $scope.targetData.selectedEditDart = {};
-    $scope.updateScore();
     $scope.targetData.dartToUpdate = "";
     $scope.targetData.isEditMode = false;
   }
@@ -313,8 +312,6 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   *   the score should be updated on each dart, but it needs to be aware of turns.
   */
   $scope.updateScore = function() {
-    var newResults = $scope.targetData.turns;
-    var isIncrementTurn = false;
 
     // each time we update the score, start off with the full score again
     $scope.targetData.remainingScore = $scope.targetData.targetScore;
@@ -324,6 +321,7 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
 
     var numTurns = $scope.targetData.turns.length;
     for (var i=0; i<numTurns; i++) {
+      var isIncrementTurn = false;
       var turn = $scope.targetData.turns[i];
       var resultsLength = turn.results.length;
       for (var j=0; j<resultsLength; j++) {
@@ -364,22 +362,39 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
       // if the last dart was not a double, zero out the scores for the last turn
       if (lastDartResult.lastIndexOf("d", 0) !== 0) {
         $scope.setLastTurnScoresToZero();
+        $scope.nullifyBustedDarts();
+        $scope.updateScore();
+        isIncrementTurn = true;
       }
     } else if ($scope.targetData.remainingScore < 2) {
       $scope.setLastTurnScoresToZero();
+      $scope.nullifyBustedDarts();
+      $scope.updateScore();
       isIncrementTurn = true;
     }
 
     if (isIncrementTurn || $scope.targetData.dartCounter == 2) {
       $scope.targetData.dartCounter = 0;
-      $scope.targetData.turnCounter++;
-      $scope.targetData.turns.push({ turnCount: $scope.targetData.turnCounter, results: []})
-
+      if ($scope.targetData.turns[$scope.targetData.turns.length - 1].results.length > 0) {
+        $scope.targetData.turnCounter++;
+        $scope.targetData.turns.push({ turnCount: $scope.targetData.turnCounter, results: []});
+      }
     } else {
-      $scope.targetData.dartCounter++;
+      if (!$scope.targetData.isEditMode) {
+        $scope.targetData.dartCounter++;
+      }
     }
+  }
 
-
+  $scope.nullifyBustedDarts = function() {
+    var dartsToNullify = 2 - $scope.targetData.dartCounter; // if we end a turn early (bust), we want to nullify the rest of the turns
+    if (!$scope.targetData.isEditMode && dartsToNullify > 0) {
+      for (var i=0; i<dartsToNullify; i++) {
+        var newResult = {'type' : '301', 'actual' : 'X', 'score' : 0, 'dateMilliseconds' : new Date().getTime(), 'round' : $scope.targetData.turnCounter};
+        $scope.targetData.results.push(newResult);
+        $scope.targetData.turns[$scope.targetData.turnCounter - 1].results.push(newResult);
+      }
+    }
   }
 
   $scope.isHideCancel = function() {
@@ -387,13 +402,16 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   }
 
   $scope.setLastTurnScoresToZero = function() {
-    var turnToRollBack = $scope.targetData.turns[$scope.targetData.turnCounter - 1].results;
+    var turnNumToRollBack = $scope.targetData.turnCounter - 1; // turn is 1 based, so if we busted, we want to roll back the existing turn
+    var turnToRollBack = $scope.targetData.turns[turnNumToRollBack].results;
+    if (turnToRollBack.length < 1) {
+      turnToRollBack = $scope.targetData.turns[turnNumToRollBack - 1].results;
+    }
 
 
     for (var i=0; i<turnToRollBack.length; i++) {
       turnToRollBack[i].score = 0;
     }
-    $scope.updateScore();
   }
 
   $scope.getResults($scope.targetData.loadUrl, $scope.targetData.games);
