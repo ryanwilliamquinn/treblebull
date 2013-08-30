@@ -28,6 +28,9 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   // blank container for what we get back from the database
   $scope.targetData.games = [];
 
+  // container for all games for a game mode and player
+  $scope.targetData.allGames = [];
+
   // hold the average data we get from the database
   $scope.targetData.averages = [];
 
@@ -46,6 +49,7 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
 
   // order by date descending
   $scope.predicate = '-dateMillis';
+  $scope.pastPredicate = '-dateMillis';
 
   // model used in selectEditRound method
   $scope.targetData.selectedEditDart = {};
@@ -76,6 +80,10 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
     var myjson = JSON.stringify($scope.targetData.results, replacer);
     $http.post($scope.targetData.postUrl, myjson).
       success(function(data, status) {
+        data.date = data.dateTimeManagement.displayDateTime;
+        data.dateMillis = data.dateTimeManagement.dateMilliseconds;
+        $scope.targetData.games.unshift(data);
+        $scope.targetData.allGames.unshift(data);
         $scope.targetData.reset();
         $log.info("posted successfully");
       }).
@@ -119,7 +127,38 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   $scope.getResults = function(url, gamesContainer) {
     $http.get(url).
           success(function(data, status) {
-            $scope.parseResults(data);
+            var numResults = data.totalNumResults;
+            var tempResults = data.dartsResults;
+            if (tempResults) {
+              var resultsLength = tempResults.length;
+              for (var i=0; i < resultsLength; i++) {
+                var tempdata = tempResults[i];
+                var oldRound = {};
+                oldRound.id = tempdata.id;
+                oldRound.score = tempdata.score;
+                oldRound.date = tempdata.dateTimeManagement.displayDateTime;
+                oldRound.dateMillis = tempdata.dateTimeManagement.dateMilliseconds;
+                oldRound.numRounds = tempdata.numRounds;
+                oldRound.doubleIn = tempdata.doubleIn;
+                oldRound.doubleOut = tempdata.doubleOut;
+                oldRound.out = tempdata.out;
+                if (tempdata.score && tempdata.dateTimeManagement.displayDateTime) {
+                  gamesContainer.push(oldRound);
+                }
+              }
+              // if there are more results than we show, we need the show all button, and we also need to load up the rest of the data for calculating averages
+              if ($scope.initialNumGames <= resultsLength && resultsLength < numResults) {
+                $scope.needsShowAll = true;
+                $scope.loadAll();
+              // if there are fewer total results than we ask for, then just copy the data over into the structure for calculating averages.
+              } else if ($scope.initialNumGames >= resultsLength && resultsLength >= numResults) {
+                $scope.needsShowAll = false;
+                $scope.targetData.allGames = gamesContainer.slice();
+              } else {
+                // if we get here, do we have to set allGames?
+                $scope.targetData.allGames = gamesContainer.slice();
+              }
+            }
           }).
           error(function(data, status) {
             $log.error("failed")
@@ -128,7 +167,7 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
 
   $scope.parseResults = function(data) {
     //var aggregateData = data.aggregateData
-    var aggregateData = data
+    /*
     if (aggregateData) {
       for (var i=0; i<aggregateData.length; i++) {
         var tempData = aggregateData[i];
@@ -141,6 +180,7 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
         $scope.targetData.combinedAverages = $scope.targetData.averages.slice(0);
       }
     }
+    */
   }
 
 
@@ -357,6 +397,60 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   }
 
   $scope.getResults($scope.targetData.loadUrl, $scope.targetData.games);
+
+  /*
+  * load up all results for user and game mode.  we may have to put some limit on this as data gets big
+  */
+  $scope.loadAll = function() {
+    $scope.getResults($scope.targetData.loadAllUrl, $scope.targetData.allGames);
+  }
+
+  /*
+    * this is the fledgling attempt to bring back round data
+    */
+    $scope.gameClicked = function(game) {
+      // if game.rounds is defined and has some data, just clear it
+      if (typeof game.rounds != "undefined" && game.rounds.length > 0) {
+        // we already loaded this data, so clicking again should hide it...
+        $scope.clearAllRounds();
+      } else {
+        var url = "/data/gameDetails" + game.id;
+        //$log.info("url: " + url);
+        //this.game.id gets us the game id.
+        //$log.info(this.game);
+        $http.get(url).
+          success(function(data, status) {
+            var rounds = [];
+            var round = 0;
+            var turn = [];
+            var dart = {};
+            for (var i=0; i<data.length; i++) {
+              dart = data[i];
+              round = dart.round - 1;
+              if (!rounds[round]) {
+                rounds[round] = [];
+              }
+              rounds[round].unshift(dart);
+            }
+
+            game.rounds = rounds;
+            // so we need to take this data, which is an array of round/scores, and dump it into the result
+          }).
+          error(function(data, status) {
+            $log.error("failed")
+          })
+      }
+    }
+
+    /*
+    * this function makes it so that multiple round details aren't open at the same time
+    */
+    $scope.clearAllRounds = function() {
+      for (var i=0; i<$scope.targetData.games.length; i++) {
+        var game = $scope.targetData.games[i];
+        game.rounds = [];
+      }
+    }
 
 
 }

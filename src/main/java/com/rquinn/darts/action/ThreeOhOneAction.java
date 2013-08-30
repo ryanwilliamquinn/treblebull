@@ -91,14 +91,13 @@ public class ThreeOhOneAction extends PracticeAction {
         }
       }
 
-
       threeOhOneResult = new ThreeOhOneResult(dartsList, practiceType, doubleIn, doubleOut, out);
       Subject currentUser = SecurityUtils.getSubject();
       threeOhOneResult.setUsername(currentUser.getPrincipal().toString());
       slf4jLogger.debug("301 result: " + threeOhOneResult);
       DartsResultService dartsResultService = new DartsResultService();
-      dartsResultService.insert301Game(threeOhOneResult);
       threeOhOneResult.getDateTimeManagement().initializeDates();
+      dartsResultService.insert301Game(threeOhOneResult);
     } catch (Exception e) {
         slf4jLogger.error("Error inserting data: " + e);
     }  finally {
