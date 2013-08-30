@@ -34,6 +34,8 @@ public interface DartsMapper {
 
   public List<DartsResult> getTenResults(@Param("username") String username, @Param("type") String type);
 
+  public List<DartsResult> getTenOhOneResults(@Param("username") String username, @Param("type") String type);
+
   public int getNumResults(@Param("username") String username, @Param("type") String type);
 
   public void updateResult(DartsResult dartsResult);

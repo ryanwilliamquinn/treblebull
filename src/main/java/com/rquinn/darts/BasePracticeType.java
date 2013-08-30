@@ -10,4 +10,5 @@ package com.rquinn.darts;
 public interface BasePracticeType {
 
     public String getValue();
+    public boolean isTargetPracticeType();
 }

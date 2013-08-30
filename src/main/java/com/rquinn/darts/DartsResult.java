@@ -73,7 +73,7 @@ public class DartsResult {
     }
 
     public String toString() {
-        return "id: " + id + " type: " + type + " score: " + score;
+        return "id: " + id + " type: " + type + " score: " + score + ", numrounds: " + numRounds;
     }
 
     public DateTimeManagement getDateTimeManagement() {

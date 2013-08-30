@@ -33,16 +33,10 @@ public class ThreeOhOneAction extends PracticeAction {
 
   private static final Logger slf4jLogger = LoggerFactory.getLogger(ThreeOhOneAction.class);
 
-  // test button-insert for darts in this game
   /*
-      what will go in the database?  all the rounds, with individual darts (like cricket rounds i guess)
       the 301 darts result is going to take the number you doubled in on, the number you doubled out on, and total number of darts you threw
-
-
       here is some mock data
       [{"type":"301","dart":19,"score":"19","dateMilliseconds":1377437199202,"turn":1},{"type":"301","dart":"d20","score":40,"dateMilliseconds":1377437200530,"turn":1},{"type":"301","dart":1,"score":"1","dateMilliseconds":1377437201648,"turn":1},{"type":"301","dart":20,"score":"20","dateMilliseconds":1377437202266,"turn":2},{"type":"301","dart":20,"score":"20","dateMilliseconds":1377437202429,"turn":2},{"type":"301","dart":20,"score":"20","dateMilliseconds":1377437202577,"turn":2},{"type":"301","dart":20,"score":"20","dateMilliseconds":1377437202742,"turn":3},{"type":"301","dart":20,"score":"20","dateMilliseconds":1377437202906,"turn":3},{"type":"301","dart":20,"score":"20","dateMilliseconds":1377437203093,"turn":3},{"type":"301","dart":20,"score":"20","dateMilliseconds":1377437203250,"turn":4},{"type":"301","dart":20,"score":"20","dateMilliseconds":1377437203398,"turn":4},{"type":"301","dart":20,"score":"20","dateMilliseconds":1377437203680,"turn":4},{"type":"301","dart":20,"score":"20","dateMilliseconds":1377437203858,"turn":5},{"type":"301","dart":20,"score":"20","dateMilliseconds":1377437204038,"turn":5},{"type":"301","dart":20,"score":"20","dateMilliseconds":1377437204226,"turn":5},{"type":"301","dart":"d10","score":20,"dateMilliseconds":1377437208937,"turn":6}]
-
-
 
    */
 

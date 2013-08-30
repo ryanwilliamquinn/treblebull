@@ -11,42 +11,45 @@ import org.apache.commons.lang3.StringUtils;
  */
 public enum PracticeType implements BasePracticeType {
 
-    TARGET ("target", true, "target.jsp"),
-    FREE_TARGET ("free", false, "freeTarget.jsp"),
-    CRICKET ("cricket", false, "cricket.jsp"),
-    THREE_OH_ONE ("301", false, "threeOhOne.jsp");
+  TARGET ("target", true, "target.jsp"),
+  FREE_TARGET ("free", false, "freeTarget.jsp"),
+  CRICKET ("cricket", false, "cricket.jsp"),
+  THREE_OH_ONE ("301", false, "threeOhOne.jsp");
 
-    private String value;
-    private boolean simple;
-    private String template;
+  private String value;
+  private boolean simple;
+  private String template;
 
-    private PracticeType(String value, boolean simple, String template) {
-        this.value = value;
-        this.simple = simple;
-        this.template = template;
+  private PracticeType(String value, boolean simple, String template) {
+    this.value = value;
+    this.simple = simple;
+    this.template = template;
+  }
+
+  public boolean isTargetPracticeType() {
+    return false;
+  }
+
+  public String getValue() {
+    return value;
+  }
+
+  public boolean isSimple() {
+    return simple;
+  }
+
+  public String getTemplate() {
+    return template;
+  }
+
+
+  public static PracticeType getPracticeTypeForString(String type) {
+    PracticeType pt = null;
+    for (PracticeType t : PracticeType.values()) {
+      if (StringUtils.equalsIgnoreCase(t.getValue(), type)) {
+        pt = t;
+      }
     }
-
-
-    public String getValue() {
-        return value;
-    }
-
-    public boolean isSimple() {
-        return simple;
-    }
-
-    public String getTemplate() {
-        return template;
-    }
-
-
-    public static PracticeType getPracticeTypeForString(String type) {
-        PracticeType pt = null;
-        for (PracticeType t : PracticeType.values()) {
-            if (StringUtils.equalsIgnoreCase(t.getValue(), type)) {
-                pt = t;
-            }
-        }
-        return  pt;
-    }
+    return  pt;
+  }
 }

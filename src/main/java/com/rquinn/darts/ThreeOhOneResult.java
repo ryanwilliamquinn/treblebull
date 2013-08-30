@@ -1,15 +1,29 @@
 package com.rquinn.darts;
 
+import com.google.gson.annotations.Expose;
 import com.rquinn.darts.model.Dart;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 
 public class ThreeOhOneResult extends DartsResult {
   private List<Dart> darts;
-  private String doubleIn;
-  private String doubleOut;
-  private int out;
+  @Expose private String doubleIn;
+  @Expose private String doubleOut;
+  @Expose private int out;
+
+  public ThreeOhOneResult(){};
+
+  public ThreeOhOneResult(PracticeType type, int score, Timestamp date, int numRounds, String doubleIn, String doubleOut, int out) {
+    setType(type);
+    setScore(score);
+    getDateTimeManagement().setTimestamp(date);
+    setNumRounds(numRounds);
+    this.doubleIn = doubleIn;
+    this.doubleOut = doubleOut;
+    this.out = out;
+  }
 
   // might need this for mybatis
   public ThreeOhOneResult(List<Dart> darts, String type, String doubleIn, String doubleOut, int out) {

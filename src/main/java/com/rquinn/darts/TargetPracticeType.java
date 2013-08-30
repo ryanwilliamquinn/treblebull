@@ -11,46 +11,50 @@ import org.apache.commons.lang3.StringUtils;
  */
 public enum TargetPracticeType implements BasePracticeType {
 
-    BULLS ("bull"),
-    TRIPLE_TWENTIES ("t20"),
-    DOUBLE_TWENTIES ("d20"),
-    TWENTIES ("20"),
-    TRIPLE_NINETEEN ("t19"),
-    DOUBLE_NINETEEN ("d19"),
-    NINETEEN ("19"),
-    TRIPLE_EIGHTEEN ("t18"),
-    DOUBLE_EIGHTEEN ("d18"),
-    EIGHTEEN ("18"),
-    TRIPLE_SEVENTEEN ("t17"),
-    DOUBLE_SEVENTEEN ("d17"),
-    SEVENTEEN ("17"),
-    TRIPLE_SIXTEEN ("t16"),
-    DOUBLE_SIXTEEN ("d16"),
-    SIXTEEN ("16"),
-    TRIPLE_FIFTEEN ("t15"),
-    DOUBLE_FIFTEEN ("d15"),
-    FIFTEEN ("15"),
-    FREE ("free");
+  BULLS ("bull"),
+  TRIPLE_TWENTIES ("t20"),
+  DOUBLE_TWENTIES ("d20"),
+  TWENTIES ("20"),
+  TRIPLE_NINETEEN ("t19"),
+  DOUBLE_NINETEEN ("d19"),
+  NINETEEN ("19"),
+  TRIPLE_EIGHTEEN ("t18"),
+  DOUBLE_EIGHTEEN ("d18"),
+  EIGHTEEN ("18"),
+  TRIPLE_SEVENTEEN ("t17"),
+  DOUBLE_SEVENTEEN ("d17"),
+  SEVENTEEN ("17"),
+  TRIPLE_SIXTEEN ("t16"),
+  DOUBLE_SIXTEEN ("d16"),
+  SIXTEEN ("16"),
+  TRIPLE_FIFTEEN ("t15"),
+  DOUBLE_FIFTEEN ("d15"),
+  FIFTEEN ("15"),
+  FREE ("free");
 
 
-    private String value;
+  private String value;
 
-    private TargetPracticeType(String value) {
-        this.value = value;
+  private TargetPracticeType(String value) {
+    this.value = value;
+  }
+
+  public String getValue() {
+    return value;
+  }
+
+  public boolean isTargetPracticeType() {
+    return true;
+  }
+
+  public static TargetPracticeType getTargetPracticeTypeForString(String type) {
+    TargetPracticeType pt = null;
+    for (TargetPracticeType t : TargetPracticeType.values()) {
+      if (StringUtils.equalsIgnoreCase(t.getValue(), type)) {
+        pt = t;
+      }
     }
-
-    public String getValue() {
-        return value;
-    }
-
-    public static TargetPracticeType getTargetPracticeTypeForString(String type) {
-        TargetPracticeType pt = null;
-        for (TargetPracticeType t : TargetPracticeType.values()) {
-            if (StringUtils.equalsIgnoreCase(t.getValue(), type)) {
-                pt = t;
-            }
-        }
-        return  pt;
-    }
+    return  pt;
+  }
 
 }

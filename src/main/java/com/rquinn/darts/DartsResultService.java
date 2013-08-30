@@ -124,7 +124,12 @@ public class DartsResultService
       String typeValue = type.getValue();
       slf4jLogger.debug("sql info for get ten results - username: " + userName + ", type: " + typeValue);
       DartsResultResponse dartsResultResponse = new DartsResultResponse();
-      List<DartsResult> dartsResults = dartsMapper.getTenResults(userName, typeValue);
+      List<DartsResult> dartsResults = null;
+      if (type.isTargetPracticeType()) {
+        dartsResults = dartsMapper.getTenResults(userName, typeValue);
+      } else {
+        dartsResults = dartsMapper.getTenOhOneResults(userName, typeValue);
+      }
       for (DartsResult dr : dartsResults) {
         dr.getDateTimeManagement().initializeDates();
       }

@@ -54,7 +54,15 @@
     </select>
 
     <select id='getTenResults' parameterType="map"  resultMap='dartsResultValue'>
-        SELECT  id, UPPER(type), score, date, num_rounds  FROM darts_result
+        SELECT  id, UPPER(type), score, date, num_rounds FROM darts_result
+        WHERE type = #{type}
+        AND darts_user = #{username}
+        ORDER BY date DESC
+        LIMIT 10;
+    </select>
+
+    <select id='getTenOhOneResults' parameterType="map"  resultMap='threeOhOneResult'>
+        SELECT  id, UPPER(type), score, date, num_rounds, double_in, double_out, out  FROM darts_result
         WHERE type = #{type}
         AND darts_user = #{username}
         ORDER BY date DESC
