@@ -1,6 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<%-- what do i need to add to the controller to make this just work?  can i do this in a directive somehow? seems like it would be a lot of things. --%>
 <div class="rounds unselectable" <c:if test="${practiceMode != 'free'}">ng-show="targetData.isShowRounds"</c:if>>
   <div <c:if test="${practiceMode != 'free'}">ng-hide="checkRoundsComplete()"</c:if>>
     <div>

@@ -44,6 +44,8 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   // order by date descending
   $scope.predicate = '-dateMillis';
 
+  $scope.targetData.isShowRoundAvg = true;
+
   // here is an old array that included doubles and triples.  not sure how i feel about that.
   //$scope.targetTypes = [{id : "bull", label : "bullseye"}, {id : "t20", label : "triple 20"}, {id : "d20", label : "double 20"}, {id : "20", label :"20"},
   //                        {id : "t19", label : "triple 19"}, {id : "d19", label : "double 19"}, {id : "19", label : "19"}];
