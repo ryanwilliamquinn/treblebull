@@ -57,8 +57,16 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   $scope.targetData.targetScore = 301;
   $scope.targetData.remainingScore = 301;
 
+  $scope.targetData.isUseTargets = false;
+
+  // the available targets.  this could be expanded.
+  $scope.targetTypes = [{id : "bull", label : "bullseye"}, {id : "20", label :"20"}, {id : "19", label :"19"}, {id : "18", label :"18"}, {id : "17", label :"17"},
+                        {id : "16", label :"16"}, {id : "15", label :"15"}, {id : "14", label :"14"}, {id : "13", label :"13"}, {id : "12", label :"12"}, {id : "11", label :"11"},
+                        {id : "10", label :"10"}, {id : "9", label :"9"}, {id : "8", label :"8"}, {id : "7", label :"7"}, {id : "6", label :"6"}, {id : "5", label :"5"},
+                        {id : "4", label :"4"}, {id : "3", label :"3"}, {id : "2", label :"2"}, {id : "1", label :"1"}];
+
   // set the default target
-  $scope.target = {};
+  $scope.target = $scope.targetTypes[0];
 
   $scope.targetData.isEditMode = false;
 
@@ -261,7 +269,8 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   * every dart should be scored individually and added to the total averages
   */
   $scope.markDart = function(dart) {
-    if (dart != CONST.nohit && $scope.targetData.modifier) {
+    // add here "dart doesn't start with a d or a t"
+    if (dart != CONST.nohit && $scope.targetData.modifier && dart.lastIndexOf("d", 0) != 0 && dart.lastIndexOf("t", 0) != 0) {
       dart = $scope.targetData.modifier + dart;
     }
     // if we are not in edit mode, go ahead and mark the dart in the results
@@ -275,6 +284,9 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
       // can maybe temp save in local storage so there is some durability/safety
       var score = $scope.scoreDart(dart);
       var newResult = {'type' : '301', 'actual' : dart, 'score' : score, 'dateMilliseconds' : new Date().getTime(), 'round' : $scope.targetData.turnCounter};
+      if ($scope.targetData.isUseTargets) {
+        newResult.target = $scope.target.id;
+      }
       $scope.targetData.results.push(newResult);
       $scope.targetData.turns[$scope.targetData.turnCounter - 1].results.push(newResult);
       $scope.updateScore();

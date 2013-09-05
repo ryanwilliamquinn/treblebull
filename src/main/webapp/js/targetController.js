@@ -314,7 +314,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
             if (!rounds[round]) {
               rounds[round] = [];
             }
-            rounds[round].unshift(dart);
+            rounds[roundunshiftsh(dart);
           }
 
           game.rounds = rounds;
@@ -345,7 +345,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   */
   $scope.markDart = function(result) {
     var dart = result;
-    if (dart != "no hit" && $scope.targetData.modifier) {
+    if (dart != "no hit" && $scope.targetData.modifier && dart.lastIndexOf("d", 0) != 0 && dart.lastIndexOf("t", 0) != 0) {
       dart = $scope.targetData.modifier + result;
     }
     // if we are not in edit mode, go ahead and mark the dart in the results
