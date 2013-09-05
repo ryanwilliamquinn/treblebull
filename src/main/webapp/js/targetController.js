@@ -314,7 +314,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
             if (!rounds[round]) {
               rounds[round] = [];
             }
-            rounds[roundunshiftsh(dart);
+            rounds[round].unshift(dart);
           }
 
           game.rounds = rounds;
