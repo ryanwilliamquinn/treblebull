@@ -60,10 +60,17 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   $scope.targetData.isUseTargets = false;
 
   // the available targets.  this could be expanded.
-  $scope.targetTypes = [{id : "bull", label : "bullseye"}, {id : "20", label :"20"}, {id : "19", label :"19"}, {id : "18", label :"18"}, {id : "17", label :"17"},
-                        {id : "16", label :"16"}, {id : "15", label :"15"}, {id : "14", label :"14"}, {id : "13", label :"13"}, {id : "12", label :"12"}, {id : "11", label :"11"},
-                        {id : "10", label :"10"}, {id : "9", label :"9"}, {id : "8", label :"8"}, {id : "7", label :"7"}, {id : "6", label :"6"}, {id : "5", label :"5"},
-                        {id : "4", label :"4"}, {id : "3", label :"3"}, {id : "2", label :"2"}, {id : "1", label :"1"}];
+  $scope.targetTypes = [{id : "bull", label : "bullseye"}, {id : "dbull", label :"double bull"}, {id : "d20", label :"double 20"}, {id : "t20", label :"triple 20"}, {id : "20", label :"20"},
+                        {id : "d19", label :"double 19"}, {id : "t19", label :"triple 19"}, {id : "19", label :"19"}, {id : "d18", label :"double 18"}, {id : "t18", label :"triple 18"}, {id : "18", label :"18"},
+                        {id : "d17", label :"double 17"}, {id : "t17", label :"triple 17"}, {id : "17", label :"17"}, {id : "d16", label :"double 16"}, {id : "t16", label :"triple 16"}, {id : "16", label :"16"},
+                        {id : "d15", label :"double 15"}, {id : "t15", label :"triple 15"}, {id : "15", label :"15"}, {id : "d14", label :"double 14"}, {id : "t14", label :"triple 14"}, {id : "14", label :"14"},
+                        {id : "d13", label :"double 13"}, {id : "t13", label :"triple 13"}, {id : "13", label :"13"}, {id : "d12", label :"double 12"}, {id : "t12", label :"triple 12"}, {id : "12", label :"12"},
+                        {id : "d11", label :"double 11"}, {id : "t11", label :"triple 11"}, {id : "11", label :"11"}, {id : "d10", label :"double 10"}, {id : "t10", label :"triple 10"}, {id : "10", label :"10"},
+                        {id : "d9", label :"double 9"}, {id : "t9", label :"triple 9"}, {id : "9", label :"9"}, {id : "d8", label :"double 8"}, {id : "t8", label :"triple 8"}, {id : "8", label :"8"},
+                        {id : "d7", label :"double 7"}, {id : "t7", label :"triple 7"}, {id : "7", label :"7"}, {id : "d6", label :"double 6"}, {id : "t6", label :"triple 6"}, {id : "6", label :"6"},
+                        {id : "d5", label :"double 5"}, {id : "t5", label :"triple 5"}, {id : "5", label :"5"}, {id : "d4", label :"double 4"}, {id : "t4", label :"triple 4"}, {id : "4", label :"4"},
+                        {id : "d3", label :"double 3"}, {id : "t3", label :"triple 3"}, {id : "3", label :"3"}, {id : "d2", label :"double 2"}, {id : "t2", label :"triple 2"}, {id : "2", label :"2"},
+                        {id : "d1", label :"double 1"}, {id : "t1", label :"triple 1"}, {id : "1", label :"1"}];
 
   // set the default target
   $scope.target = $scope.targetTypes[0];
