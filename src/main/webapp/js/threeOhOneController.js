@@ -270,6 +270,7 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   */
   $scope.markDart = function(dart) {
     // add here "dart doesn't start with a d or a t"
+    dart = dart.toString();
     if (dart != CONST.nohit && $scope.targetData.modifier && dart.lastIndexOf("d", 0) != 0 && dart.lastIndexOf("t", 0) != 0) {
       dart = $scope.targetData.modifier + dart;
     }

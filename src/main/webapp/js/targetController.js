@@ -344,7 +344,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   * every set of darts is then tallied and added to the score.
   */
   $scope.markDart = function(result) {
-    var dart = result;
+    var dart = result.toString();
     if (dart != "no hit" && $scope.targetData.modifier && dart.lastIndexOf("d", 0) != 0 && dart.lastIndexOf("t", 0) != 0) {
       dart = $scope.targetData.modifier + result;
     }
