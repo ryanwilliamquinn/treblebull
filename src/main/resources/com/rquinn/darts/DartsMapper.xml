@@ -152,4 +152,11 @@
         LIMIT 1;
     </select>
 
+    <select id="getHistoryOverview" parameterType="map" resultMap="dartsResultValue">
+        SELECT sum(score) as score, sum(num_rounds) as num_rounds
+        FROM darts_result
+        WHERE darts_user=#{userName} and type=#{type}
+        AND date > current_date - #{days};
+    </select>
+
 </mapper>
