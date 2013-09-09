@@ -7,6 +7,7 @@ function practiceOverviewController($scope, $http, $log, $location, chartService
 
   $scope.overviewData = {};
   $scope.overviewData.types = [];
+  $scope.overviewData.details = {};
   $scope.predicate = '-type';
 
 
@@ -37,6 +38,14 @@ function practiceOverviewController($scope, $http, $log, $location, chartService
     error(function(data, status) {
       $log.error("failed");
     })
+
+  $scope.toggleTypeDetails = function(type) {
+    if ($scope.overviewData.details == type) {
+      $scope.overviewData.details = {};
+    } else {
+      $scope.overviewData.details = type;
+    }
+  }
 
 
 }
