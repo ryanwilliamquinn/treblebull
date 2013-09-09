@@ -51,6 +51,8 @@ public interface DartsMapper {
 
   public DartsResult getLatestTargetPracticeRound(@Param("userName") String userName, @Param("type") String type);
 
+  public DartsResult getHistoryOverview(@Param("userName") String userName, @Param("type") String type, @Param("days") Integer days);
+
   public void insertFreeDart(@Param("foreignKey") int foreignKey, @Param("dart") Dart dart);
 
   public void insertDart(@Param("foreignKey") int foreignKey, @Param("dart") Dart dart);

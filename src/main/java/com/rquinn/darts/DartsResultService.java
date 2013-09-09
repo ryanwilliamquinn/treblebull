@@ -219,6 +219,22 @@ public class DartsResultService
         for (PracticeOverviewData data : practiceOverviewData) {
           if (pt.getValue().equals(data.getType())) {
             data.setLatestResult(dartsMapper.getLatestTargetPracticeRound(userName, pt.getValue()));
+            // going to return numDarts and an avergate score
+            DartsResult oneDaysResults = dartsMapper.getHistoryOverview(userName, pt.getValue(), 1);
+            if (oneDaysResults != null) {
+              data.setAvgScoreLastDay((double) oneDaysResults.getScore() / oneDaysResults.getNumRounds());
+              data.setNumDartsLastDay(oneDaysResults.getNumRounds() * 3);
+            }
+            DartsResult oneWeeksResults = dartsMapper.getHistoryOverview(userName, pt.getValue(), 7);
+            if (oneWeeksResults != null) {
+              data.setAvgScoreLastWeek((double) oneWeeksResults.getScore() / oneWeeksResults.getNumRounds());
+              data.setNumDartsLastWeek(oneWeeksResults.getNumRounds() * 3);
+            }
+            DartsResult oneMonthsResults = dartsMapper.getHistoryOverview(userName, pt.getValue(), 30);
+            if (oneMonthsResults != null) {
+              data.setAvgScoreLastMonth((double) oneMonthsResults.getScore() / oneMonthsResults.getNumRounds());
+              data.setNumDartsLastMonth(oneMonthsResults.getNumRounds() * 3);
+            }
           }
         }
       }

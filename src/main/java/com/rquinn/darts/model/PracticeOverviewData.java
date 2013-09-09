@@ -21,6 +21,18 @@ public class PracticeOverviewData {
   @Expose
   private int totalNumRounds;
   @Expose
+  private int numDartsLastDay;
+  @Expose
+  private double avgScoreLastDay;
+  @Expose
+  private int numDartsLastWeek;
+  @Expose
+  private double avgScoreLastWeek;
+  @Expose
+  private int numDartsLastMonth;
+  @Expose
+  private double avgScoreLastMonth;
+  @Expose
   private int totalScore;
   @Expose
   private DartsResult latestResult;
@@ -71,6 +83,54 @@ public class PracticeOverviewData {
 
   public void setTotalNumDarts(int totalNumDarts) {
     this.totalNumDarts = totalNumDarts;
+  }
+
+  public double getAvgScoreLastWeek() {
+    return avgScoreLastWeek;
+  }
+
+  public void setAvgScoreLastWeek(double avgScoreLastWeek) {
+    this.avgScoreLastWeek = avgScoreLastWeek;
+  }
+
+  public int getNumDartsLastDay() {
+    return numDartsLastDay;
+  }
+
+  public void setNumDartsLastDay(int numDartsLastDay) {
+    this.numDartsLastDay = numDartsLastDay;
+  }
+
+  public double getAvgScoreLastDay() {
+    return avgScoreLastDay;
+  }
+
+  public void setAvgScoreLastDay(double avgScoreLastDay) {
+    this.avgScoreLastDay = avgScoreLastDay;
+  }
+
+  public int getNumDartsLastWeek() {
+    return numDartsLastWeek;
+  }
+
+  public void setNumDartsLastWeek(int numDartsLastWeek) {
+    this.numDartsLastWeek = numDartsLastWeek;
+  }
+
+  public double getAvgScoreLastMonth() {
+    return avgScoreLastMonth;
+  }
+
+  public void setAvgScoreLastMonth(double avgScoreLastMonth) {
+    this.avgScoreLastMonth = avgScoreLastMonth;
+  }
+
+  public int getNumDartsLastMonth() {
+    return numDartsLastWeek;
+  }
+
+  public void setNumDartsLastMonth(int numDartsLastMonth) {
+    this.numDartsLastMonth = numDartsLastMonth;
   }
 
   public DartsResult getLatestResult() {
