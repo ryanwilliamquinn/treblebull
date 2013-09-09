@@ -36,11 +36,14 @@
         <result property="numDarts" column="numDarts"></result>
     </resultMap>
 
+    <resultMap id="practiceOverviewData" type="com.rquinn.darts.model.PracticeOverviewData">
+        <result property="type" column="type"></result>
+        <result property="totalScore" column="score"></result>
+        <result property="totalNumRounds" column="rounds"></result>
+    </resultMap>
+
     <select id='getResultById' parameterType='int' resultMap="dartsResultValue">
-        SELECT
-        id as id,
-        type as type,
-        score as score
+        SELECT id, type, score
         FROM darts_result
         WHERE id = #{id}
     </select>
@@ -131,6 +134,22 @@
             WHERE type='free'
             AND darts_user = #{userName})
         GROUP BY target;
+    </select>
+
+    <select id="getPracticeOverviewData" parameterType="String" resultMap="practiceOverviewData">
+        SELECT sum(score) as score, sum(num_rounds) as rounds, type
+        FROM darts_result
+        WHERE type in ('bull', '20', '19', '18', '17', '16', '15')
+        AND darts_user = #{userName}
+        GROUP BY type;
+    </select>
+
+    <select id="getLatestTargetPracticeRound" parameterType="map" resultMap="dartsResultValue">
+        SELECT id, type, score, date, num_rounds
+        FROM darts_result
+        WHERE darts_user=#{userName} and type=#{type}
+        ORDER BY date desc
+        LIMIT 1;
     </select>
 
 </mapper>

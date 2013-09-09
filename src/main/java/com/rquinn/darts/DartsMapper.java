@@ -1,6 +1,7 @@
 package com.rquinn.darts;
 
 import com.rquinn.darts.model.Dart;
+import com.rquinn.darts.model.PracticeOverviewData;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +46,10 @@ public interface DartsMapper {
   public List<FreeAverageData> getFreeAverages(String userName);
 
   public List<Dart> getFreeTargetHistory(@Param("username") String userName, @Param("target") String target);
+
+  public List<PracticeOverviewData> getPracticeOverviewData(String userName);
+
+  public DartsResult getLatestTargetPracticeRound(@Param("userName") String userName, @Param("type") String type);
 
   public void insertFreeDart(@Param("foreignKey") int foreignKey, @Param("dart") Dart dart);
 

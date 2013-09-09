@@ -9,12 +9,12 @@ package com.rquinn.darts;
  */
 
 import com.rquinn.darts.model.Dart;
+import com.rquinn.darts.model.PracticeOverviewData;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Map;
 
 public class DartsResultService
 {
@@ -139,7 +139,7 @@ public class DartsResultService
       slf4jLogger.debug("darts result: " + dartsResultResponse.getDartsResults().toString());
       return dartsResultResponse;
     }catch (Exception e) {
-      slf4jLogger.debug("exception eeeee: " + e);
+      slf4jLogger.error("exception eeeee: " + e);
     } finally {
       sqlSession.close();
     }
@@ -186,12 +186,12 @@ public class DartsResultService
    */
   public List<FreeAverageData> getFreeAverages(String userName) {
     SqlSession sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
-    try{
+    try {
       DartsMapper dartsMapper = sqlSession.getMapper(DartsMapper.class);
       List<FreeAverageData> rounds = dartsMapper.getFreeAverages(userName);
       return rounds;
     } catch (Exception e) {
-      slf4jLogger.debug("some db problem with getfreeaverages", e);
+      slf4jLogger.error("some db problem with getFreeAverages", e);
       return null;
     } finally {
       sqlSession.close();
@@ -205,6 +205,33 @@ public class DartsResultService
       List<Dart> singleDartResults = dartsMapper.getFreeTargetHistory(userName, target);
       return singleDartResults;
     }finally{
+      sqlSession.close();
+    }
+  }
+
+  public List<PracticeOverviewData> getPracticeOverviewData(String userName) {
+    SqlSession sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
+    try {
+      DartsMapper dartsMapper = sqlSession.getMapper(DartsMapper.class);
+      List<PracticeOverviewData> practiceOverviewData = dartsMapper.getPracticeOverviewData(userName);
+      for (TargetPracticeType pt : TargetPracticeType.values()) {
+        //slf4jLogger.debug("pt getValue is: " + pt.getValue());
+        for (PracticeOverviewData data : practiceOverviewData) {
+          if (pt.getValue().equals(data.getType())) {
+            data.setLatestResult(dartsMapper.getLatestTargetPracticeRound(userName, pt.getValue()));
+          }
+        }
+      }
+      /*
+      for (PracticeOverviewData data : practiceOverviewData) {
+        slf4jLogger.debug("data: " + data.toString());
+      }
+      */
+      return practiceOverviewData;
+    } catch (Exception e) {
+      slf4jLogger.error("we have an error retrieving practice overview data", e);
+      return null;
+    } finally {
       sqlSession.close();
     }
   }
