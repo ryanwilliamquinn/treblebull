@@ -17,7 +17,7 @@ public class PracticeOverviewData {
   @Expose
   private int totalNumDarts;
   @Expose
-  private int averageScore;
+  private double averageScore;
   @Expose
   private int totalNumRounds;
   @Expose
@@ -41,11 +41,11 @@ public class PracticeOverviewData {
     this.totalNumRounds = totalNumRounds;
   }
 
-  public int getAverageScore() {
+  public double getAverageScore() {
     return averageScore;
   }
 
-  public void setAverageScore(int averageScore) {
+  public void setAverageScore(double averageScore) {
     this.averageScore = averageScore;
   }
 

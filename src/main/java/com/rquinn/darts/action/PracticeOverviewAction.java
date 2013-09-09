@@ -44,7 +44,7 @@ public class PracticeOverviewAction extends PracticeAction {
       DartsResultService dartsResultService = new DartsResultService();
       practiceOverviewData = dartsResultService.getPracticeOverviewData(currentUser.getPrincipal().toString());
       for (PracticeOverviewData data : practiceOverviewData) {
-        data.setAverageScore(data.getTotalScore() / data.getTotalNumRounds());
+        data.setAverageScore((double) data.getTotalScore() / data.getTotalNumRounds());
         data.setTotalNumDarts(data.getTotalNumRounds() * 3);
       }
     } finally {

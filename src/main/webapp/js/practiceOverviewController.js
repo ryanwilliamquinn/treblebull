@@ -17,7 +17,7 @@ function practiceOverviewController($scope, $http, $log, $location, chartService
           var tempData = data[i];
           var newResult = {};
           newResult.type = tempData.type;
-          newResult.averageScore = tempData.averageScore;
+          newResult.averageScore = Math.round(tempData.averageScore * 100) / 100;
           newResult.date = tempData.latestResult.dateTimeManagement.displayDateTime;
           newResult.totalNumDarts = tempData.totalNumDarts;
           $scope.overviewData.types.push(newResult);
