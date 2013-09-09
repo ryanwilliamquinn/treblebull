@@ -2,7 +2,7 @@
 <div ng-controller="practiceOverviewController">
 {{overviewData.title}}
   <div ng-repeat="type in overviewData.types|orderBy:predicate">
-    Type: {{type.type}} -- last result: {{type.date}} -- avg score: {{type.averageScore}} -- num darts: {{type.totalNumDarts}}
+    {{type.type}} -- last result: {{type.date}} -- avg score: {{type.averageScore}} -- num darts: {{type.totalNumDarts}}
   </div>
 </div>
 
