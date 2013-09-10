@@ -9,8 +9,8 @@
           <span style="margin:10px 0px 0px 20px;" id="gameAverage" ng-show="targetData.isShowRoundAvg && targetData.results.length > 0">
             Round average: {{targetData.score|roundAverage:targetData.round.number}}
           </span>
-          <span ng-click="targetData.isShowRoundAvg=false" ng-show="targetData.isShowRoundAvg && targetData.results.length > 0">Hide round avg</span>
-          <span ng-click="targetData.isShowRoundAvg=true" ng-show="targetData.isShowRoundAvg == false && targetData.results.length > 0">Show round avg</span>
+          <span ng-click="targetData.isShowRoundAvg=false" ng-show="targetData.isShowRoundAvg && targetData.isShowRounds">Hide round avg</span>
+          <span ng-click="targetData.isShowRoundAvg=true" ng-show="targetData.isShowRoundAvg == false && targetData.isShowRounds">Show round avg</span>
         </div>
         <div ng-hide="targetData.isShowRounds">
             Target:
