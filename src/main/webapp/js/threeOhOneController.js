@@ -332,7 +332,6 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   *   the score should be updated on each dart, but it needs to be aware of turns.
   */
   $scope.updateScore = function() {
-
     // each time we update the score, start off with the full score again
     $scope.targetData.remainingScore = $scope.targetData.targetScore;
 

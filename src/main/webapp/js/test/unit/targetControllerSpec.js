@@ -31,7 +31,6 @@ describe('target controllers', function() {
       expect(scope.targetData.loadUrl).toBe("/data/loadBull");
       expect(scope.targetData.loadAllUrl).toBe("/data/loadAllBull");
     });
-
     it('should have 1 result', function() {
       expect(scope.targetData.round.number).toBe(1);
       expect(scope.targetData.results.length).toBe(0);
@@ -54,12 +53,15 @@ describe('target controllers', function() {
     });
 
     it('should update the score correctly', function() {
-      scope.targetData.results.push({score:10})
+      // fyi the score calculator service is mocked here, so it returns 2 no matter what : )
+      scope.target.id = "20";
+      scope.targetData.results = [];
+      scope.targetData.results.push({'actual' : "d20", 'target' : "20", 'round' : 1});
       scope.updateScore();
-      expect(scope.targetData.score).toBe(10);
-      scope.targetData.results.push({score:5});
+      expect(scope.targetData.score).toBe(2);
+      scope.targetData.results.push({'actual' : "d20", 'target' : "20", 'round' : 2});
       scope.updateScore();
-      expect(scope.targetData.score).toBe(15);
+      expect(scope.targetData.score).toBe(4);
     });
 
     it('should mark the darts correctly', function() {
@@ -72,7 +74,8 @@ describe('target controllers', function() {
       expect(scope.roundResult[1]).toBe("20");
       scope.markDart("19");
       expect(scope.roundResult.length).toBe(0);
-    })
+    });
+
   });
 });
 

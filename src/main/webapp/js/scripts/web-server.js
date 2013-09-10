@@ -10,9 +10,9 @@ var DEFAULT_PORT = 8000;
 
 function main(argv) {
   new HttpServer({
-    'GET': createServlet(StaticServlet),
-    'HEAD': createServlet(StaticServlet)
-  }).start(Number(argv[2]) || DEFAULT_PORT);
+      'GET': createServlet(StaticServlet),
+      'HEAD': createServlet(StaticServlet)
+      }).start(Number(argv[2]) || DEFAULT_PORT);
 }
 
 function escapeHtml(value) {
@@ -82,30 +82,30 @@ StaticServlet.MimeMap = {
   'jpeg': 'image/jpeg',
   'gif': 'image/gif',
   'png': 'image/png',
-  'svg': 'image/svg+xml'
+  'svg': 'image/svg+xml'
 };
 
 StaticServlet.prototype.handleRequest = function(req, res) {
   var self = this;
   var path = ('./' + req.url.pathname).replace('//','/').replace(/%(..)/g, function(match, hex){
     return String.fromCharCode(parseInt(hex, 16));
-  });
-  var parts = path.split('/');
-  if (parts[parts.length-1].charAt(0) === '.')
-    return self.sendForbidden_(req, res, path);
-  fs.stat(path, function(err, stat) {
+});
+var parts = path.split('/');
+if (parts[parts.length-1].charAt(0) === '.')
+return self.sendForbidden_(req, res, path);
+fs.stat(path, function(err, stat) {
     if (err)
-      return self.sendMissing_(req, res, path);
+    return self.sendMissing_(req, res, path);
     if (stat.isDirectory())
-      return self.sendDirectory_(req, res, path);
+    return self.sendDirectory_(req, res, path);
     return self.sendFile_(req, res, path);
-  });
+    });
 }
 
 StaticServlet.prototype.sendError_ = function(req, res, error) {
   res.writeHead(500, {
       'Content-Type': 'text/html'
-  });
+      });
   res.write('<!doctype html>\n');
   res.write('<title>Internal Server Error</title>\n');
   res.write('<h1>Internal Server Error</h1>');
@@ -118,15 +118,15 @@ StaticServlet.prototype.sendMissing_ = function(req, res, path) {
   path = path.substring(1);
   res.writeHead(404, {
       'Content-Type': 'text/html'
-  });
+      });
   res.write('<!doctype html>\n');
   res.write('<title>404 Not Found</title>\n');
   res.write('<h1>Not Found</h1>');
   res.write(
-    '<p>The requested URL ' +
-    escapeHtml(path) +
-    ' was not found on this server.</p>'
-  );
+      '<p>The requested URL ' +
+      escapeHtml(path) +
+      ' was not found on this server.</p>'
+      );
   res.end();
   util.puts('404 Not Found: ' + path);
 };
@@ -135,14 +135,14 @@ StaticServlet.prototype.sendForbidden_ = function(req, res, path) {
   path = path.substring(1);
   res.writeHead(403, {
       'Content-Type': 'text/html'
-  });
+      });
   res.write('<!doctype html>\n');
   res.write('<title>403 Forbidden</title>\n');
   res.write('<h1>Forbidden</h1>');
   res.write(
-    '<p>You do not have permission to access ' +
-    escapeHtml(path) + ' on this server.</p>'
-  );
+      '<p>You do not have permission to access ' +
+      escapeHtml(path) + ' on this server.</p>'
+      );
   res.end();
   util.puts('403 Forbidden: ' + path);
 };
@@ -151,15 +151,15 @@ StaticServlet.prototype.sendRedirect_ = function(req, res, redirectUrl) {
   res.writeHead(301, {
       'Content-Type': 'text/html',
       'Location': redirectUrl
-  });
+      });
   res.write('<!doctype html>\n');
   res.write('<title>301 Moved Permanently</title>\n');
   res.write('<h1>Moved Permanently</h1>');
   res.write(
-    '<p>The document has moved <a href="' +
-    redirectUrl +
-    '">here</a>.</p>'
-  );
+      '<p>The document has moved <a href="' +
+      redirectUrl +
+      '">here</a>.</p>'
+      );
   res.end();
   util.puts('301 Moved Permanently: ' + redirectUrl);
 };
@@ -168,19 +168,19 @@ StaticServlet.prototype.sendFile_ = function(req, res, path) {
   var self = this;
   var file = fs.createReadStream(path);
   res.writeHead(200, {
-    'Content-Type': StaticServlet.
+      'Content-Type': StaticServlet.
       MimeMap[path.split('.').pop()] || 'text/plain'
-  });
+      });
   if (req.method === 'HEAD') {
     res.end();
   } else {
     file.on('data', res.write.bind(res));
     file.on('close', function() {
-      res.end();
-    });
+        res.end();
+        });
     file.on('error', function(error) {
-      self.sendError_(req, res, error);
-    });
+        self.sendError_(req, res, error);
+        });
   }
 };
 
@@ -192,32 +192,32 @@ StaticServlet.prototype.sendDirectory_ = function(req, res, path) {
     return self.sendRedirect_(req, res, redirectUrl);
   }
   fs.readdir(path, function(err, files) {
-    if (err)
+      if (err)
       return self.sendError_(req, res, error);
 
-    if (!files.length)
+      if (!files.length)
       return self.writeDirectoryIndex_(req, res, path, []);
 
-    var remaining = files.length;
-    files.forEach(function(fileName, index) {
-      fs.stat(path + '/' + fileName, function(err, stat) {
-        if (err)
+      var remaining = files.length;
+      files.forEach(function(fileName, index) {
+        fs.stat(path + '/' + fileName, function(err, stat) {
+          if (err)
           return self.sendError_(req, res, err);
-        if (stat.isDirectory()) {
+          if (stat.isDirectory()) {
           files[index] = fileName + '/';
-        }
-        if (!(--remaining))
+          }
+          if (!(--remaining))
           return self.writeDirectoryIndex_(req, res, path, files);
+          });
+        });
       });
-    });
-  });
 };
 
 StaticServlet.prototype.writeDirectoryIndex_ = function(req, res, path, files) {
   path = path.substring(1);
   res.writeHead(200, {
-    'Content-Type': 'text/html'
-  });
+      'Content-Type': 'text/html'
+      });
   if (req.method === 'HEAD') {
     res.end();
     return;
@@ -230,12 +230,12 @@ StaticServlet.prototype.writeDirectoryIndex_ = function(req, res, path, files) {
   res.write('<h1>Directory: ' + escapeHtml(path) + '</h1>');
   res.write('<ol>');
   files.forEach(function(fileName) {
-    if (fileName.charAt(0) !== '.') {
+      if (fileName.charAt(0) !== '.') {
       res.write('<li><a href="' +
         escapeHtml(fileName) + '">' +
         escapeHtml(fileName) + '</a></li>');
-    }
-  });
+      }
+      });
   res.write('</ol>');
   res.end();
 };

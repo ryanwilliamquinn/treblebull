@@ -85,6 +85,7 @@ ang.filter('dartAverage', function() {
   }
 })
 
+
 // crap how do i deal with the round average if we calculate this score every dart?  hrm.  i guess best to just update this score per round...
 ang.filter('roundAverage', function() {
   return function(input, roundNumber) {
@@ -96,3 +97,10 @@ ang.filter('roundAverage', function() {
     }
   }
 })
+
+ang.filter('reverse', function() {
+  return function(items) {
+    return items.slice().reverse();
+  }
+})
+
