@@ -51,8 +51,10 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
   //                        {id : "t19", label : "triple 19"}, {id : "d19", label : "double 19"}, {id : "19", label : "19"}];
 
   // the available targets.  this could be expanded.
-  $scope.targetTypes = [{id : "bull", label : "bullseye"}, {id : "20", label :"20"}, {id : "19", label :"19"}, {id : "18", label :"18"}, {id : "17", label :"17"},
-                          {id : "16", label :"16"}, {id : "15", label :"15"}]
+  $scope.targetTypes = [{id : "bull", label : "bullseye"}, {id : "20", label :"20", firstMiss:"5", secondMiss:"1"}, {id : "19", label :"19", firstMiss:"7", secondMiss:"3"}, {id : "18", label :"18", firstMiss:"1", secondMiss:"4"},
+                        {id : "17", label :"17", firstMiss:"3", secondMiss:"2"}, {id : "16", label :"16", firstMiss: "8", secondMiss:"7"}, {id : "15", label :"15", firstMiss:"2", secondMiss:"10"}];
+
+  $scope.isShowCloseMissTargets = true;
 
   // set the default target
   $scope.target = $scope.targetTypes[0];
@@ -372,7 +374,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
 
     for (var i=0; i<$scope.roundResult.length; i++) {
       var dart = $scope.roundResult[i]
-      var newDart = {'actual' : dart, 'target' : $scope.target.id, 'round' : $scope.targetData.round.number, 'score': $scope.calculateScore(dart)}
+      var newDart = {'actual' : dart, 'target' : $scope.target.id, 'round' : $scope.targetData.round.number, 'score': $scope.calculateScore(dart)};
       $scope.targetData.results.push(newDart);
       switch(i) {
         case 0:
