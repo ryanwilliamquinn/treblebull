@@ -64,5 +64,10 @@
         <span class="dbGreen smallButton unselectable" ng-show="targetData.isEditMode" ng-click="finishEditing()" style="float:right;">Save changes</span>
       </div>
     </div>
-    <span ng-click="cancelGame()" id="cancelGame" class="smallButton red unselectable" style="margin-top:15px; display:inline-block;" ng-hide="isHideCancel()">Cancel game</span>
+    <span ng-click="cancelGameInitial()" id="cancelGame" class="smallButton red unselectable" style="margin-top:15px; display:inline-block;" ng-hide="isHideCancel()">Cancel game</span>
+    <div ng-show="targetData.isShowConfirmCancel">Are you sure you want to cancel?
+      <span ng-click="cancelGameConfirm()" id="cancelGameConfirm" class="smallButton green unselectable" style="margin-top:15px; display:inline-block;" >Yes</span>
+      <span ng-click="unCancelGame()" id="cancelGameDeny" class="smallButton red unselectable" style="margin-top:15px; display:inline-block;">No</span>
+    </div>
+
 </div>

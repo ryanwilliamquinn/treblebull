@@ -59,6 +59,8 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
 
   $scope.targetData.isUseTargets = false;
 
+  $scope.targetData.isShowConfirmCancel = false;
+
   // the available targets.  this could be expanded.
   $scope.targetTypes = [{id : "bull", label : "bullseye"}, {id : "dbull", label :"double bull"}, {id : "d20", label :"double 20"}, {id : "t20", label :"triple 20"}, {id : "20", label :"20"},
                         {id : "d19", label :"double 19"}, {id : "t19", label :"triple 19"}, {id : "19", label :"19"}, {id : "d18", label :"double 18"}, {id : "t18", label :"triple 18"}, {id : "18", label :"18"},
@@ -133,6 +135,7 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
     $scope.targetData.turnCounter = 1;
     $scope.targetData.numDartsThrown = 0;
     $scope.targetData.isEditMode = false;
+    $scope.targetData.isShowConfirmCancel = false;
   }
 
   /*
@@ -224,12 +227,24 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
   }
 
 
-  /*
-  * cancel a game - clear the current game data
-  */
-  $scope.cancelGame = function() {
-      $scope.targetData.reset();
-  }
+  $scope.cancelGameInitial = function() {
+      $scope.targetData.isShowConfirmCancel = true;
+    }
+
+    $scope.unCancelGame = function() {
+      $scope.targetData.isShowConfirmCancel = false;
+    }
+
+    /*
+    * cancel a game - clear the current game data
+    */
+    $scope.cancelGameConfirm = function() {
+        $scope.targetData.reset();
+    }
+
+    $scope.isHideCancel = function() {
+      return $scope.targetData.isShowConfirmCancel == true;
+    }
 
   /*
   * called from button on front end - loads the chart if there is data
@@ -414,10 +429,6 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
         $scope.targetData.turns[$scope.targetData.turnCounter - 1].results.push(newResult);
       }
     }
-  }
-
-  $scope.isHideCancel = function() {
-    return !$scope.targetData.isShowRounds;
   }
 
   $scope.setLastTurnScoresToZero = function() {

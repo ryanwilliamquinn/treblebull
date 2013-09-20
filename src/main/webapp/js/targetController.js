@@ -61,6 +61,8 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
 
   $scope.targetData.isEditMode = false;
 
+  $scope.targetData.isShowConfirmCancel = false;
+
   /*
   * method to set up all the urls relative to the current practice type
   */
@@ -123,7 +125,8 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
     data.score = 0;
     data.modifier = "";
     data.isEditMode = false;
-    data.turns = []
+    data.turns = [];
+    data.isShowConfirmCancel = false;
   }
 
   /*
@@ -254,11 +257,23 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
       $scope.needsShowAll = false;
   }
 
+  $scope.cancelGameInitial = function() {
+    $scope.targetData.isShowConfirmCancel = true;
+  }
+
+  $scope.unCancelGame = function() {
+    $scope.targetData.isShowConfirmCancel = false;
+  }
+
   /*
   * cancel a game - clear the current game data
   */
-  $scope.cancelGame = function() {
+  $scope.cancelGameConfirm = function() {
       $scope.targetData.resetGameData($scope.targetData);
+  }
+
+  $scope.isHideCancel = function() {
+    return $scope.targetData.isShowConfirmCancel == true;
   }
 
   /*
