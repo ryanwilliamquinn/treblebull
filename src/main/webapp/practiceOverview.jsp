@@ -9,6 +9,10 @@
     <div>Darts thrown in the last day: {{type.numDartsLastDay}} -- avg score: {{type.avgScoreLastDay}}</div>
     </div>
   </div>
+  <div>Darts thrown all time: {{overviewData.allDarts.total}}</div>
+  <div>Darts thrown this month: {{overviewData.allDarts.thisMonth}}</div>
+  <div>Darts thrown this week: {{overviewData.allDarts.thisWeek}}</div>
+  <div>Darts thrown today: {{overviewData.allDarts.today}}</div>
 </div>
 
 <jsp:include page="bottomIncludes.jsp"/>
