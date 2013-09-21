@@ -7,7 +7,7 @@ function practiceOverviewController($scope, $http, $log, $location, chartService
 
   $scope.overviewData = { allDarts : { total: 0, thisMonth: 0, thisWeek: 0, today: 0} };
   $scope.overviewData.types = [];
-  $scope.overviewData.details = {};
+  $scope.overviewData.details = [];
   $scope.overviewData.title = "Target practice overview";
   $scope.predicate = '-type';
 
@@ -32,6 +32,7 @@ function practiceOverviewController($scope, $http, $log, $location, chartService
           newResult.numDartsLastMonth = tempData.numDartsLastMonth;
           $scope.overviewData.allDarts.thisMonth += newResult.numDartsLastMonth;
           newResult.avgScoreLastMonth = Math.round(tempData.avgScoreLastMonth * 100) / 100;
+          newResult.isShowDetails = false;
           $scope.overviewData.types.push(newResult);
         }
       }
@@ -45,11 +46,7 @@ function practiceOverviewController($scope, $http, $log, $location, chartService
     })
 
   $scope.toggleTypeDetails = function(type) {
-    if ($scope.overviewData.details == type) {
-      $scope.overviewData.details = {};
-    } else {
-      $scope.overviewData.details = type;
-    }
+    type.isShowDetails = !type.isShowDetails;
   }
 
 

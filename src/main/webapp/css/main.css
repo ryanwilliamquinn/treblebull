@@ -34,9 +34,9 @@ a:link,a:active,a:hover,a:visited {color:#ccc;}
 .rounds {float:left; margin-bottom:20px;}
 
 
-.dtTarget {display:inline-block; height:20px; line-height:20px; width:30px; margin:0 1px 0 5px; border:solid 1px black; display:inline-block; text-align:center; cursor:pointer;}
-.sTarget {height:20px; line-height:20px; width:30px; border:solid 1px black; display:inline-block; text-align:center; cursor:pointer;}
-.sdtTarget {height:20px; line-height:20px; width:90px; border:solid 1px black; display:inline-block; text-align:center; cursor:pointer;}
+.dtTarget {display:inline-block; height:20px; line-height:20px; width:30px; margin:0 1px 0 5px; border:solid 1px #666; display:inline-block; text-align:center; cursor:pointer;}
+.sTarget {height:20px; line-height:20px; width:30px; border:solid 1px #666; display:inline-block; text-align:center; cursor:pointer;}
+.sdtTarget {height:20px; line-height:20px; width:90px; border:solid 1px #666; display:inline-block; text-align:center; cursor:pointer;}
 .activeModifier {background-color:#6495ED;}
 
 
@@ -48,6 +48,17 @@ a:link,a:active,a:hover,a:visited {color:#ccc;}
   -ms-user-select: none;
   user-select: none;
 }
+
+#overviewData {position:relative; right:12px;}
+#overviewData span {display:inline-block; text-align:center;}
+#overviewHeaderRow {margin:10px 0px;}
+.ovType {width:60px;}
+.ovDate {width:100px;}
+.ovScore {width:94px;}
+.ovNumDarts {width:90px;}
+.ovActivity {margin:10px 0px;}
+
+.practiceSelector {margin:10px 15px 0px 0px;}
 
 
 

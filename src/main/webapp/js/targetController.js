@@ -313,7 +313,8 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
     // if game.rounds is defined and has some data, just clear it
     if (typeof game.rounds != "undefined" && game.rounds.length > 0) {
       // we already loaded this data, so clicking again should hide it...
-      $scope.clearAllRounds();
+      //$scope.clearAllRounds();
+      game.rounds = [];
     } else {
       var url = "/data/gameDetails" + game.id;
       //$log.info("url: " + url);
