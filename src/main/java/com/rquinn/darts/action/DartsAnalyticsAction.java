@@ -31,7 +31,7 @@ public class DartsAnalyticsAction extends BaseAction {
 
   private static final Logger slf4jLogger = LoggerFactory.getLogger(DartsAnalyticsAction.class);
 
-  public String showAnalytics() throws Exception {
+  public String loadAnalytics() throws Exception {
 
     Subject currentUser = SecurityUtils.getSubject();
 
@@ -57,8 +57,9 @@ public class DartsAnalyticsAction extends BaseAction {
         resp.setType(pt.getValue());
         for (DartsAnalyticsResult result : dartsAnalyticsData) {
           if (pt.getValue().equals(result.getType())) {
+            resp.setTotal(result.getNumDarts() + resp.getTotal());
             // this is hits data
-            if (StringUtils.contains(pt.getValue(), result.getActual())) {
+            if (StringUtils.contains(result.getActual(), pt.getValue())) {
               TargetAnalyticsData hitsData = resp.getHits();
               if (hitsData == null) {
                 hitsData = new TargetAnalyticsData();
@@ -72,6 +73,7 @@ public class DartsAnalyticsAction extends BaseAction {
               }
               resp.setHits(hitsData);
             } else {
+              // this is miss data
               List<TargetAnalyticsData> missDataList = resp.getMisses();
               TargetAnalyticsData missData = null;
               if (missDataList == null) {
@@ -90,6 +92,7 @@ public class DartsAnalyticsAction extends BaseAction {
               missData.setTarget(pt.getValue());
               missData.setActual(result.getActual());
               missData.setTotal(missData.getTotal() + result.getNumDarts());
+              resp.setTotalMisses(missData.getTotal() + resp.getTotalMisses());
               if (StringUtils.equalsIgnoreCase(result.getActual(), "t" + pt.getValue())) {
                 missData.setNumTriples(result.getNumDarts());
               } else if (StringUtils.equalsIgnoreCase(result.getActual(), "d" + pt.getValue())) {

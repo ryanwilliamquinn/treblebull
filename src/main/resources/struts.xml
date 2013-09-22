@@ -27,7 +27,7 @@
             <result>/practiceHome.jsp</result>
         </action>
 
-        <action name="analytics" class="com.rquinn.darts.action.DartsAnalyticsAction" method="showAnalytics">
+        <action name="analytics">
             <result>/analytics.jsp</result>
         </action>
     </package>
@@ -54,6 +54,7 @@
 
 	</package>
     <package name="data" namespace="/data" extends="struts-default">
+        <action name="loadAnalytics" class="com.rquinn.darts.action.DartsAnalyticsAction" method="loadAnalytics"/>
         <action name="loadPracticeOverview" class="com.rquinn.darts.action.PracticeOverviewAction" method="load"/>
         <action name="load301" class="com.rquinn.darts.action.ThreeOhOneAction" method="load"/>
         <action name="loadCricket" class="com.rquinn.darts.action.CricketAction" method="load"/>
