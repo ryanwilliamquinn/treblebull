@@ -73,6 +73,12 @@ public class DartsAnalyticsAction extends BaseAction {
               }
               resp.setHits(hitsData);
             } else {
+              // result.getActual is going to be 5, t5 or d5 or dbull or bull
+              // we want to normalize it, so remove the 'd' or 't' if it exists
+              String actual = result.getActual();
+              if (StringUtils.startsWith(actual, "t") || StringUtils.startsWith(actual, "d")) {
+                actual = actual.substring(1);
+              }
               // this is miss data
               List<TargetAnalyticsData> missDataList = resp.getMisses();
               TargetAnalyticsData missData = null;
@@ -81,7 +87,7 @@ public class DartsAnalyticsAction extends BaseAction {
                 resp.setMisses(missDataList);
               }
               for (TargetAnalyticsData tData : missDataList) {
-                if (tData.getActual().equals(result.getActual())) {
+                if (tData.getActual().equals(actual)) {
                   missData = tData;
                 }
               }
@@ -90,9 +96,9 @@ public class DartsAnalyticsAction extends BaseAction {
                 resp.getMisses().add(missData);
               }
               missData.setTarget(pt.getValue());
-              missData.setActual(result.getActual());
+              missData.setActual(actual);
               missData.setTotal(missData.getTotal() + result.getNumDarts());
-              resp.setTotalMisses(missData.getTotal() + resp.getTotalMisses());
+              resp.setTotalMisses(result.getNumDarts() + resp.getTotalMisses());
               if (StringUtils.equalsIgnoreCase(result.getActual(), "t" + pt.getValue())) {
                 missData.setNumTriples(result.getNumDarts());
               } else if (StringUtils.equalsIgnoreCase(result.getActual(), "d" + pt.getValue())) {

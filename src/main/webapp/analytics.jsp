@@ -3,8 +3,8 @@
 <h4>Analytics</h4>
 
   <div ng-repeat="type in aData">
-  type: {{type.type}} -- total: {{type.total}} -- hits: {{type.total - type.totalMisses}} -- misses: {{type.totalMisses}}
-    misses:
+  type: {{type.type}} -- total: {{type.total}} -- hits: {{type.hits}} -- misses: {{type.totalMisses}} -- avg: {{type.average}}
+    <div>misses:</div>
     <div style="margin-left:15px;" ng-repeat="misses in type.misses">
       actual: {{misses.actual}} -- total: {{misses.total}}
     </div>
