@@ -2,11 +2,8 @@ package com.rquinn.darts.action;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.rquinn.darts.DartsResultResponse;
 import com.rquinn.darts.DartsResultService;
-import com.rquinn.darts.TargetPracticeType;
 import com.rquinn.darts.model.PracticeOverviewData;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.shiro.SecurityUtils;
@@ -15,7 +12,6 @@ import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.util.List;
@@ -25,12 +21,11 @@ import java.util.List;
  * Date: 9/8/13
  * Time: 8:28 PM
  */
-public class PracticeOverviewAction extends PracticeAction {
+public class PracticeOverviewAction extends BaseAction {
 
   private static final Logger slf4jLogger = LoggerFactory.getLogger(PracticeOverviewAction.class);
 
   public String load() throws Exception {
-    slf4jLogger.debug("Load us some twenties!");
 
     Subject currentUser = SecurityUtils.getSubject();
 

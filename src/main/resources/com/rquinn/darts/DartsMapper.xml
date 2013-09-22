@@ -42,6 +42,12 @@
         <result property="totalNumRounds" column="rounds"></result>
     </resultMap>
 
+    <resultMap id="dartsAnalyticsResult" type="com.rquinn.darts.model.DartsAnalyticsResult">
+        <result property="type" column="target"></result>
+        <result property="actual" column="actual"></result>
+        <result property="numDarts" column="numDarts"></result>
+    </resultMap>
+
     <select id='getResultById' parameterType='int' resultMap="dartsResultValue">
         SELECT id, type, score
         FROM darts_result
@@ -157,6 +163,14 @@
         FROM darts_result
         WHERE darts_user=#{userName} and type=#{type}
         AND date > current_date - #{days};
+    </select>
+
+    <select id="getAnalyticsData" parameterType="map" resultMap="dartsAnalyticsResult">
+        SELECT target, actual, count(*) as numDarts FROM dart
+        WHERE game_id IN (
+            SELECT id FROM darts_result
+            WHERE type=#{type} and darts_user=#{userName})
+        GROUP BY target, actual ORDER BY count(*) desc;
     </select>
 
 </mapper>

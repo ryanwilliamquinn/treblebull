@@ -20,7 +20,6 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,7 +28,7 @@ import java.util.Map;
  * Time: 10:59 AM
  * To change this template use File | Settings | File Templates.
  */
-public class TargetPracticeAction extends PracticeAction {
+public class TargetPracticeAction extends BaseAction {
 
   private static final Logger slf4jLogger = LoggerFactory.getLogger(TargetPracticeAction.class);
 
@@ -92,7 +91,6 @@ public class TargetPracticeAction extends PracticeAction {
   }
 
   public String load() throws Exception {
-    slf4jLogger.debug("Load us some twenties!");
 
     Subject currentUser = SecurityUtils.getSubject();
 

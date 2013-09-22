@@ -9,11 +9,13 @@ package com.rquinn.darts;
  */
 
 import com.rquinn.darts.model.Dart;
+import com.rquinn.darts.model.DartsAnalyticsResult;
 import com.rquinn.darts.model.PracticeOverviewData;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DartsResultService
@@ -246,6 +248,27 @@ public class DartsResultService
       return practiceOverviewData;
     } catch (Exception e) {
       slf4jLogger.error("we have an error retrieving practice overview data", e);
+      return null;
+    } finally {
+      sqlSession.close();
+    }
+  }
+
+
+  public List<DartsAnalyticsResult> getDartsAnalyticsData(String userName) {
+    SqlSession sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
+    try {
+      DartsMapper dartsMapper = sqlSession.getMapper(DartsMapper.class);
+      List<DartsAnalyticsResult> dartsAnalyticsData = new ArrayList<DartsAnalyticsResult>();
+      for (TargetPracticeType pt : TargetPracticeType.values()) {
+        if (pt.isAnalytics()) {
+          List<DartsAnalyticsResult> results = dartsMapper.getAnalyticsData(userName, pt.getValue());
+          dartsAnalyticsData.addAll(results);
+        }
+      }
+      return dartsAnalyticsData;
+    } catch (Exception e) {
+      slf4jLogger.error("we have an error setting up analytics data", e);
       return null;
     } finally {
       sqlSession.close();

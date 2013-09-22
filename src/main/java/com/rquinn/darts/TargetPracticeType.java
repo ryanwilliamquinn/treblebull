@@ -11,32 +11,34 @@ import org.apache.commons.lang3.StringUtils;
  */
 public enum TargetPracticeType implements BasePracticeType {
 
-  BULLS ("bull"),
-  TRIPLE_TWENTIES ("t20"),
-  DOUBLE_TWENTIES ("d20"),
-  TWENTIES ("20"),
-  TRIPLE_NINETEEN ("t19"),
-  DOUBLE_NINETEEN ("d19"),
-  NINETEEN ("19"),
-  TRIPLE_EIGHTEEN ("t18"),
-  DOUBLE_EIGHTEEN ("d18"),
-  EIGHTEEN ("18"),
-  TRIPLE_SEVENTEEN ("t17"),
-  DOUBLE_SEVENTEEN ("d17"),
-  SEVENTEEN ("17"),
-  TRIPLE_SIXTEEN ("t16"),
-  DOUBLE_SIXTEEN ("d16"),
-  SIXTEEN ("16"),
-  TRIPLE_FIFTEEN ("t15"),
-  DOUBLE_FIFTEEN ("d15"),
-  FIFTEEN ("15"),
-  FREE ("free");
+  BULLS ("bull", true),
+  TRIPLE_TWENTIES ("t20", false),
+  DOUBLE_TWENTIES ("d20", false),
+  TWENTIES ("20", true),
+  TRIPLE_NINETEEN ("t19", false),
+  DOUBLE_NINETEEN ("d19", false),
+  NINETEEN ("19", true),
+  TRIPLE_EIGHTEEN ("t18", false),
+  DOUBLE_EIGHTEEN ("d18", false),
+  EIGHTEEN ("18", true),
+  TRIPLE_SEVENTEEN ("t17", false),
+  DOUBLE_SEVENTEEN ("d17", false),
+  SEVENTEEN ("17", true),
+  TRIPLE_SIXTEEN ("t16", false),
+  DOUBLE_SIXTEEN ("d16", false),
+  SIXTEEN ("16", true),
+  TRIPLE_FIFTEEN ("t15", false),
+  DOUBLE_FIFTEEN ("d15", false),
+  FIFTEEN ("15", true),
+  FREE ("free", false);
 
 
   private String value;
+  private boolean isAnalytics;
 
-  private TargetPracticeType(String value) {
+  private TargetPracticeType(String value, boolean isAnalytics) {
     this.value = value;
+    this.isAnalytics = isAnalytics;
   }
 
   public String getValue() {
@@ -45,6 +47,10 @@ public enum TargetPracticeType implements BasePracticeType {
 
   public boolean isTargetPracticeType() {
     return true;
+  }
+
+  public boolean isAnalytics() {
+    return isAnalytics;
   }
 
   public static TargetPracticeType getTargetPracticeTypeForString(String type) {

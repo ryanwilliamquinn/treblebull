@@ -26,15 +26,19 @@
         <action name="practice">
             <result>/practiceHome.jsp</result>
         </action>
+
+        <action name="analytics" class="com.rquinn.darts.action.DartsAnalyticsAction" method="showAnalytics">
+            <result>/analytics.jsp</result>
+        </action>
     </package>
 
     <package name="practice" namespace="/practice" extends="struts-default">
-        <action name="/**" class="com.rquinn.darts.action.PracticeAction" method="practiceTemplate">
+        <action name="/**" class="com.rquinn.darts.action.BaseAction" method="practiceTemplate">
             <result name="success">/${practiceTemplate}</result>
             <result name="error" type="redirect">/practice</result>
         </action>
-
     </package>
+
 
 	<package name="basicstruts2" extends="struts-default">
 

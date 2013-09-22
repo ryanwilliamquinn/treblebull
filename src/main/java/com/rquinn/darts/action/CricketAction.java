@@ -28,7 +28,7 @@ import java.util.ArrayList;
  * Time: 12:28 PM
  * To change this template use File | Settings | File Templates.
  */
-public class CricketAction extends PracticeAction {
+public class CricketAction extends BaseAction {
 
     private static final Logger slf4jLogger = LoggerFactory.getLogger(CricketAction.class);
 

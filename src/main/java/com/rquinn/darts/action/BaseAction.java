@@ -20,7 +20,7 @@ import java.io.*;
  * Time: 1:04 PM
  * To change this template use File | Settings | File Templates.
  */
-public class PracticeAction extends ActionSupport {
+public class BaseAction extends ActionSupport {
 
     private String practiceTemplate;
 
@@ -28,7 +28,7 @@ public class PracticeAction extends ActionSupport {
         return practiceTemplate;
     }
 
-    private static final Logger slf4jLogger = LoggerFactory.getLogger(PracticeAction.class);
+    private static final Logger slf4jLogger = LoggerFactory.getLogger(BaseAction.class);
 
     protected SqlSessionFactory getSqlSession()  {
         String resource = "mybatis-config.xml";
