@@ -7,8 +7,6 @@
     Hi there!  Please <a href="/login">Login</a> or <a href="signup.jsp">Signup</a> today!
 </shiro:guest>
 
-Hello sendgrid provisioners o/
-
 <shiro:user>
     <jsp:include page="practice.jsp"/>
 </shiro:user>
