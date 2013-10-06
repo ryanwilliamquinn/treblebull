@@ -23,8 +23,22 @@
             <result name="error">signup.jsp</result>
         </action>
 
+        <action name="forgotUsername">
+            <result>forgotUsername.jsp</result>
+        </action>
+
+        <action name="forgotPwd">
+            <result>forgotPwd.jsp</result>
+        </action>
+
         <action name="practice">
             <result>/practiceHome.jsp</result>
+        </action>
+
+        <action name="resetPwd" class="com.rquinn.darts.action.ResetPasswordAction" method="resetPwd">
+            <result name="success">passwordWasReset.jsp</result>
+            <result name="failure">forgotPwd.jsp</result>
+            <result name="error">failedToReset.jsp</result>
         </action>
 
         <action name="analytics">

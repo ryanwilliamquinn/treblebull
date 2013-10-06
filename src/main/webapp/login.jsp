@@ -27,4 +27,8 @@
    ${loginFailure}
 </c:if>
 
+<div>
+Forget your <a href="/forgotUsername">username</a> or <a href="/forgotPwd">password</a>?
+</div>
+
 <jsp:include page="footer.jsp"/>

@@ -377,6 +377,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
       }
     } else {
       $scope.targetData.dartToUpdate.actual = dart;
+      $scope.targetData.dartToUpdate.score = $scope.calculateScore(dart);
     }
     $scope.targetData.modifier = "";
   }
