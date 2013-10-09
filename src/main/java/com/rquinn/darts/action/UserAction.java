@@ -1,8 +1,10 @@
-package com.rquinn.darts;
+package com.rquinn.darts.action;
 
 
 import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 import com.opensymphony.xwork2.ActionSupport;
+import com.rquinn.darts.UserService;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.shiro.SecurityUtils;

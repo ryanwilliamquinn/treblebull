@@ -9,7 +9,7 @@
 
     <package name="default" extends="struts-default">
 
-        <action name="login" class="com.rquinn.darts.UserAction" method="processLogin">
+        <action name="login" class="com.rquinn.darts.action.UserAction" method="processLogin">
             <result name="redirect" type="redirect">${url}</result>
             <result name="error">login.jsp</result>
         </action>
@@ -18,7 +18,7 @@
             <result>signup.jsp</result>
         </action>
 
-        <action name="processSignup" class="com.rquinn.darts.UserAction" method="processSignup">
+        <action name="processSignup" class="com.rquinn.darts.action.UserAction" method="processSignup">
             <result name="success">${url}</result>
             <result name="error">signup.jsp</result>
         </action>
