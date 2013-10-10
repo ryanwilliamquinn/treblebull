@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class UserAction extends ActionSupport {
+public class UserAction extends BaseAction {
 
     private static final Logger slf4jLogger = LoggerFactory.getLogger(UserAction.class);
 
@@ -31,9 +31,9 @@ public class UserAction extends ActionSupport {
         return url;
     }
 
-    public String processLogin() {
+    public String processLogin() {    	
         Factory<SecurityManager> factory = new WebIniSecurityManagerFactory();
-        SecurityManager securityManager = factory.getInstance();
+        SecurityManager securityManager = factory.getInstance();    
         SecurityUtils.setSecurityManager(securityManager);
         Subject currentUser = SecurityUtils.getSubject();
         if (currentUser.isAuthenticated()) {

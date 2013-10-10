@@ -46,24 +46,22 @@
         </action>
     </package>
 
+    <package name="home" namespace="/" extends="struts-default">
+        <action name="" class="com.rquinn.darts.action.HomeAction" method="load">
+            <result name="success">/home.jsp</result>
+        </action>
+    </package>
+
     <package name="practice" namespace="/practice" extends="struts-default">
         <action name="/**" class="com.rquinn.darts.action.BaseAction" method="practiceTemplate">
             <result name="success">/${practiceTemplate}</result>
             <result name="error" type="redirect">/practice</result>
         </action>
     </package>
-
-
-	<package name="basicstruts2" extends="struts-default">
-
-		<action name="home" >
-			<result>/index2.jsp</result>
-		</action>
 		
-	</package>
 	<package name="users" namespace="/user" extends="struts-default">
 		<action name="/*">
-			<result name="success">/user.jsp</result>
+			<result name="success">/index.jsp</result>
 		</action>
 
 	</package>

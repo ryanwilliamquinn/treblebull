@@ -4,7 +4,7 @@
 <script type="text/javascript" src="/js/controllers.js"></script>
 
 <shiro:guest>
-    Hi there!  Please <a href="/login">Login</a> or <a href="signup.jsp">Signup</a> today!
+    Hi there!  Please <a href="http://${pageData.domain}/login">Login</a> or <a href="signup.jsp">Signup</a> today!
 </shiro:guest>
 
 <shiro:user>

@@ -1,7 +1,9 @@
 package com.rquinn.darts.action;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.rquinn.darts.PageData;
 import com.rquinn.darts.PracticeType;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -11,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.*;
 
 /**
@@ -26,6 +29,10 @@ public class BaseAction extends ActionSupport {
 
     public String getPracticeTemplate() {
         return practiceTemplate;
+    }
+    
+    public void initializePageData(HttpServletRequest request) {
+    	request.setAttribute("pageData", new PageData());
     }
 
     private static final Logger slf4jLogger = LoggerFactory.getLogger(BaseAction.class);
