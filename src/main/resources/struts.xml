@@ -5,40 +5,55 @@
 
 <struts>
 
-	<constant name="struts.devMode" value="true" />
+	<constant name="struts.devMode" value="false" />
 
     <package name="default" extends="struts-default">
 
         <action name="login" class="com.rquinn.darts.action.UserAction" method="processLogin">
             <result name="redirect" type="redirect">${url}</result>
-            <result name="error">login.jsp</result>
+            <result name="error">/login.jsp</result>
         </action>
 
         <action name="signup">
-            <result>signup.jsp</result>
+            <result>/signup.jsp</result>
         </action>
 
         <action name="processSignup" class="com.rquinn.darts.action.UserAction" method="processSignup">
             <result name="success">${url}</result>
-            <result name="error">signup.jsp</result>
+            <result name="error">/signup.jsp</result>
         </action>
 
         <action name="forgotUsername">
-            <result>forgotUsername.jsp</result>
+            <result>/forgotUsername.jsp</result>
         </action>
 
         <action name="forgotPwd">
-            <result>forgotPwd.jsp</result>
+            <result>/forgotPwd.jsp</result>
         </action>
 
         <action name="practice">
             <result>/practiceHome.jsp</result>
         </action>
 
-        <action name="resetPwd" class="com.rquinn.darts.action.ResetPasswordAction" method="resetPwd">
-            <result name="success">passwordWasReset.jsp</result>
-            <result name="failure">forgotPwd.jsp</result>
-            <result name="error">failedToReset.jsp</result>
+        <action name="requestPwdReset" class="com.rquinn.darts.action.UserAction" method="sendResetEmail">
+            <result name="success">/resetEmailSent.jsp</result>
+            <result name="failure">/passwordNotReset.jsp</result>
+            <result name="captchaFailure">/forgotPwd.jsp</result>
+        </action>
+
+        <action name="requestUsername" class="com.rquinn.darts.action.UserAction" method="requestUsername">
+            <result name="success">/usernameReminderSent.jsp</result>
+            <result name="failure">/usernameReminderNotSent.jsp</result>
+        </action>
+
+        <action name="reset" class="com.rquinn.darts.action.UserAction" method='showResetForm'>
+            <result name="success">/WEB-INF/passwordReset.jsp</result>
+            <result name="failure">/passwordNotReset.jsp</result>
+        </action>
+
+        <action name="resetPwd" class='com.rquinn.darts.action.UserAction' method='resetPassword'>
+            <result name="success">/passwordWasReset.jsp</result>
+            <result name="failure">/passwordNotReset.jsp</result>
         </action>
 
         <action name="analytics">

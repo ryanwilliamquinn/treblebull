@@ -14,6 +14,10 @@
                 <td><input type="text" name="username" maxlength="30" ng-model="user.name" required ></td>
             </tr>
             <tr>
+                <td>Email:</td>
+                <td><input type="email" name="email" maxlength="60" ng-model="user.email" required ></td>
+            </tr>
+            <tr>
                 <td>Password:</td>
                 <td><input type="password" name="password" maxlength="30" ng-model="user.password" required ui-validate="validateLength"></td>
             </tr>

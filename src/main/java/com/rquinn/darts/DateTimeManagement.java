@@ -23,6 +23,12 @@ public class DateTimeManagement {
     // date millis used for sorting on the front end
     @Expose private long dateMilliseconds;
 
+    public DateTimeManagement() {};
+
+    public DateTimeManagement(Timestamp timestamp) {
+        this.timestamp = timestamp;
+    }
+
     public String getDisplayDateTime() {
         if (displayDateTime == null) {
             DateTime date = new DateTime(timestamp);
@@ -75,5 +81,16 @@ public class DateTimeManagement {
         dateMilliseconds = date.getMillis();
         DateTimeFormatter fmt3 = DateTimeFormat.forPattern("MMM dd, yyyy");
         displayDateTime = fmt3.print(date);
+    }
+
+    public boolean isTimestampWithinOneHourOfCurrentTime() {
+        // current time
+        long currentTimeMillis = DateTime.now().getMillis();
+        // existing time = timestamp field
+        // if currentTime is before timestamp + 1 hour = 1000 * 60, then we are good
+        long resetTimeMillis = new DateTime(timestamp).getMillis();
+        long difference = currentTimeMillis - resetTimeMillis;
+        long maxDifference = 1000 * 60 * 60;  // this should be one hour in milliseconds
+        return difference <= maxDifference;
     }
 }

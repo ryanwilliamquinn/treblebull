@@ -4,6 +4,14 @@
 
 <mapper namespace='com.rquinn.darts.DartsMapper'>
 
+    <resultMap id="user" type="com.rquinn.darts.model.User">
+        <result property="username" column="username"></result>
+        <result property="email" column="email"></result>
+        <result property="password" column="password"></result>
+        <result property="resetToken" column="reset_token"></result>
+        <result property="resetTimestamp" column="reset_timestamp"></result>
+    </resultMap>
+
     <resultMap type='com.rquinn.darts.DartsResult' id='dartsResultValue'>
         <id property='id' column='id'/>
         <result property='type' column='type'/>
@@ -46,6 +54,10 @@
         <result property="type" column="target"></result>
         <result property="actual" column="actual"></result>
         <result property="numDarts" column="numDarts"></result>
+    </resultMap>
+
+    <resultMap id="dateTimeManagement" type='com.rquinn.darts.DateTimeManagement'>
+        <result property='timestamp' column='reset_timestamp'></result>
     </resultMap>
 
     <select id='getResultById' parameterType='int' resultMap="dartsResultValue">
@@ -132,6 +144,34 @@
     <insert id="insertUser" parameterType="map">
         INSERT INTO users (username, password) VALUES (#{name}, #{encryptedPassword});
     </insert>
+
+    <update id="insertResetToken" parameterType="map">
+        UPDATE users
+        SET
+        reset_token = #{token},
+        reset_timestamp = 'now'
+        WHERE email = #{email};
+    </update>
+
+    <select id='isPasswordResetTokenValid' parameterType='String' resultType='java.sql.Timestamp'>
+        SELECT reset_timestamp FROM users where reset_token = #{token};
+    </select>
+
+    <select id='getUserDetailsByToken' parameterType='map' resultType='user'>
+        SELECT username, email, password, reset_token, reset_timestamp FROM users WHERE reset_token = #{token} and email = #{email};
+    </select>
+
+    <select id='getUserByEmail' parameterType='String' resultType='user'>
+        SELECT username, email, password, reset_token, reset_timestamp FROM users WHERE email = #{email};
+    </select>
+
+    <update id='resetPassword' parameterType='map'>
+        UPDATE users SET password = #{pw} WHERE email = #{email};
+    </update>
+
+    <select id="isValidEmail" parameterType="String" resultType='int'>
+        SELECT count(1) from users WHERE email = #{email};
+    </select>
 
     <select id="getFreeAverages" parameterType="String" resultMap="freeAverageData">
         SELECT target, sum(score) as aggregateScore, count(target) as numDarts from dart

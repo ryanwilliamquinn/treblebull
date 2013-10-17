@@ -3,7 +3,10 @@ package com.rquinn.darts;
 import com.rquinn.darts.model.Dart;
 import com.rquinn.darts.model.DartsAnalyticsResult;
 import com.rquinn.darts.model.PracticeOverviewData;
+import com.rquinn.darts.model.User;
 import org.apache.ibatis.annotations.Param;
+
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +24,18 @@ public interface DartsMapper {
   public int insert301Game(ThreeOhOneResult dartsResult);
 
   public void insertUser(@Param("name") String name, @Param("encryptedPassword") String encryptedPassword);
+
+  public void insertResetToken(@Param("token") String token, @Param("email") String email);
+
+  public Timestamp isPasswordResetTokenValid(String token);
+
+  public User getUserDetailsByToken(@Param("token") String token, @Param("email") String email);
+
+  public User getUserByEmail(String email);
+
+  public void resetPassword(@Param("email") String email, @Param("pw") String pw);
+
+  public int isValidEmail(String email);
 
   public void insertRound(@Param("foreignKey") int foreignKey, @Param("roundResult") RoundResult roundResult);
 
@@ -59,6 +74,7 @@ public interface DartsMapper {
   public void insertFreeDart(@Param("foreignKey") int foreignKey, @Param("dart") Dart dart);
 
   public void insertDart(@Param("foreignKey") int foreignKey, @Param("dart") Dart dart);
+
 
 }
 
