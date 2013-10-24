@@ -56,6 +56,15 @@
             <result name="failure">/passwordNotReset.jsp</result>
         </action>
 
+        <action name="updatePwd">
+            <result>/WEB-INF/changePassword.jsp</result>
+        </action>
+
+        <action name="changePwd" class='com.rquinn.darts.action.UserAction' method='changePassword'>
+            <result name='success'>/passwordWasResetAlreadyLoggedIn.jsp</result>
+            <result name='failure'>/WEB-INF/changePassword.jsp</result>
+        </action>
+
         <action name="analytics">
             <result>/analytics.jsp</result>
         </action>
@@ -76,7 +85,7 @@
 		
 	<package name="users" namespace="/user" extends="struts-default">
 		<action name="/*">
-			<result name="success">/index.jsp</result>
+			<result>/user.jsp</result>
 		</action>
 
 	</package>

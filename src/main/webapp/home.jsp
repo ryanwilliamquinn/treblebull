@@ -1,5 +1,5 @@
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
-<jsp:include page="header.jsp"/>
+<jsp:include page="angHeader.jsp"/>
 
 <script type="text/javascript" src="/js/controllers.js"></script>
 
@@ -9,6 +9,8 @@
 
 <shiro:user>
     <jsp:include page="practice.jsp"/>
+
+    <jsp:include page="practiceOverview.jsp"/>
 </shiro:user>
 
 <jsp:include page="footer.jsp"/>

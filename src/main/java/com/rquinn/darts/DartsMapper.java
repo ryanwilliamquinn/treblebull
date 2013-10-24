@@ -33,7 +33,11 @@ public interface DartsMapper {
 
   public User getUserByEmail(String email);
 
+  public User getUserByUsername(String username);
+
   public void resetPassword(@Param("email") String email, @Param("pw") String pw);
+
+  public void resetPasswordByUsername(@Param("username") String username, @Param("pw") String pw);
 
   public int isValidEmail(String email);
 

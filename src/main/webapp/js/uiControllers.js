@@ -4,7 +4,7 @@ angular.module("dartsApp.controller", ["ui"]);
 
 function userController($scope) {
 
-    $scope.user = {"name" : "", "password" : "", "passwordConfirm" : "", "email" : ""};
+    $scope.user = {"name" : "", "password" : "", "passwordConfirm" : "", "email" : "", "oldPassword" : ""};
     // would be great to be able to do this without referencing the document...
     $scope.newUser = function(myForm) {
         if ($scope.signupform.$valid) {
@@ -35,12 +35,16 @@ function userController($scope) {
     $scope.updatePassword = function(myForm) {
         if ($scope.pwUpdateForm.$valid) {
             var pwResetForm = document.forms['pwUpdateForm'];
-            console.log("wwtttfff?");
-            console.log(pwResetForm);
             pwResetForm.action = 'resetPwd';
             pwResetForm.submit();
-        } else {
-            console.log("whatever??");
+        }
+    }
+
+    $scope.changePassword = function(myForm) {
+        if ($scope.pwUpdateForm.$valid) {
+            var pwResetForm = document.forms['pwUpdateForm'];
+            pwResetForm.action = 'changePwd';
+            pwResetForm.submit();
         }
     }
 };

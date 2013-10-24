@@ -165,8 +165,16 @@
         SELECT username, email, password, reset_token, reset_timestamp FROM users WHERE email = #{email};
     </select>
 
+    <select id='getUserByUsername' parameterType='String' resultType='user'>
+        SELECT username, email, password, reset_token, reset_timestamp FROM users WHERE username = #{username};
+    </select>
+
     <update id='resetPassword' parameterType='map'>
         UPDATE users SET password = #{pw} WHERE email = #{email};
+    </update>
+
+    <update id='resetPasswordByUsername' parameterType='map'>
+        UPDATE users SET password = #{pw} WHERE username = #{username};
     </update>
 
     <select id="isValidEmail" parameterType="String" resultType='int'>

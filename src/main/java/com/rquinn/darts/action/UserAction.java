@@ -2,6 +2,7 @@ package com.rquinn.darts.action;
 
 
 import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
+import com.mysql.jdbc.log.Slf4JLogger;
 import com.opensymphony.xwork2.ActionSupport;
 import com.rquinn.darts.PageData;
 import com.rquinn.darts.UserService;
@@ -30,6 +31,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.Properties;
 
 public class UserAction extends BaseAction {
@@ -48,7 +50,7 @@ public class UserAction extends BaseAction {
 
     public String processLogin() {    	
         Factory<SecurityManager> factory = new WebIniSecurityManagerFactory();
-        SecurityManager securityManager = factory.getInstance();    
+        SecurityManager securityManager = factory.getInstance();
         SecurityUtils.setSecurityManager(securityManager);
         Subject currentUser = SecurityUtils.getSubject();
         if (currentUser.isAuthenticated()) {
@@ -69,9 +71,8 @@ public class UserAction extends BaseAction {
             PasswordService passwordService = new DefaultPasswordService();
             String encryptedPassword = passwordService.encryptPassword(password);
 
-            UserService userService = new UserService();
             try {
-                userService.insertUser(name, encryptedPassword);
+                UserService.insertUser(name, encryptedPassword);
             } catch (MySQLIntegrityConstraintViolationException exception) {
                 slf4jLogger.error("mysql problem creating new user: " + exception);
                 return ERROR;
@@ -148,15 +149,14 @@ public class UserAction extends BaseAction {
 
 //              // set reset_token and reset_timestamp now
 
-                UserService userService = new UserService();
                 BodyPart part1 = new MimeBodyPart();
                 BodyPart part2 = new MimeBodyPart();
 
                 String protocol = pageData.getHttpsToggle();
                 String domain = pageData.getDomain();
-                if (userService.isValidEmail(email)) {
+                if (UserService.isValidEmail(email)) {
                     try {
-                        userService.insertResetToken(reset_token, email);
+                        UserService.insertResetToken(reset_token, email);
                     } catch (Exception e) {
                         slf4jLogger.debug("problem inserting reset token", e);
                     }
@@ -193,22 +193,39 @@ public class UserAction extends BaseAction {
         return "success";
     }
 
+
     public String resetPassword() {
         // we have rid
         HttpServletRequest req = ServletActionContext.getRequest();
         String rid = req.getParameter("rid");
-        UserService userService = new UserService();
         String email = req.getParameter("emailAddress");
-        User user = userService.getUserDetailsByToken(rid, email);
+        User user = UserService.getUserDetailsByToken(rid, email);
         // what we want - the email
-        if (user != null && userService.isPasswordResetTokenValid(rid)) {
+        if (user != null && UserService.isPasswordResetTokenValid(rid)) {
             String pw = req.getParameter("password");
             PasswordService passwordService = new DefaultPasswordService();
             String encryptedPassword = passwordService.encryptPassword(pw);
-            userService.resetPassword(email, encryptedPassword);
+            UserService.resetPassword(email, encryptedPassword);
             return "success";
         } else {
             req.setAttribute("pwdNotResetMsg", "Your token is expired, request a new one <a href='/forgotPwd'>here</a>.");
+            return "failure";
+        }
+    }
+
+    public String changePassword() {
+        HttpServletRequest req = ServletActionContext.getRequest();
+        String newPassword = req.getParameter("newPassword");
+        String newPasswordConfirm = req.getParameter("passwordConfirm");
+        if (StringUtils.isNotBlank(newPassword) && StringUtils.equals(newPassword, newPasswordConfirm)) {
+            PasswordService passwordService = new DefaultPasswordService();
+            String encryptedPassword = passwordService.encryptPassword(newPassword);
+            Subject subject = SecurityUtils.getSubject();
+            slf4jLogger.debug("principal", subject.getPrincipal().toString());
+            UserService.resetPasswordByUsername(subject.getPrincipal().toString(), encryptedPassword);
+            return "success";
+        } else {
+            req.setAttribute("errorMessage", "There was a problem resetting your password, please try again.");
             return "failure";
         }
     }
@@ -217,8 +234,7 @@ public class UserAction extends BaseAction {
         // if the reset timestamp is valid, show the form, if not, show the appropriate error message
         HttpServletRequest req = ServletActionContext.getRequest();
         String rid = req.getParameter("rid");
-        UserService userService = new UserService();
-        if (userService.isPasswordResetTokenValid(rid)) {
+        if (UserService.isPasswordResetTokenValid(rid)) {
             req.setAttribute("rid", rid);
             return "success";
         };
@@ -273,14 +289,13 @@ public class UserAction extends BaseAction {
 
                 PageData pageData = new PageData();
 
-                UserService userService = new UserService();
                 BodyPart part1 = new MimeBodyPart();
                 BodyPart part2 = new MimeBodyPart();
 
                 String protocol = pageData.getHttpsToggle();
                 String domain = pageData.getDomain();
 
-                User user = userService.getUserByEmail(email);
+                User user = UserService.getUserByEmail(email);
                 if (user != null && StringUtils.isNotBlank(user.getUsername())) {
                     String userName = user.getUsername();
                     part1.setText("Here is your requested username: " + userName + ".  You can login here - "  + protocol + "://" + domain + "/login");

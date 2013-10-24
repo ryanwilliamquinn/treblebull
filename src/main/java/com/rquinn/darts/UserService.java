@@ -17,7 +17,7 @@ import java.util.List;
 
 public class UserService
 {
-    public void insertUser(String name, String encryptedPassword) throws MySQLIntegrityConstraintViolationException {
+    public static void insertUser(String name, String encryptedPassword) throws MySQLIntegrityConstraintViolationException {
         SqlSession sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
         try{
             DartsMapper dartsMapper = sqlSession.getMapper(DartsMapper.class);
@@ -28,7 +28,7 @@ public class UserService
         }
     }
 
-    public void insertResetToken(String token, String name) {
+    public static void insertResetToken(String token, String name) {
         SqlSession sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
         try{
             DartsMapper dartsMapper = sqlSession.getMapper(DartsMapper.class);
@@ -39,7 +39,7 @@ public class UserService
         }
     }
 
-    public boolean isValidEmail(String email) {
+    public static boolean isValidEmail(String email) {
         SqlSession sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
         int isValid = 0;
         try {
@@ -52,7 +52,7 @@ public class UserService
         return isValid > 0;
     }
 
-    public boolean isPasswordResetTokenValid(String token) {
+    public static boolean isPasswordResetTokenValid(String token) {
         SqlSession sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
         DateTimeManagement dt = null;
         try {
@@ -70,7 +70,7 @@ public class UserService
 
     }
 
-    public User getUserDetailsByToken(String token, String email) {
+    public static User getUserDetailsByToken(String token, String email) {
         SqlSession sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
         User user = null;
         try {
@@ -82,7 +82,7 @@ public class UserService
         return user;
     }
 
-    public User getUserByEmail(String email) {
+    public static User getUserByEmail(String email) {
         SqlSession sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
         User user = null;
         try {
@@ -94,8 +94,20 @@ public class UserService
         return user;
     }
 
+    public static User getUserByUsername(String username) {
+        SqlSession sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
+        User user = null;
+        try {
+            DartsMapper dartsMapper = sqlSession.getMapper(DartsMapper.class);
+            user = dartsMapper.getUserByUsername(username);
+        } finally {
+            sqlSession.close();
+        }
+        return user;
+    }
 
-    public void resetPassword(String email, String encryptedPassword) {
+
+    public static void resetPassword(String email, String encryptedPassword) {
         SqlSession sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
         try{
             DartsMapper dartsMapper = sqlSession.getMapper(DartsMapper.class);
@@ -105,5 +117,18 @@ public class UserService
             sqlSession.close();
         }
     }
+
+    public static void resetPasswordByUsername(String username, String encryptedPassword) {
+        SqlSession sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
+        try{
+            DartsMapper dartsMapper = sqlSession.getMapper(DartsMapper.class);
+            dartsMapper.resetPasswordByUsername(username, encryptedPassword);
+            sqlSession.commit();
+        }finally{
+            sqlSession.close();
+        }
+    }
+
+
 
 }
