@@ -8,6 +8,7 @@
     <br/><br/>
     It has an easy system for entering results, graphs (currently ugly), and is very free.
     <br/>
+    <br/>
     <div>Please <a href="${pageData.httpsToggle}://${pageData.domain}/login">Login</a> or <a href="signup.jsp">Signup</a></div>
 </shiro:guest>
 
