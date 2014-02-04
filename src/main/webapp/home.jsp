@@ -4,12 +4,9 @@
 <script type="text/javascript" src="/js/controllers.js"></script>
 
 <shiro:guest>
-    Hello - Treblebull.com is a site for tracking your darts practice results.
-    <br/><br/>
-    It has an easy system for entering results, graphs (currently ugly), and is very free.
-    <br/>
-    <br/>
-    <div>Please <a href="${pageData.httpsToggle}://${pageData.domain}/login">Login</a> or <a href="signup.jsp">Signup</a></div>
+    <p>Hello - Treblebull.com is a site for tracking your darts practice results.</p>
+    <p>It has an easy system for entering results, graphs (currently ugly), and is very free.</p>
+    <p>Please <a href="${pageData.httpsToggle}://${pageData.domain}/login">Login</a> or <a href="signup.jsp">Signup</a></p>
 </shiro:guest>
 
 <shiro:user>
