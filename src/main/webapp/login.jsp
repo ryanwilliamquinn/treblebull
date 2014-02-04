@@ -24,7 +24,6 @@
 
 <c:if test='${!empty loginFailure && loginFailure != ""}'>
    <div style="error">Incorrect username or password, please try again.</div>
-   ${loginFailure}
 </c:if>
 
 <div>

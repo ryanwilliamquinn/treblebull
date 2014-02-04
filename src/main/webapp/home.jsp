@@ -4,7 +4,10 @@
 <script type="text/javascript" src="/js/controllers.js"></script>
 
 <shiro:guest>
-    Hi there!  Please <a href="${pageData.httpsToggle}://${pageData.domain}/login">Login</a> or <a href="signup.jsp">Signup</a> today!
+    Hi there! treblebull.com is a site for tracking your darts practice results.
+    <br/>
+    It has an easy system for entering results, graphs (currently ugly), and is very free.
+    <div>Please <a href="${pageData.httpsToggle}://${pageData.domain}/login">Login</a> or <a href="signup.jsp">Signup</a></div>
 </shiro:guest>
 
 <shiro:user>
