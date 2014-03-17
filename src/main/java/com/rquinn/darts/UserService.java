@@ -17,11 +17,11 @@ import java.util.List;
 
 public class UserService
 {
-    public static void insertUser(String name, String encryptedPassword) throws MySQLIntegrityConstraintViolationException {
+    public static void insertUser(String name, String encryptedPassword, String email) throws MySQLIntegrityConstraintViolationException {
         SqlSession sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
         try{
             DartsMapper dartsMapper = sqlSession.getMapper(DartsMapper.class);
-            dartsMapper.insertUser(name, encryptedPassword);
+            dartsMapper.insertUser(name, encryptedPassword, email);
             sqlSession.commit();
         }finally{
             sqlSession.close();

@@ -66,13 +66,15 @@ public class UserAction extends BaseAction {
         HttpServletRequest request = ServletActionContext.getRequest();
         String name = request.getParameter("username");
         String password = request.getParameter("password");
+        String email = request.getParameter("email");
 
         if (StringUtils.isNotBlank(name) && StringUtils.isNotBlank(password)) {
             PasswordService passwordService = new DefaultPasswordService();
             String encryptedPassword = passwordService.encryptPassword(password);
 
+
             try {
-                UserService.insertUser(name, encryptedPassword);
+                UserService.insertUser(name, encryptedPassword, email);
             } catch (MySQLIntegrityConstraintViolationException exception) {
                 slf4jLogger.error("mysql problem creating new user: " + exception);
                 return ERROR;

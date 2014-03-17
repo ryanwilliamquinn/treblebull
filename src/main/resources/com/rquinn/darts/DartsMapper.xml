@@ -142,7 +142,7 @@
     </delete>
 
     <insert id="insertUser" parameterType="map">
-        INSERT INTO users (username, password) VALUES (#{name}, #{encryptedPassword});
+        INSERT INTO users (username, password, email) VALUES (#{name}, #{encryptedPassword}, #{email});
     </insert>
 
     <update id="insertResetToken" parameterType="map">

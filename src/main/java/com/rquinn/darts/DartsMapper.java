@@ -23,7 +23,7 @@ public interface DartsMapper {
 
   public int insert301Game(ThreeOhOneResult dartsResult);
 
-  public void insertUser(@Param("name") String name, @Param("encryptedPassword") String encryptedPassword);
+  public void insertUser(@Param("name") String name, @Param("encryptedPassword") String encryptedPassword, @Param("email") String email);
 
   public void insertResetToken(@Param("token") String token, @Param("email") String email);
 
