@@ -17,7 +17,7 @@ public class PageData {
     public String getHttpsToggle() {
         String protocol = System.getenv("TB_HTTPS");
         if (StringUtils.isBlank(protocol)) {
-            protocol = "https";
+            protocol = "http";
         }
         return protocol;
     }
