@@ -19,7 +19,7 @@
         </action>
 
         <action name="processSignup" class="com.rquinn.darts.action.UserAction" method="processSignup">
-            <result name="success">${url}</result>
+            <result name="success">/practice</result>
             <result name="error">/signup.jsp</result>
         </action>
 
