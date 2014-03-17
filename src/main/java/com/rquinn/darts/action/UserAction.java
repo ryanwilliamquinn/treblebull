@@ -89,6 +89,8 @@ public class UserAction extends BaseAction {
             SecurityManager securityManager = factory.getInstance();
             SecurityUtils.setSecurityManager(securityManager);
 
+            Subject currentUser = SecurityUtils.getSubject();
+
             return SUCCESS;
         }
 
