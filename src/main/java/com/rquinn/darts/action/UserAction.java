@@ -88,8 +88,7 @@ public class UserAction extends BaseAction {
             Factory<SecurityManager> factory = new IniSecurityManagerFactory("classpath:shiro.ini");
             SecurityManager securityManager = factory.getInstance();
             SecurityUtils.setSecurityManager(securityManager);
-
-            Subject currentUser = SecurityUtils.getSubject();
+            SecurityUtils.getSubject().login(new UsernamePasswordToken(name, encryptedPassword));
 
             return SUCCESS;
         }
