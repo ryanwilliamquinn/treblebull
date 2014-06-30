@@ -149,7 +149,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
                 oldRound.dateMillis = tempdata.dateTimeManagement.dateMilliseconds;
                 oldRound.numRounds = tempdata.numRounds;
                 oldRound.avg = Math.round((oldRound.score / oldRound.numRounds) * 100)/100;
-                if (tempdata.score && tempdata.dateTimeManagement.displayDateTime) {
+                if (/*tempdata.score && */tempdata.dateTimeManagement.displayDateTime) {
                   gamesContainer.push(oldRound);
                 }
               }

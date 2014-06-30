@@ -1,5 +1,6 @@
-body {margin:0px; background-color:#222; color:#ccc; font-family:arial;}
-.content {margin:0 auto;}
+html, body { height:100%;}
+body {margin:0px; background-color:#fff; color:#000; font-family:arial;}
+.content {padding: 5px; margin:0 auto; background-color:#ddd; overflow:hidden; height:90%;}
 .resultsChart{width:320px; height:400px;}
 @media all and (min-width:40em){.content{max-width:31em;} .resultsChart{width:31em;}}
 @media all and (min-width:62.66em){.content{max-width:47em;} .resultsChart{width:47em;}}
@@ -7,11 +8,17 @@ body {margin:0px; background-color:#222; color:#ccc; font-family:arial;}
 @media all and (min-width:93.98em){.content{max-width:74.65em;} .resultsChart{width:74.65em;}}
 h3 {margin:0px;}
 
-a:link,a:active,a:hover,a:visited {color:#ccc;}
+a:link,a:active,a:hover,a:visited {color:#000;}
+
+.shadow {
+  -moz-box-shadow:     0px 4px 9px 2px #ccc;
+  -webkit-box-shadow:  0px 4px 9px 2px #ccc;
+  box-shadow:          0px 4px 9px 2px #ccc;
+}
 
 .block {display:block;}
 .hide {display:none;}
-.header {width:100%; background-color:#eee; border-bottom:2px solid #ccc; color:#000; margin-bottom:5px; line-height:30px; padding:0 10px 0 10px;}
+.header {width:100%; background-color:#eee; border-bottom:1px solid #ccc; color:#000; line-height:30px; padding:0 10px 0 10px;}
 .scoreInput {width:40px; margin:10px;}
 #headerContent {margin:0px auto;}
 #headerTitle {float:left;}
@@ -29,7 +36,8 @@ a:link,a:active,a:hover,a:visited {color:#ccc;}
                               cursor:pointer;}
 .red {background-color:#CD0000;}
 .blue {background-color:blue;}
-.dbGreen {background-color:#0b3b0b;}
+.dbGreen {background-color:hsla(0,0%,70%,1);}
+.dbGreen:hover {background-color:hsla(0,0%,60%,1);}
 .green {background-color:green;}
 .rounds {float:left; margin-bottom:20px;}
 
@@ -49,8 +57,11 @@ a:link,a:active,a:hover,a:visited {color:#ccc;}
   user-select: none;
 }
 
+.roundRecord {background-color:#ddd; padding:0px 10px;}
 #overviewData {position:relative; right:12px;}
 #overviewData span {display:inline-block; text-align:center;}
+#overviewData .gameRecord, #overviewData .roundRecord:nth-child(2n),
+  .pastRounds .gameRecord:nth-child(2n), .pastRounds .roundRecord:nth-child(2n) {background-color:#eee;}
 #overviewHeaderRow {margin:10px 0px;}
 .ovType {width:60px;}
 .ovDate {width:100px;}
