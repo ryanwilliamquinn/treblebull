@@ -1,6 +1,6 @@
 html, body { height:100%;}
 body {margin:0px; background-color:#fff; color:#000; font-family:arial;}
-.content {padding: 5px; margin:0 auto; background-color:#ddd; overflow:hidden; height:90%;}
+.content {padding: 5px; margin:0 auto; background-color:#ddd; overflow:hidden; min-height:90%; margin-bottom:15px;}
 .resultsChart{width:320px; height:400px;}
 @media all and (min-width:40em){.content{max-width:31em;} .resultsChart{width:31em;}}
 @media all and (min-width:62.66em){.content{max-width:47em;} .resultsChart{width:47em;}}
