@@ -1,0 +1,200 @@
+bgcolor = #ddd
+fontcolor = #000
+shadowcolor = #ccc
+headercolor = #eee
+errorcolor = red
+validcolor = green
+buttonborder = bgcolor
+
+html, body
+  height 100%
+
+a
+a:hover
+a:visited
+a:active
+a:link
+  text-decoration none
+  color fontcolor
+
+body
+  margin 0px
+  background-color #fff
+  color fontcolor
+  font-family arial
+
+.content
+  padding 5px
+  margin 0 auto
+  background-color bgcolor
+  overflow hidden
+  min-height 90%
+
+@import "media"
+
+h3
+  margin 0px
+
+// functions
+border-radius(n)
+  -webkit-border-radius: n;
+  -moz-border-radius: n;
+  border-radius: n;
+
+
+shadow(xoff yoff blur size color)
+  -moz-box-shadow xoff yoff blur size color
+  -webkit-box-shadow xoff yoff blur size color
+  box-shadow xoff yoff blur size color
+
+
+
+
+.shadow
+  shadow(0px, 4px, 9px, 2px, shadowcolor)
+
+.block
+  display block
+
+.hide
+  display none
+
+.header
+  width 100%
+  background-color headercolor
+  border-bottom 1px solid #ccc
+  line-height 30px
+  padding 0 10px 0 10px
+
+.scoreInput
+  width 40px
+  margin 10px
+
+#headerContent
+  margin 0px auto
+
+#headerTitle
+  float left
+
+.headerAccount
+  float right
+  font-size 12px
+  margin-right 20px
+
+.errorMessage
+  font-size 13px
+  color errorcolor
+
+/* need to set up some rules for this, don't want all inputs to deal with this.  just for signup at this point i think */
+#signupform input.ng-invalid.ng-dirty
+  border solid 2px errorcolor
+#signupform input.ng-valid.ng-dirty
+  border solid 2px validcolor
+
+.error
+  color errorcolor
+  font-size 13px
+
+button(height, padding)
+  display inline-block
+  height height
+  line-height height
+  text-decoration none
+  margin 5px 0px
+  text-align center
+  border-radius(5px)
+  border solid 2px #ddd
+  padding padding
+  cursor pointer
+
+.button
+  button(25px, 0px 5px)
+
+.smallButton
+  button(18px, 0px 6px 2px)
+  font-size 13px
+
+.red
+  background-color #CD0000
+
+.blue
+  background-color blue
+
+.dbGreen
+  background-color hsla(0,0%,70%,1)
+  &:hover
+   background-color hsla(0,0%,60%,1)
+
+.green
+  background-color green
+
+.rounds
+  float left
+  margin-bottom 20px
+
+target(width)
+  display inline-block
+  height 20px
+  line-height 20px
+  width width
+  border solid 1px #666
+  display inline-block
+  text-align center
+  cursor pointer
+
+.dtTarget
+  target(30px)
+  margin 0 1px 0 5px
+
+.sTarget
+  target(30px)
+
+.sdtTarget
+  target(90px)
+
+
+.activeModifier
+  background-color #6495ED
+
+
+.unselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.roundRecord
+  background-color #ddd
+  padding 0px 10px
+
+#overviewData
+  position relative
+  right 12px
+
+#overviewData span
+  display inline-block
+  text-align center
+
+#overviewData .gameRecord
+#overviewData .roundRecord:nth-child(2n)
+.pastRounds .gameRecord:nth-child(2n)
+.pastRounds .roundRecord:nth-child(2n)
+  background-color headercolor
+
+#overviewHeaderRow
+  margin 10px 0px
+.ovType
+  width 60px
+.ovDate
+  width 100px
+.ovScore
+  width 94px
+.ovNumDarts
+  width 90px
+.ovActivity
+  margin 10px 0px
+.practiceSelector
+  margin 10px 15px 0px 0px
