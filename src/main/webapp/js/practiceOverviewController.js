@@ -2,8 +2,8 @@
 
 /* Controllers */
 
-angular.module("dartsApp.controller", []);
-function practiceOverviewController($scope, $http, $log, $location, chartService, postDataService, scoreCalculator) {
+var app = angular.module("dartsApp.controller", []);
+app.controller('practiceOverviewController', function ($scope, $http, $log, $location, chartService, postDataService, scoreCalculator) {
 
   $scope.overviewData = { allDarts : { total: 0, thisMonth: 0, thisWeek: 0, today: 0} };
   $scope.overviewData.types = [];
@@ -50,7 +50,7 @@ function practiceOverviewController($scope, $http, $log, $location, chartService
   }
 
 
-}
+});
 
 
 

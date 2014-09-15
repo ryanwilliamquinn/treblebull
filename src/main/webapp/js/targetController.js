@@ -2,8 +2,8 @@
 
 /* Controllers */
 
-angular.module("dartsApp.controller", []);
-function mainController($scope, $http, $log, $location, chartService, postDataService, scoreCalculator) {
+var app = angular.module("dartsApp.controller", []);
+app.controller('mainController', function ($scope, $http, $log, $location, chartService, postDataService, scoreCalculator) {
   $scope.targetData = {};
   $scope.targetData.round = {"number" : 1};
   $scope.numRoundsAvailable = [{id : "5", rounds : "five", num : 5}, {id : "10", rounds : "ten", num : 10}];
@@ -487,7 +487,7 @@ function mainController($scope, $http, $log, $location, chartService, postDataSe
       }
     }
   )
-}
+});
 
 function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);

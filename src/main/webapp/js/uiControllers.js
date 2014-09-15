@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module("dartsApp.controller", ["ui"]);
+var app = angular.module("dartsApp.controller", ["ui"]);
 
-function userController($scope) {
+app.controller('userController', function ($scope) {
 
     $scope.user = {"name" : "", "password" : "", "passwordConfirm" : "", "email" : "", "oldPassword" : ""};
     // would be great to be able to do this without referencing the document...
@@ -47,5 +47,5 @@ function userController($scope) {
             pwResetForm.submit();
         }
     }
-};
+});
 

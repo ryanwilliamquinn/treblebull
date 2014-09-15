@@ -2,8 +2,8 @@
 
 /* Controllers */
 
-angular.module("dartsApp.controller", []);
-function mainController($scope, $http, $log, chartService, postDataService) {
+var app = angular.module("dartsApp.controller", []);
+app.controller('mainController', function ($scope, $http, $log, chartService, postDataService) {
     $scope.targetData = {};
     $scope.targetData.round = {"number" : 1};
     $scope.initialNumGames = 10;
@@ -339,5 +339,5 @@ function mainController($scope, $http, $log, chartService, postDataService) {
         game.rounds = [];
       }
     }
-}
+});
 

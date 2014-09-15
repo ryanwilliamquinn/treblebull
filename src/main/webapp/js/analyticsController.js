@@ -2,8 +2,8 @@
 
 /* Controllers */
 
-angular.module("dartsApp.controller", []);
-function analyticsController($scope, $http) {
+var app = angular.module("dartsApp.controller", []);
+app.controller('analyticsController', function ($scope, $http) {
 
   $scope.aData = {};
 
@@ -28,4 +28,4 @@ function analyticsController($scope, $http) {
         //console.log("we have a problem with the http get");
       })
 
-}
+});

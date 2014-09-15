@@ -28,7 +28,7 @@
       <span style="display:inline-block; margin:5px;" ng-repeat="n in [] | reverseRangeWithBull:20" class="sTarget" ng-click="markDart(n)">{{n}}</span>
     </div>
   </div>
-  <div><span ng-repeat="dart in roundResult" style="margin-right:10px;">{{dart}}</span></div>
+  <div><span ng-repeat="dart in roundResult track by $index" style="margin-right:10px;">{{dart}}</span></div>
     <span ng-click="postResult()" style="margin-top:10px;" class="smallButton green unselectable" ng-show="checkRoundsComplete() && targetData.isEditMode == false">
       Save game
     </span>

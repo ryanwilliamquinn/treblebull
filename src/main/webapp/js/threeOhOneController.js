@@ -2,8 +2,8 @@
 
 /* Controllers */
 
-angular.module("dartsApp.controller", []);
-function threeOhOneController($scope, $http, $log, $location, postDataService, ohOneScoreCalculator) {
+var app = angular.module("dartsApp.controller", []);
+app.controller('threeOhOneController', function ($scope, $http, $log, $location, postDataService, ohOneScoreCalculator) {
   $scope.targetData = {};
   $scope.targetData.isShowRounds = false;
   $scope.isShowChart = false;
@@ -501,7 +501,7 @@ function threeOhOneController($scope, $http, $log, $location, postDataService, o
     }
 
 
-}
+});
 
 function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
