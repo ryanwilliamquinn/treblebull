@@ -45,7 +45,7 @@ public class BaseAction extends ActionSupport {
         } catch (IOException e) {
             slf4jLogger.error("problem getting sql session: " + e);
         }
-        return new SqlSessionFactoryBuilder().build(inputStream);
+        return new SqlSessionFactoryBuilder().build(inputStream, System.getenv("MYBATIS_ENVIRONMENT"));
     }
 
     public String practiceTemplate() throws Exception {

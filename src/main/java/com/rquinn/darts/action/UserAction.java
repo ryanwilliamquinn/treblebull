@@ -39,7 +39,7 @@ public class UserAction extends BaseAction {
 
   private static final Logger slf4jLogger = LoggerFactory.getLogger(UserAction.class);
   private static final String SMTP_HOST_NAME = System.getenv("SENDGRID_HOST_NAME");
-  private static final String SMTP_PORT = "587"; //System.getenv("SENDGRID_PORT");
+  private static final String SMTP_PORT = System.getenv("SENDGRID_PORT");
   private static final String SMTP_AUTH_USER = System.getenv("SENDGRID_USERNAME");
   private static final String SMTP_AUTH_PWD = System.getenv("SENDGRID_PASSWORD");
 
@@ -55,7 +55,7 @@ public class UserAction extends BaseAction {
     SecurityUtils.setSecurityManager(securityManager);
     Subject currentUser = SecurityUtils.getSubject();
     if (currentUser.isAuthenticated()) {
-      url = "/user/ryan";
+      url = "/user/" + currentUser.getPrincipal().toString();
       return "redirect";
     } else {
       slf4jLogger.debug("failed login for user: " + currentUser);
