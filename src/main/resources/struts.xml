@@ -9,6 +9,7 @@
 
     <package name="default" extends="struts-default">
 
+
         <action name="login" class="com.rquinn.darts.action.UserAction" method="processLogin">
             <result name="redirect" type="redirect">${url}</result>
             <result name="error">/login.jsp</result>
@@ -103,6 +104,17 @@
         <action name="301" class="com.rquinn.darts.action.ThreeOhOneAction" method="insert"/>
         <action name="*" class="com.rquinn.darts.action.TargetPracticeAction" method="insert"/>
 
+    </package>
+    <package name="ssl" namespace="/.well-known/acme-challenge" extends="struts-default" >
+        <action name="_LDdcCUbeUcev4zIY6EUghK2UBx9P6VEtSFmQvxnOIY">
+            <result>/.well-known/acme-challenge/result</result>
+        </action>
+        <action name="guWlCbogm4R4NlHXzGFIFQQB29l0j0IJL3-PC6jECL8">
+            <result>/.well-known/acme-challenge/result2</result>
+        </action>
+        <action name="_LDdcCUbeUcev4zIY6EUghK2UBx9P6VEtSFmQvxnOIY">
+            <result>/.well-known/acme-challenge/result3</result>
+        </action>
     </package>
 
 
