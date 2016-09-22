@@ -45,6 +45,7 @@
         <action name="requestUsername" class="com.rquinn.darts.action.UserAction" method="requestUsername">
             <result name="success">/usernameReminderSent.jsp</result>
             <result name="failure">/usernameReminderNotSent.jsp</result>
+            <result name="captchaFailure">/forgotUsername.jsp</result>
         </action>
 
         <action name="reset" class="com.rquinn.darts.action.UserAction" method='showResetForm'>

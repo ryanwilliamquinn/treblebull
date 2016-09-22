@@ -1,15 +1,15 @@
 package com.rquinn.darts.action;
 
 
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
-import com.mysql.jdbc.log.Slf4JLogger;
-import com.opensymphony.xwork2.ActionSupport;
 import com.rquinn.darts.PageData;
 import com.rquinn.darts.UserService;
 
 import com.rquinn.darts.model.User;
-import net.tanesha.recaptcha.ReCaptchaImpl;
-import net.tanesha.recaptcha.ReCaptchaResponse;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.exceptions.PersistenceException;
@@ -23,6 +23,7 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.Factory;
 import org.apache.shiro.web.config.WebIniSecurityManagerFactory;
 import org.apache.struts2.ServletActionContext;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +33,6 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
 import java.util.Properties;
 
 public class UserAction extends BaseAction {
@@ -112,15 +112,8 @@ public class UserAction extends BaseAction {
 
     slf4jLogger.debug("articleid: " + articleId + ", challenge: " + challenge + ", answer: " + answer + ", email: " + email);
 
-    String remoteAddr = req.getRemoteAddr();
-    ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
 
-    reCaptcha.setPrivateKey("6LcGY-gSAAAAACFtP57eO62Zh3cDWNZuSBnA7-wT");
-
-    ReCaptchaResponse reCaptchaResponse =
-        reCaptcha.checkAnswer(remoteAddr, challenge, answer);
-
-    if (!reCaptchaResponse.isValid()) {
+    if (!isCaptchaValid(req)) {
       // recaptcha failed
       req.setAttribute("usrEmail", email);
       req.setAttribute("captchaFailure", true);
@@ -243,7 +236,7 @@ public class UserAction extends BaseAction {
       req.setAttribute("rid", rid);
       return "success";
     }
-    ;
+
     req.setAttribute("pwdNotResetMsg", "Your token is expired, request a new one <a href='/forgotPwd'>here</a>.");
     return "failure";
   }
@@ -251,26 +244,13 @@ public class UserAction extends BaseAction {
   public String requestUsername() {
     HttpServletRequest req = ServletActionContext.getRequest();
 
-    String articleId = req.getParameter("articleId");
-    String challenge = req.getParameter("recaptcha_challenge_field");
-    String answer = req.getParameter("recaptcha_response_field");
     String email = req.getParameter("usrEmail");
 
-    slf4jLogger.debug("articleid: " + articleId + ", challenge: " + challenge + ", answer: " + answer + ", email: " + email);
-
-    String remoteAddr = req.getRemoteAddr();
-    ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
-
-    reCaptcha.setPrivateKey("6LcGY-gSAAAAACFtP57eO62Zh3cDWNZuSBnA7-wT");
-
-    ReCaptchaResponse reCaptchaResponse =
-        reCaptcha.checkAnswer(remoteAddr, challenge, answer);
-
-    if (!reCaptchaResponse.isValid()) {
+    if (!isCaptchaValid(req)) {
       // recaptcha failed
       req.setAttribute("usrEmail", email);
       req.setAttribute("captchaFailure", true);
-      return "failure";
+      return "captchaFailure";
     } else {
       try {
         Properties props = new Properties();

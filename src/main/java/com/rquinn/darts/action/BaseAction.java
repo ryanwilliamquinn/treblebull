@@ -1,14 +1,20 @@
 package com.rquinn.darts.action;
 
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import com.opensymphony.xwork2.ActionSupport;
 import com.rquinn.darts.PageData;
 import com.rquinn.darts.PracticeType;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.protocol.HTTP;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.struts2.ServletActionContext;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,6 +80,34 @@ public class BaseAction extends ActionSupport {
         }
 
         return practiceType;
+    }
+
+    protected String getRemoteAddress(HttpServletRequest request) {
+        String ipAddress = request.getHeader("X-FORWARDED-FOR");
+        if (ipAddress == null) {
+            ipAddress = request.getRemoteAddr();
+        }
+        return ipAddress;
+    }
+
+    protected Boolean isCaptchaValid(HttpServletRequest request) {
+        String googleRecaptchaResponse = request.getParameter("g-recaptcha-response");
+
+        HttpResponse<JsonNode> jsonResponse = null;
+        try {
+            slf4jLogger.debug("data sent to google: " + getRemoteAddress(request));
+            jsonResponse = Unirest.post("https://www.google.com/recaptcha/api/siteverify")
+                    .header("accept", "application/json")
+                    .field("secret", "6LcGY-gSAAAAACFtP57eO62Zh3cDWNZuSBnA7-wT")
+                    .field("response", googleRecaptchaResponse)
+                    .field("remoteip", getRemoteAddress(request))
+                    .asJson();
+        } catch (UnirestException unirestException) {
+            slf4jLogger.error("Error verifying captcah: " + unirestException);
+        }
+
+        JSONObject recaptchaVerification = jsonResponse.getBody().getObject();
+        return recaptchaVerification.getBoolean("success");
     }
 
 }
