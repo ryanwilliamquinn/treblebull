@@ -29,7 +29,7 @@ public class MyBatisUtil
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
-        factory = new SqlSessionFactoryBuilder().build(reader);
+        factory = new SqlSessionFactoryBuilder().build(reader, System.getenv("MYBATIS_ENVIRONMENT"));
     }
 
     public static SqlSessionFactory getSqlSessionFactory()

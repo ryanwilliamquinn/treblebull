@@ -103,7 +103,7 @@ public class BaseAction extends ActionSupport {
                     .field("remoteip", getRemoteAddress(request))
                     .asJson();
         } catch (UnirestException unirestException) {
-            slf4jLogger.error("Error verifying captcah: " + unirestException);
+            slf4jLogger.error("Error verifying captcha: " + unirestException);
         }
 
         JSONObject recaptchaVerification = jsonResponse.getBody().getObject();
