@@ -1,11 +1,5 @@
 package com.rquinn.darts.action;
 
-
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 import com.rquinn.darts.PageData;
 import com.rquinn.darts.UserService;
 
@@ -23,7 +17,6 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.Factory;
 import org.apache.shiro.web.config.WebIniSecurityManagerFactory;
 import org.apache.struts2.ServletActionContext;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,10 +69,7 @@ public class UserAction extends BaseAction {
 
       try {
         UserService.insertUser(name, encryptedPassword, email);
-      } catch (MySQLIntegrityConstraintViolationException exception) {
-        slf4jLogger.error("mysql problem creating new user: " + exception);
-        return ERROR;
-      } catch (PersistenceException exception) {
+      } catch (Exception exception) {
         slf4jLogger.error("User tried to create account, but name was already taken: " + name + ", exception info: " + exception);
         request.setAttribute("errorMessage", "This username is already taken: " + name);
         return ERROR;

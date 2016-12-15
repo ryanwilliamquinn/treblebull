@@ -8,16 +8,12 @@ package com.rquinn.darts;
  * To change this template use File | Settings | File Templates.
  */
 
-import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 import com.rquinn.darts.model.User;
 import org.apache.ibatis.session.SqlSession;
 
-import java.sql.Timestamp;
-import java.util.List;
-
 public class UserService
 {
-    public static void insertUser(String name, String encryptedPassword, String email) throws MySQLIntegrityConstraintViolationException {
+    public static void insertUser(String name, String encryptedPassword, String email) {
         SqlSession sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
         try{
             DartsMapper dartsMapper = sqlSession.getMapper(DartsMapper.class);
